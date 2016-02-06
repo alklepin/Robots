@@ -42,7 +42,7 @@ public class GameVisualizer extends JPanel
             {
                 onRedrawEvent();
             }
-        }, 0, 100);
+        }, 0, 50);
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -188,12 +188,14 @@ public class GameVisualizer extends JPanel
         int robotCenterY = round(m_robotPositionY);
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
-        g.setColor(Color.RED);
+        g.setColor(Color.MAGENTA);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.WHITE);
         fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+        g.setColor(Color.BLACK);
+        drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
     }
     
     private void drawTarget(Graphics2D g, int x, int y)
