@@ -4,6 +4,7 @@ import javafx.beans.Observable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Observer;
 import java.util.Stack;
@@ -11,12 +12,12 @@ import java.util.Stack;
 public class RobotMove extends java.util.Observable {
 
     ArrayList<Observer> observable = new ArrayList<>();
-    volatile int m_robotPositionX;
-    volatile int m_robotPositionY;
-    volatile int m_robotDirection;
+    protected volatile double m_robotPositionX;
+    protected volatile double m_robotPositionY;
+    protected volatile double m_robotDirection;
 
-    volatile int m_targetPositionX;
-    volatile int m_targetPositionY;
+    protected volatile int m_targetPositionX;
+    protected volatile int m_targetPositionY;
 
     volatile Point start;
     volatile Point finish;
@@ -31,8 +32,6 @@ public class RobotMove extends java.util.Observable {
         m_robotDirection=0;
         m_targetPositionX=150;
         m_targetPositionY=100;
-        start = new Point(m_robotPositionX/10,m_robotPositionY/10);
-        finish = new Point(m_targetPositionX/10,m_targetPositionY/10);
     }
 
     protected void setTargetPosition(Point p)
@@ -45,84 +44,61 @@ public class RobotMove extends java.util.Observable {
         return new Point(m_targetPositionX,m_targetPositionY);
     }
 
-    protected void setRobotPosition(Point p){
-        m_robotPositionX = p.x;
-        m_robotPositionY = p.y;
+
+    private static double distance(double x1, double y1, double x2, double y2)
+    {
+        double diffX = x1 - x2;
+        double diffY = y1 - y2;
+        return Math.sqrt(diffX * diffX + diffY * diffY);
     }
 
-    int[][] setMatrix(int x, int y){
-        int[][] matrix = new int[x/10][y/10];
-        for (int i=0;i<x/10;i++){
-            for (int j=0;j<y/10;j++){
-                matrix[i][j]=1;
-            }
-        }
-        return matrix;
-    }
+    private static double angleTo(double fromX, double fromY, double toX, double toY)
+    {
+        double diffX = toX - fromX;
+        double diffY = toY - fromY;
 
-    public Stack<Point> algo(int[][] matrix) {
-        Stack<Point> stack=new Stack<>();
-        ArrayList<Point> F = new ArrayList<>();//множество вершин
-        for (int i=-1;i<=1;i++){
-            for (int j=-1;j<=1;j++) {
-                if (i!=0 || j!=0) {
-                    F.add(new Point(start.x+i,start.y+j));//добавляю все, кроме стартовой
-                }
-            }
-        }
-        int[][] distance = new int[matrix[0].length][matrix.length];//массив расстояний от начала
-        Point[][] previous = new Point[matrix[0].length][matrix.length];//массив предшествующих вершин
-        distance[start.x][start.y] = 0;
-        previous[start.x][start.y] = start;
-        for (Point i : F) {//первый проход по всем доступным вершинам из начала
-            if (i != start) {
-                distance[i.x][i.y] = 1;
-                previous[i.x][i.y] = start;
-            }
-        }
-        for (int k = 1; k < matrix[0].length*matrix.length - 1; k++) {//количество итераций
-            Point w = minV(F,distance);//беру вершину с наименьшим расстоянием от начала
-            F.remove(F.indexOf(w));//удаляю из множества вершин
-            for (Point v : F) {
-                if (distance[w.x][w.y] + 1 < distance[v.x][v.y]&&1!=Integer.MAX_VALUE) {
-                    distance[v.x][v.y] = distance[w.x][w.y] + 1;
-                    previous[v.x][v.y] = w;
-                }
-            }
-        }
-        Point t = finish;
-        while(previous[t.x][t.y]!=start){
-            t = previous[t.x][t.y];
-            stack.push(t);
-        }
-        return stack;
-    }
-
-    private static Point minV(ArrayList<Point> F, int[][] distance){//поиск вершины с наименьшим расстоянием
-        Point min = F.get(0);
-        for (Point i:F){
-            if (distance[i.x][i.y]<distance[min.x][min.y])
-                min=i;
-        }
-        return min;
+        return asNormalizedRadians(Math.atan2(diffY,diffX));
     }
 
     protected void onModelUpdateEvent()
     {
-        Stack stack = algo(setMatrix(300,300));
-        while(!stack.empty()){
-            Point current = (Point) stack.pop();
-            m_robotPositionX=current.x;
-            m_robotPositionY=current.y;
+        double distance = distance(m_targetPositionX, m_targetPositionY,
+                m_robotPositionX, m_robotPositionY);
+        if (distance <= 1)
+        {
+            return;
         }
+        double velocity = maxVelocity;
+        double newDirection = angleTo(m_robotPositionX,m_robotPositionY,m_targetPositionX,m_targetPositionY);
+        m_robotDirection = newDirection;
+        moveRobot(velocity, 10);
         setChanged();
         notifyObservers();
     }
-
-    private void moveRobot()
+    private void moveRobot(double velocity, double duration)
     {
-        setChanged();
-        notifyObservers();//уведомление о перемещении
+        double newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
+
+        double newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
+        m_robotPositionX = newX;
+        m_robotPositionY = newY;
+    }
+
+    private static double asNormalizedRadians(double angle)
+    {
+        while (angle < 0)
+        {
+            angle += 2*Math.PI;
+        }
+        while (angle >= 2*Math.PI)
+        {
+            angle -= 2*Math.PI;
+        }
+        return angle;
+    }
+
+    private void smth(){
+        Point2D point2D = new Point2D.Double();
     }
 
     public void notifyObservers(){//обновление данных наблюдателей
