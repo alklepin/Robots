@@ -1,25 +1,19 @@
 package gui;
 
-import java.awt.Frame;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.stage.Stage;
 
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+public class RobotsProgram extends Application {
 
-public class RobotsProgram
-{
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        primaryStage.setTitle("Robots");
+        new MainApplicationStage(primaryStage);
+        primaryStage.show();
+    }
+
     public static void main(String[] args) {
-      try {
-        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-//        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
-//        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-//        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
-        frame.pack();
-        frame.setVisible(true);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-      });
-    }}
+        launch(args);
+    }
+}
