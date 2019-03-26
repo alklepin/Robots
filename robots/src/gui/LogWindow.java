@@ -1,34 +1,39 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.TextArea;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Orientation;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.layout.*;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends FlowPane implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
+    FlowPane logsPane = new FlowPane();
 
-    public LogWindow(LogWindowSource logSource) 
+    public LogWindow(LogWindowSource logSource)
     {
-        super("Протокол работы", true, true, true, true);
+        this.setOrientation(Orientation.VERTICAL);
         m_logSource = logSource;
         m_logSource.registerListener(this);
-        m_logContent = new TextArea("");
-        m_logContent.setSize(200, 500);
-        
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_logContent, BorderLayout.CENTER);
-        getContentPane().add(panel);
-        pack();
-        updateLogContent();
+        m_logContent = new TextArea("Журнал с сообщениями");
+        Button buttonTest = new Button("Tests");
+        buttonTest.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                m_logContent.appendText("\nВсё хорошо!");
+            }
+        });
+        logsPane.getChildren().add(m_logContent);
+        this.getChildren().addAll(buttonTest, logsPane);
     }
 
     private void updateLogContent()
@@ -38,10 +43,9 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         {
             content.append(entry.getMessage()).append("\n");
         }
-        m_logContent.setText(content.toString());
-        m_logContent.invalidate();
+        m_logContent.appendText(content.toString());
     }
-    
+
     @Override
     public void onLogChanged()
     {
