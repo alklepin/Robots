@@ -1,11 +1,15 @@
 package gui;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,23 +35,22 @@ public class GameVisualizer {
     private final double bugSize = 60;
     private final double appleSize = 30;
 
-    private volatile double m_robotPositionX = 100;
-    private volatile double m_robotPositionY = 100;
-    private volatile double m_robotDirection = 0;
-
     private volatile double m_targetPositionX = 150;
     private volatile double m_targetPositionY = 100;
 
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
+    private Bug classBug;
+
     public GameVisualizer(Pane pane) {
         this.pane = pane;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
         apple = loadFile("apple.png", appleSize, appleSize);
         bugs.add(loadFile("bug_1.png", bugSize, bugSize));
-        bugs.add(loadFile("bug_2.png", bugSize, bugSize));
         showedBug = bugs.get(0);
+
+        classBug = new Bug(100, 100, showedBug);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
@@ -101,17 +104,17 @@ public class GameVisualizer {
 
     protected void onModelUpdateEvent() {
         double distance = distance(m_targetPositionX, m_targetPositionY,
-                m_robotPositionX, m_robotPositionY);
+                classBug.X_Position, classBug.Y_Position);
         if (distance < 0.5) {
             return;
         }
         double velocity = maxVelocity;
-        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(classBug.X_Position, classBug.Y_Position, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
-        if (angleToTarget > m_robotDirection) {
+        if (angleToTarget > classBug.Direction) {
             angularVelocity = maxAngularVelocity;
         }
-        if (angleToTarget < m_robotDirection) {
+        if (angleToTarget < classBug.Direction) {
             angularVelocity = -maxAngularVelocity;
         }
 
@@ -129,22 +132,22 @@ public class GameVisualizer {
     private void moveRobot(double velocity, double angularVelocity, double duration) {
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = m_robotPositionX + velocity / angularVelocity *
-                (Math.sin(m_robotDirection + angularVelocity * duration) -
-                        Math.sin(m_robotDirection));
+        double newX = classBug.X_Position + velocity / angularVelocity *
+                (Math.sin(classBug.Direction + angularVelocity * duration) -
+                        Math.sin(classBug.Direction));
         if (!Double.isFinite(newX)) {
-            newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
+            newX = classBug.X_Position + velocity * duration * Math.cos(classBug.Direction);
         }
-        double newY = m_robotPositionY - velocity / angularVelocity *
-                (Math.cos(m_robotDirection + angularVelocity * duration) -
-                        Math.cos(m_robotDirection));
+        double newY = classBug.Y_Position - velocity / angularVelocity *
+                (Math.cos(classBug.Direction + angularVelocity * duration) -
+                        Math.cos(classBug.Direction));
         if (!Double.isFinite(newY)) {
-            newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
+            newY = classBug.Y_Position + velocity * duration * Math.sin(classBug.Direction);
         }
-        m_robotPositionX = newX;
-        m_robotPositionY = newY;
-        double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration);
-        m_robotDirection = newDirection;
+        classBug.X_Position = newX;
+        classBug.Y_Position = newY;
+        double newDirection = asNormalizedRadians(classBug.Direction + angularVelocity * duration);
+        classBug.Direction = newDirection;
     }
 
     private static double asNormalizedRadians(double angle) {
@@ -166,7 +169,7 @@ public class GameVisualizer {
         grass.setFitWidth(pane.getWidth());
         canvas.setHeight(pane.getHeight());
         canvas.setWidth(pane.getWidth());
-        drawRobot(round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
+        drawRobot(round(classBug.X_Position), round(classBug.Y_Position), classBug.Direction);
         drawTarget(m_targetPositionX, m_targetPositionY);
     }
 

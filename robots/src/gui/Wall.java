@@ -3,7 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class Wall extends GameObject {
+public class Wall{
 
     public Point Position;
     public Point SecondPosition;
