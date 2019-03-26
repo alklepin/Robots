@@ -1,18 +1,13 @@
 package gui;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Point2D;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,13 +22,7 @@ public class GameVisualizer {
 
     private final Canvas canvas;
     private final Pane pane;
-    private ImageView showedBug;
-    private final ArrayList<ImageView> bugs = new ArrayList<>();
-    private final ImageView apple;
     private final ImageView grass;
-
-    private final double bugSize = 60;
-    private final double appleSize = 30;
 
     private volatile double m_targetPositionX = 150;
     private volatile double m_targetPositionY = 100;
@@ -41,16 +30,14 @@ public class GameVisualizer {
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
-    private Bug classBug;
+    private Bug bug;
+    private Target target;
 
     public GameVisualizer(Pane pane) {
         this.pane = pane;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
-        apple = loadFile("apple.png", appleSize, appleSize);
-        bugs.add(loadFile("bug_1.png", bugSize, bugSize));
-        showedBug = bugs.get(0);
-
-        classBug = new Bug(100, 100, showedBug);
+        target = new Target(150, 100, loadFile("apple.png", 30, 30));
+        bug = new Bug(100, 100, loadFile("bug_1.png", 60, 60));
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
@@ -104,17 +91,17 @@ public class GameVisualizer {
 
     protected void onModelUpdateEvent() {
         double distance = distance(m_targetPositionX, m_targetPositionY,
-                classBug.X_Position, classBug.Y_Position);
+                bug.X_Position, bug.Y_Position);
         if (distance < 0.5) {
             return;
         }
         double velocity = maxVelocity;
-        double angleToTarget = angleTo(classBug.X_Position, classBug.Y_Position, m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(bug.X_Position, bug.Y_Position, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
-        if (angleToTarget > classBug.Direction) {
+        if (angleToTarget > bug.Direction) {
             angularVelocity = maxAngularVelocity;
         }
-        if (angleToTarget < classBug.Direction) {
+        if (angleToTarget < bug.Direction) {
             angularVelocity = -maxAngularVelocity;
         }
 
@@ -132,22 +119,22 @@ public class GameVisualizer {
     private void moveRobot(double velocity, double angularVelocity, double duration) {
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = classBug.X_Position + velocity / angularVelocity *
-                (Math.sin(classBug.Direction + angularVelocity * duration) -
-                        Math.sin(classBug.Direction));
+        double newX = bug.X_Position + velocity / angularVelocity *
+                (Math.sin(bug.Direction + angularVelocity * duration) -
+                        Math.sin(bug.Direction));
         if (!Double.isFinite(newX)) {
-            newX = classBug.X_Position + velocity * duration * Math.cos(classBug.Direction);
+            newX = bug.X_Position + velocity * duration * Math.cos(bug.Direction);
         }
-        double newY = classBug.Y_Position - velocity / angularVelocity *
-                (Math.cos(classBug.Direction + angularVelocity * duration) -
-                        Math.cos(classBug.Direction));
+        double newY = bug.Y_Position - velocity / angularVelocity *
+                (Math.cos(bug.Direction + angularVelocity * duration) -
+                        Math.cos(bug.Direction));
         if (!Double.isFinite(newY)) {
-            newY = classBug.Y_Position + velocity * duration * Math.sin(classBug.Direction);
+            newY = bug.Y_Position + velocity * duration * Math.sin(bug.Direction);
         }
-        classBug.X_Position = newX;
-        classBug.Y_Position = newY;
-        double newDirection = asNormalizedRadians(classBug.Direction + angularVelocity * duration);
-        classBug.Direction = newDirection;
+        bug.X_Position = newX;
+        bug.Y_Position = newY;
+        double newDirection = asNormalizedRadians(bug.Direction + angularVelocity * duration);
+        bug.Direction = newDirection;
     }
 
     private static double asNormalizedRadians(double angle) {
@@ -169,37 +156,20 @@ public class GameVisualizer {
         grass.setFitWidth(pane.getWidth());
         canvas.setHeight(pane.getHeight());
         canvas.setWidth(pane.getWidth());
-        drawRobot(round(classBug.X_Position), round(classBug.Y_Position), classBug.Direction);
+        drawRobot(round(bug.X_Position), round(bug.Y_Position), bug.Direction);
         drawTarget(m_targetPositionX, m_targetPositionY);
     }
 
-
-    private int index = 0;
     private void drawRobot(double x, double y, double direction) {
-        double robotCenterX = x - bugSize/2;
-        double robotCenterY = y - bugSize/2;
-        index++;
-        if (index == 10){
-            setNextBug();
-            index = 0;
-        }
-        showedBug.setX(robotCenterX);
-        showedBug.setY(robotCenterY);
-        showedBug.setRotate(90 + direction * 180 / Math.PI);
-    }
-
-
-    private void setNextBug(){
-        showedBug.setVisible(false);
-        int i = bugs.indexOf(showedBug);
-        i++;
-        i %= bugs.size();
-        showedBug = bugs.get(i);
-        showedBug.setVisible(true);
+        double robotCenterX = x - bug.BugSize / 2;
+        double robotCenterY = y - bug.BugSize / 2;
+        bug.Picture.setX(robotCenterX);
+        bug.Picture.setY(robotCenterY);
+        bug.Picture.setRotate(90 + direction * 180 / Math.PI);
     }
 
     private void drawTarget(double x, double y) {
-        apple.setX(x - appleSize/2);
-        apple.setY(y - appleSize/2);
+        target.Picture.setX(x - target.TargetSize / 2);
+        target.Picture.setY(y - target.TargetSize / 2);
     }
 }

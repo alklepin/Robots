@@ -5,6 +5,9 @@ import javafx.scene.image.ImageView;
 
 
 public class Target extends GameObject {
+
+    public final double TargetSize = 30;
+
     private void setTargetPosition(double x, double y) {
         X_Position = x;
         Y_Position = y;
