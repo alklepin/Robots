@@ -8,9 +8,9 @@ public class Bug extends GameObject {
 
     private double duration = 10;
 
-    public Bug(double x, double y, String path)
+    public Bug(double x, double y)
     {
-        super(x, y, path, 60);
+        super(x, y, "bug_1.png", 60);
     }
 
     private double asNormalizedRadians(double angle) {

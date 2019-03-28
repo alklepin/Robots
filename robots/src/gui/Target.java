@@ -11,9 +11,9 @@ public class Target extends GameObject {
         Y_Position = y;
     }
 
-    Target(double x, double y, String path)
+    Target(double x, double y)
     {
-        super(x, y, path, 30);
+        super(x, y, "apple.png", 30);
         Direction = - Math.PI / 2;
     }
 }

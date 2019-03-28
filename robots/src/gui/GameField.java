@@ -19,22 +19,31 @@ public class GameField {
         return timer;
     }
 
+    private Field field;
+
     private final Canvas canvas;
     private final Pane pane;
     private final ImageView grass;
-
-    private Bug bug;
-    private Target target;
 
     public GameField(Pane pane) {
         this.pane = pane;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
 
-        target = new Target(150, 100, "apple.png");
-        this.pane.getChildren().add(target.Picture);
+        Target apple = new Target(150, 100);
+        this.pane.getChildren().add(apple.Picture);
 
-        bug = new Bug(100, 100, "bug_1.png");
-        this.pane.getChildren().add(bug.Picture);
+        Bug juke = new Bug(100, 100);
+        this.pane.getChildren().add(juke.Picture);
+
+        Mine[] mines = new Mine[1];
+        mines[0] = new Mine(500, 500);
+        this.pane.getChildren().add(mines[0].Picture);
+
+        Wall[] walls = new Wall[1];
+        walls[0] = new Wall(250, 600);
+        this.pane.getChildren().add(walls[0].Picture);
+
+        field = new Field(juke, apple, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
@@ -42,7 +51,7 @@ public class GameField {
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                bug.onModelUpdateEvent(target.X_Position, target.Y_Position);
+                field.onModelUpdateEvent();
             }
         }, 0, 5);
         m_timer.schedule(new TimerTask() {
@@ -55,7 +64,7 @@ public class GameField {
         this.canvas.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent e) {
-                target.setTargetPosition(e.getX(), e.getY());
+                field.setTargetPosition(e.getX(), e.getY());
             }
         });
     }
@@ -74,7 +83,6 @@ public class GameField {
         grass.setFitWidth(pane.getWidth());
         canvas.setHeight(pane.getHeight());
         canvas.setWidth(pane.getWidth());
-        bug.draw();
-        target.draw();
+        field.draw();
     }
 }

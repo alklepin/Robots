@@ -1,21 +1,15 @@
 package gui;
 
-import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-import java.awt.*;
 import java.io.File;
 
 public abstract class GameObject {
     public volatile double X_Position;
     public volatile double Y_Position;
-
     public volatile double Direction = 0;
-
     public final double Size;
-
-    public volatile boolean Alive;
     public ImageView Picture;
 
     public GameObject(double x, double y, String path, double size)
