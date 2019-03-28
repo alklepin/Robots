@@ -13,12 +13,12 @@ public class Bug extends GameObject {
     public volatile double Direction = 0;
     public final double BugSize = 60;
 
-    private static final double maxVelocity = 0.1;
-    private static final double maxAngularVelocity = 0.001;
+    public final double maxVelocity = 0.1;
+    public final double maxAngularVelocity = 0.001;
 
-    public Bug(double x, double y, ImageView pict)
+    public Bug(double x, double y, String path)
     {
-        super(x, y, pict);
+        super(x, y, path, 60, 60);
     }
 
 }

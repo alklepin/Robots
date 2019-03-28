@@ -13,8 +13,8 @@ public class Target extends GameObject {
         Y_Position = y;
     }
 
-    public Target(double x, double y, ImageView pict)
+    public Target(double x, double y, String path)
     {
-        super(x, y, pict);
+        super(x, y, path, 30,30);
     }
 }

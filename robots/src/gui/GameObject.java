@@ -14,11 +14,18 @@ public abstract class GameObject {
     public volatile boolean Alive;
     public ImageView Picture;
 
-    public GameObject(double x, double y, ImageView picture)
+    public GameObject(double x, double y, String path, double width, double height)
     {
-        Picture = picture;
+        loadImage(path, width, height);
         X_Position = x;
         Y_Position = y;
+    }
+
+    private void loadImage(String fileName, double width, double height){
+        File file = new File(fileName);
+        String localUrl = file.toURI().toString();
+        Image image = new Image(localUrl, width, height, false, true);
+        Picture = new ImageView(image);
     }
 
     public void draw()
