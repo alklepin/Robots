@@ -41,9 +41,4 @@ public abstract class GameObject {
         Picture.setY(drawY);
         Picture.setRotate(90 + Direction * 180 / Math.PI);
     }
-
-    public void move(String[] args)
-    {
-
-    }
 }
