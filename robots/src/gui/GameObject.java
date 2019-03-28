@@ -11,12 +11,17 @@ public abstract class GameObject {
     public volatile double X_Position;
     public volatile double Y_Position;
 
+    public volatile double Direction = 0;
+
+    public final double Size;
+
     public volatile boolean Alive;
     public ImageView Picture;
 
-    public GameObject(double x, double y, String path, double width, double height)
+    public GameObject(double x, double y, String path, double size)
     {
-        loadImage(path, width, height);
+        Size = size;
+        loadImage(path, size, size);
         X_Position = x;
         Y_Position = y;
     }
@@ -30,7 +35,11 @@ public abstract class GameObject {
 
     public void draw()
     {
-
+        double drawX = X_Position - Size / 2;
+        double drawY = Y_Position - Size / 2;
+        Picture.setX(drawX);
+        Picture.setY(drawY);
+        Picture.setRotate(90 + Direction * 180 / Math.PI);
     }
 
     public void move(String[] args)

@@ -6,8 +6,6 @@ import javafx.scene.image.ImageView;
 
 public class Target extends GameObject {
 
-    public final double TargetSize = 30;
-
     private void setTargetPosition(double x, double y) {
         X_Position = x;
         Y_Position = y;
@@ -15,6 +13,6 @@ public class Target extends GameObject {
 
     public Target(double x, double y, String path)
     {
-        super(x, y, path, 30,30);
+        super(x, y, path, 30);
     }
 }

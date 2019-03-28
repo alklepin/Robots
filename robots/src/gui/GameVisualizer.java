@@ -29,7 +29,7 @@ public class GameVisualizer {
     public GameVisualizer(Pane pane) {
         this.pane = pane;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
-        
+
         target = new Target(150, 100, "apple.png");
         this.pane.getChildren().add(target.Picture);
 
@@ -153,20 +153,7 @@ public class GameVisualizer {
         grass.setFitWidth(pane.getWidth());
         canvas.setHeight(pane.getHeight());
         canvas.setWidth(pane.getWidth());
-        drawRobot(round(bug.X_Position), round(bug.Y_Position), bug.Direction);
-        drawTarget(target.X_Position, target.Y_Position);
-    }
-
-    private void drawRobot(double x, double y, double direction) {
-        double robotCenterX = x - bug.BugSize / 2;
-        double robotCenterY = y - bug.BugSize / 2;
-        bug.Picture.setX(robotCenterX);
-        bug.Picture.setY(robotCenterY);
-        bug.Picture.setRotate(90 + direction * 180 / Math.PI);
-    }
-
-    private void drawTarget(double x, double y) {
-        target.Picture.setX(x - target.TargetSize / 2);
-        target.Picture.setY(y - target.TargetSize / 2);
+        bug.draw();
+        target.draw();
     }
 }
