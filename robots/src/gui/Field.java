@@ -32,39 +32,20 @@ public class Field {
         FieldCell cell = FieldCell.getCell(x, y);
         if (!badCells.contains(cell))
             target.setTargetPosition(x, y);
-    }
-
-    private Set<FieldCell> getBugsFieldCells(){
-        Set<FieldCell> result = new HashSet<>();
-        for(int i = 0; i <= 1; i++)
-            for(int j = 0; j <= 1; j++)
-            {
-                double x = bug.X_Position + i * FieldCell.translateFactor;
-                double y = bug.Y_Position + j * FieldCell.translateFactor;
-
-                result.add(FieldCell.getCell(x, y));
-            }
-        return result;
-    }
-
-    private boolean isSmash(Set<FieldCell> bugsCells)
-    {
-        boolean result = false;
-        for (FieldCell cell: bugsCells)
-        {
-            if (badCells.contains(cell))
-            {
-                result = true;
-                break;
-            }
+        else {
+            System.out.println("Bad Cell!" + cell.X + " " + cell.Y);
+            System.out.println(x + " " + y);
         }
-        return result;
+    }
+
+    private boolean isSmash()
+    {
+        return badCells.contains(FieldCell.getCell(bug.X_Position, bug.Y_Position));
     }
 
     public void onModelUpdateEvent(){
         bug.onModelUpdateEvent(target.X_Position, target.Y_Position);
-        Set<FieldCell> bugsCells = getBugsFieldCells();
-        if (isSmash(bugsCells)) {
+        if (isSmash()) {
             System.out.println("Bug is dead...");
             System.exit(0);
         }

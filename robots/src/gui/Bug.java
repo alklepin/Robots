@@ -10,7 +10,7 @@ public class Bug extends GameObject {
 
     public Bug(double x, double y)
     {
-        super(x, y, "bug_1.png", 60);
+        super(x, y, "bug_1.png", FieldCell.translateFactor);
     }
 
     private double asNormalizedRadians(double angle) {
