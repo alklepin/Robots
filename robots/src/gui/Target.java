@@ -1,9 +1,5 @@
 package gui;
 
-import javafx.geometry.Point2D;
-import javafx.scene.image.ImageView;
-
-
 public class Target extends GameObject {
 
     public void setTargetPosition(double x, double y) {

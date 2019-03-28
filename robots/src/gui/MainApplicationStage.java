@@ -9,7 +9,6 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import log.LogWindowSource;
-
 import java.util.HashMap;
 
 public class MainApplicationStage {

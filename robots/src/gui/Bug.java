@@ -1,6 +1,5 @@
 package gui;
 
-
 public class Bug extends GameObject {
 
     public final double maxVelocity = 0.1;

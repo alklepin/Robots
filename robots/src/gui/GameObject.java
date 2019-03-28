@@ -2,7 +2,6 @@ package gui;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
 import java.io.File;
 
 public abstract class GameObject {

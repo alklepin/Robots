@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -32,18 +31,24 @@ public class GameField {
         Target apple = new Target(150, 100);
         this.pane.getChildren().add(apple.Picture);
 
-        Bug juke = new Bug(100, 100);
-        this.pane.getChildren().add(juke.Picture);
+        Bug bug = new Bug(100, 100);
+        this.pane.getChildren().add(bug.Picture);
 
-        Mine[] mines = new Mine[1];
-        mines[0] = new Mine(500, 500);
-        this.pane.getChildren().add(mines[0].Picture);
+        Mine[] mines = new Mine[]{new Mine(1100, 100), new Mine(500, 500), new Mine(200, 200), new Mine(800, 200),
+                new Mine(600, 300), new Mine(800, 700), new Mine(100, 700)};
+        for(Mine mine: mines){
+            this.pane.getChildren().add(mine.Picture);
+        }
 
-        Wall[] walls = new Wall[1];
-        walls[0] = new Wall(250, 600);
-        this.pane.getChildren().add(walls[0].Picture);
+        Wall[] walls = new Wall[]{new Wall(250, 600), new Wall(300, 600), new Wall(350, 600),
+                new Wall(350, 650), new Wall(800, 250), new Wall(850, 250), new Wall(900, 250),
+                new Wall(900, 300),  new Wall(900, 350),  new Wall(900, 400), new Wall(400, 100),
+                new Wall(450, 100), new Wall(500, 100),};
+        for(Wall wall: walls){
+            this.pane.getChildren().add(wall.Picture);
+        }
 
-        field = new Field(juke, apple, walls, mines);
+        field = new Field(bug, apple, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);

@@ -3,7 +3,7 @@ package gui;
 public class Wall extends GameObject{
 
     public Wall(double x, double y){
-        super(x, y, "wall.jpg", FieldCell.translateFactor);
+        super(x, y, "wall.png", FieldCell.translateFactor);
         FieldCell cell = FieldCell.getCell(X_Position, Y_Position);
         X_Position = cell.X * FieldCell.translateFactor + FieldCell.translateFactor / 2;
         Y_Position = cell.Y* FieldCell.translateFactor + FieldCell.translateFactor / 2;
