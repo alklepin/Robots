@@ -44,9 +44,6 @@ public class GameField {
         Bug bug = new Bug(100, 100);
         this.pane.getChildren().add(bug.Picture);
 
-<<<<<<< Updated upstream
-        field = new Field(bug, apple, new Wall[0], new Mine[0]);
-=======
         mines = loadObjects.returnMines();
         for(Mine mine: mines){
             this.pane.getChildren().add(mine.Picture);
@@ -57,8 +54,7 @@ public class GameField {
             this.pane.getChildren().add(wall.Picture);
         }
 
-        ///field = new Field(bug, apple, walls, mines);
->>>>>>> Stashed changes
+        field = new Field(bug, apple, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
