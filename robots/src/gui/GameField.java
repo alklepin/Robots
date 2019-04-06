@@ -11,6 +11,7 @@ import javafx.scene.layout.Pane;
 
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -24,6 +25,10 @@ public class GameField {
 
     private Field field;
     private double lastDirection = 0;
+
+    private Load loadObjects = new Load();
+    private ArrayList<Mine> mines;
+    private ArrayList<Wall> walls;
 
     private final Canvas canvas;
     private final Pane pane;
@@ -39,7 +44,21 @@ public class GameField {
         Bug bug = new Bug(100, 100);
         this.pane.getChildren().add(bug.Picture);
 
+<<<<<<< Updated upstream
         field = new Field(bug, apple, new Wall[0], new Mine[0]);
+=======
+        mines = loadObjects.returnMines();
+        for(Mine mine: mines){
+            this.pane.getChildren().add(mine.Picture);
+        }
+
+        walls = loadObjects.returnWall();
+        for(Wall wall: walls){
+            this.pane.getChildren().add(wall.Picture);
+        }
+
+        ///field = new Field(bug, apple, walls, mines);
+>>>>>>> Stashed changes
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);

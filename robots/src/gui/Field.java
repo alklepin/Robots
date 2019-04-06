@@ -1,5 +1,6 @@
 package gui;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class Field {
 
     private  Set<FieldCell> allCells = new HashSet<>();
 
-    public Field(Bug bug, Target target, Wall[] walls, Mine[] mines)
+    public Field(Bug bug, Target target, ArrayList<Wall> walls, ArrayList<Mine> mines)
     {
         this.bug = bug;
         this.target = target;
