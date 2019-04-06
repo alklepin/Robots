@@ -4,8 +4,12 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+
+
 import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,6 +23,7 @@ public class GameField {
     }
 
     private Field field;
+    private double lastDirection = 0;
 
     private final Canvas canvas;
     private final Pane pane;
@@ -34,21 +39,7 @@ public class GameField {
         Bug bug = new Bug(100, 100);
         this.pane.getChildren().add(bug.Picture);
 
-        Mine[] mines = new Mine[]{new Mine(1100, 100), new Mine(500, 500), new Mine(200, 200), new Mine(800, 200),
-                new Mine(600, 300), new Mine(800, 700), new Mine(100, 700)};
-        for(Mine mine: mines){
-            this.pane.getChildren().add(mine.Picture);
-        }
-
-        Wall[] walls = new Wall[]{new Wall(250, 600), new Wall(300, 600), new Wall(350, 600),
-                new Wall(350, 650), new Wall(800, 250), new Wall(850, 250), new Wall(900, 250),
-                new Wall(900, 300),  new Wall(900, 350),  new Wall(900, 400), new Wall(400, 100),
-                new Wall(450, 100), new Wall(500, 100),};
-        for(Wall wall: walls){
-            this.pane.getChildren().add(wall.Picture);
-        }
-
-        field = new Field(bug, apple, walls, mines);
+        field = new Field(bug, apple, new Wall[0], new Mine[0]);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
@@ -56,7 +47,7 @@ public class GameField {
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                field.onModelUpdateEvent();
+                field.onModelUpdateEvent(lastDirection);
             }
         }, 0, 5);
         m_timer.schedule(new TimerTask() {
@@ -70,6 +61,21 @@ public class GameField {
             @Override
             public void handle(MouseEvent e) {
                 field.setTargetPosition(e.getX(), e.getY());
+            }
+        });
+
+        this.pane.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                KeyCode code = event.getCode();
+                if (event.getCode() == KeyCode.W & lastDirection != Directions.DOWN)
+                    lastDirection = Directions.UP;
+                if (event.getCode() == KeyCode.S & lastDirection != Directions.UP)
+                    lastDirection = Directions.DOWN;
+                if (event.getCode() == KeyCode.D & lastDirection != Directions.LEFT)
+                    lastDirection = Directions.RIGHT;
+                if (event.getCode() == KeyCode.A & lastDirection != Directions.RIGHT)
+                    lastDirection = Directions.LEFT;
             }
         });
     }

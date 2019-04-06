@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Field {
+
+    public static double Width = 1300;
+    public static double Height = 850;
+
     private Set<FieldCell> badCells = new HashSet<>();
 
     private Bug bug;
@@ -31,10 +35,6 @@ public class Field {
         FieldCell cell = FieldCell.getCell(x, y);
         if (!badCells.contains(cell))
             target.setTargetPosition(x, y);
-        else {
-            System.out.println("Bad Cell!" + cell.X + " " + cell.Y);
-            System.out.println(x + " " + y);
-        }
     }
 
     private boolean isSmash()
@@ -42,8 +42,8 @@ public class Field {
         return badCells.contains(FieldCell.getCell(bug.X_Position, bug.Y_Position));
     }
 
-    public void onModelUpdateEvent(){
-        bug.onModelUpdateEvent(target.X_Position, target.Y_Position);
+    public void onModelUpdateEvent(double direction){
+        bug.onModelUpdateEvent(direction);
         if (isSmash()) {
             System.out.println("Bug is dead...");
             System.exit(0);
