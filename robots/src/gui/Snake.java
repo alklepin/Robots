@@ -27,18 +27,13 @@ public class Snake {
         for(int i = 0; i < snakeBlocks.size(); i++)
         {
             SnakeBlockPosition position = new SnakeBlockPosition();
-            if (snakeBlocks.get(i).isActiveBlock()) {
-                System.out.println("SnakeBlock " + i + " Active, change 'nextPosition'");
+            if (snakeBlocks.get(i).isActiveBlock())
                 position = snakeBlocks.get(i).getLastPosition();
-            }
             if (i == 0)
                 snakeBlocks.get(i).addNextPosition(nextPosition);
-            else {
-                if (snakeBlocks.get(i - 1).isActiveBlock()) {
-                    System.out.println("SnakeBlock " + (i - 1) + " Active");
+            else
+                if (snakeBlocks.get(i - 1).isActiveBlock())
                     snakeBlocks.get(i).addNextPosition(nextPosition);
-                }
-            }
             nextPosition = position;
         }
     }
