@@ -29,20 +29,26 @@ public class GameField {
     private Load loadObjects = new Load();
     private ArrayList<Mine> mines;
     private ArrayList<Wall> walls;
+    private ArrayList<Body> body;
 
     private final Canvas canvas;
     private final Pane pane;
     private final ImageView grass;
 
-    public GameField(Pane pane) {
-        this.pane = pane;
+    public GameField(Pane panne) {
+        this.pane = panne;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
 
-        Target apple = new Target(150, 100);
+        Target apple = new Target(250, 100);
         this.pane.getChildren().add(apple.Picture);
 
         Bug bug = new Bug(100, 100);
         this.pane.getChildren().add(bug.Picture);
+
+        body = new ArrayList<Body>();
+        body.add(new Body(90, 100));
+        for(int i = 0; i < body.size(); i++)
+            this.pane.getChildren().add(body.get(i).Picture);
 
         mines = loadObjects.returnMines();
         for(Mine mine: mines){
@@ -54,7 +60,7 @@ public class GameField {
             this.pane.getChildren().add(wall.Picture);
         }
 
-        field = new Field(bug, apple, walls, mines);
+        field = new Field(bug, apple, body, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
@@ -62,7 +68,7 @@ public class GameField {
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                field.onModelUpdateEvent(lastDirection);
+                field.onModelUpdateEvent(lastDirection, pane);
             }
         }, 0, 5);
         m_timer.schedule(new TimerTask() {
@@ -105,10 +111,17 @@ public class GameField {
     }
 
     private void paint() {
+        apdateBodys();
+        System.out.println(body);
         grass.setFitHeight(pane.getHeight());
         grass.setFitWidth(pane.getWidth());
         canvas.setHeight(pane.getHeight());
         canvas.setWidth(pane.getWidth());
         field.draw();
+    }
+
+    private void apdateBodys()
+    {
+        body = field.getBodys();
     }
 }
