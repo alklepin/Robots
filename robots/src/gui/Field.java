@@ -57,7 +57,7 @@ public class Field {
         return badCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
     }
 
-    public boolean onModelUpdateEvent(double direction){
+    public ImageView onModelUpdateEvent(double direction){
         snake.onModelUpdateEvent(direction);
         if (isSmash()) {
             System.out.println("Bug is dead...");
@@ -66,10 +66,9 @@ public class Field {
         if (isHitTarget())
         {
             generateNextTargetPosition();
-            snake.incrementSnake();
-            return true;
+            return snake.incrementSnake();
         }
-        return false;
+        return null;
     }
 
     public void draw()

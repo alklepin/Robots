@@ -1,5 +1,6 @@
 package gui;
 
+import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.image.Image;
@@ -24,10 +25,9 @@ public class GameField {
     }
 
     private Field field;
-    private double lastDirection = 0;
+    private double lastDirection = Directions.LEFT;
 
     private Load loadObjects = new Load();
-    private Snake snake;
     private ArrayList<Mine> mines;
     private ArrayList<Wall> walls;
 
@@ -42,7 +42,7 @@ public class GameField {
         Target apple = new Target(250, 100);
         this.pane.getChildren().add(apple.Picture);
 
-        snake = new Snake(100, 100);
+        Snake snake = new Snake(100, 100);
         this.pane.getChildren().add(snake.Head.Picture);
 
         mines = loadObjects.returnMines();
@@ -63,8 +63,16 @@ public class GameField {
         m_timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if (field.onModelUpdateEvent(lastDirection))
-                    incrementSnake();
+                ImageView pict = field.onModelUpdateEvent(lastDirection);
+                if (pict != null)
+                {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            incrementSnake(pict);
+                        }
+                    });
+                }
             }
         }, 0, 5);
         m_timer.schedule(new TimerTask() {
@@ -90,9 +98,9 @@ public class GameField {
         });
     }
 
-    private void incrementSnake()
+    private void incrementSnake(ImageView pict)
     {
-        this.pane.getChildren().add(walls.get(0).Picture);
+        this.pane.getChildren().add(pict);
     }
 
     private ImageView loadFile(String fileName, double width, double height){

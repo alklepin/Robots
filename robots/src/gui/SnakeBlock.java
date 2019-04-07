@@ -15,10 +15,10 @@ public class SnakeBlock extends GameObject {
 
     public boolean isActiveBlock()
     {
-        return queue.size() == 30;
+        return queue.size() >= queueSize;
     }
 
-    public SnakeBlockPosition getNextPosition(){
+    public SnakeBlockPosition getLastPosition(){
         return queue.poll();
     }
 

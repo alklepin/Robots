@@ -20,31 +20,35 @@ public class Snake {
 
     public void onModelUpdateEvent(Double direction)
     {
+        SnakeBlockPosition nextPosition = new SnakeBlockPosition();
+        nextPosition.X = Head.X_Position + maxVelocity * Math.cos(direction);
+        nextPosition.Y = Head.Y_Position + maxVelocity * Math.sin(direction);
+        nextPosition.Direction = direction;
         for(int i = 0; i < snakeBlocks.size(); i++)
         {
-            double x = snakeBlocks.get(i).X_Position;
-            double y = snakeBlocks.get(i).Y_Position;
-            SnakeBlockPosition nextPosition = null;
+            SnakeBlockPosition position = new SnakeBlockPosition();
+            if (snakeBlocks.get(i).isActiveBlock()) {
+                System.out.println("SnakeBlock " + i + " Active, change 'nextPosition'");
+                position = snakeBlocks.get(i).getLastPosition();
+            }
             if (i == 0)
-            {
-                snakeBlocks.get(i).X_Position = x + maxVelocity * Math.cos(direction);
-                snakeBlocks.get(i).Y_Position = y + maxVelocity * Math.sin(direction);
-                snakeBlocks.get(i).Direction = direction;
-            }
-            else{
-                if (snakeBlocks.get(i - 1).isActiveBlock())
+                snakeBlocks.get(i).addNextPosition(nextPosition);
+            else {
+                if (snakeBlocks.get(i - 1).isActiveBlock()) {
+                    System.out.println("SnakeBlock " + (i - 1) + " Active");
                     snakeBlocks.get(i).addNextPosition(nextPosition);
+                }
             }
-            if (snakeBlocks.get(i).isActiveBlock())
-                nextPosition = snakeBlocks.get(i).getNextPosition();
+            nextPosition = position;
         }
     }
 
-    public void incrementSnake(){
+    public ImageView incrementSnake(){
         SnakeBlock tail = new SnakeBlock(snakeBlocks.get(0).X_Position, snakeBlocks.get(0).Y_Position);
         tail.Direction = snakeBlocks.get(0).Direction;
         snakeBlocks.add(tail);
         Tail = tail;
+        return tail.Picture;
     }
 
     public void draw()
