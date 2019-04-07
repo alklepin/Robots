@@ -1,7 +1,7 @@
 package gui;
 
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -13,17 +13,15 @@ public class Field {
 
     private Set<FieldCell> badCells = new HashSet<>();
 
-    private Bug bug;
+    private Snake snake;
     private Target target;
-    private ArrayList<Body> bodys;
 
     private  Set<FieldCell> allCells = new HashSet<>();
 
-    public Field(Bug bug, Target target, ArrayList<Body> bodys,  ArrayList<Wall> walls, ArrayList<Mine> mines)
+    public Field(Snake snake, Target target, ArrayList<Wall> walls, ArrayList<Mine> mines)
     {
-        this.bug = bug;
+        this.snake = snake;
         this.target = target;
-        this.bodys = bodys;
         for(Wall wall: walls){
             FieldCell cell = FieldCell.getCell(wall.X_Position, wall.Y_Position);
             badCells.add(cell);
@@ -35,70 +33,48 @@ public class Field {
         }
     }
 
-    public void setTargetPosition(double x, double y)
+    public boolean isHitTarget()
     {
-        FieldCell cell = FieldCell.getCell(x, y);
-        if (!badCells.contains(cell))
-            target.setTargetPosition(x, y);
+        double x = target.X_Position - snake.Head.X_Position;
+        double y = target.Y_Position - snake.Head.Y_Position;
+        return Math.sqrt(x * x - y * y) < 5;
+    }
+
+    private void generateNextTargetPosition()
+    {
+        FieldCell nextCell = new FieldCell(-1, -1);
+        while (nextCell.equals(new FieldCell(-1, -1)) & !badCells.contains(nextCell))
+        {
+            double x = Math.random() * Field.Width;
+            double y = Math.random() * Field.Height;
+            nextCell = FieldCell.getCell(x, y);
+        }
+        target.setTargetPosition(nextCell.X * FieldCell.translateFactor, nextCell.Y * FieldCell.translateFactor);
     }
 
     private boolean isSmash()
     {
-        return badCells.contains(FieldCell.getCell(bug.X_Position, bug.Y_Position));
+        return badCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
     }
 
-    private boolean isEat()
-    {
-        return (bug.X_Position - 10 <= target.X_Position) & (target.X_Position <= bug.X_Position + 10)
-                & (bug.Y_Position - 10 <=  target.Y_Position) & (target.Y_Position <= bug.Y_Position + 10);
-    }
-
-    public void onModelUpdateEvent(double direction, Pane pane){
-        bug.onModelUpdateEvent(direction);
+    public boolean onModelUpdateEvent(double direction){
+        snake.onModelUpdateEvent(direction);
         if (isSmash()) {
             System.out.println("Bug is dead...");
             System.exit(0);
         }
-        if (isEat())
+        if (isHitTarget())
         {
-            target.setTargetPosition(0, 0);
-            Body body = new Body(bug.lastPoint_X, bug.lastPoint_Y);
-            bodys.add(body);
-            System.out.println(bodys);
+            generateNextTargetPosition();
+            snake.incrementSnake();
+            return true;
         }
-        moveBody(bug.lastPoint_X, bug.lastPoint_Y);
-    }
-
-    public ArrayList<Body> getBodys()
-    {
-        return bodys;
+        return false;
     }
 
     public void draw()
     {
-        bug.draw();
+        snake.draw();
         target.draw();
-        for (int i = 0; i < bodys.size(); i++)
-            bodys.get(i).draw();
-    }
-
-
-    public void moveBody(double head_x, double head_y)
-    {
-        double last_X = head_x;
-        double last_Y = head_y;
-        System.out.println(last_X);
-        if(bodys.size() > 0) {
-            for (int i = bodys.size() - 1; i + 1 > 0; i--) {
-                Body piece = bodys.get(i);
-                double x = last_X;
-                double y = last_Y;
-                last_X = piece.current_X;
-                System.out.println(last_X);
-                last_Y = piece.current_Y;
-                piece.current_X = x;
-                piece.current_Y = y;
-            }
-        }
     }
 }
