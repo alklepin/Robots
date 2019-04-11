@@ -10,12 +10,18 @@ public class Snake {
 
     public SnakeBlock Head;
     public SnakeBlock Tail;
+    public boolean load;
 
-    Snake(double x, double y)
+    public Snake(double x, double y, boolean load)
     {
-        snakeBlocks.add(new SnakeBlock(x, y));
+        this.load = load;
+        snakeBlocks.add(new SnakeBlock(x, y, load));
         Head = snakeBlocks.get(0);
         Tail = Head;
+    }
+
+    public ArrayList<SnakeBlock> getSnakeBlocks() {
+        return snakeBlocks;
     }
 
     public void onModelUpdateEvent(Double direction)
@@ -28,14 +34,14 @@ public class Snake {
         {
             SnakeBlockPosition position = new SnakeBlockPosition();
             if (snakeBlocks.get(i).isActiveBlock()) {
-                System.out.println("SnakeBlock " + i + " Active, change 'nextPosition'");
+                //System.out.println("SnakeBlock " + i + " Active, change 'nextPosition'");
                 position = snakeBlocks.get(i).getLastPosition();
             }
             if (i == 0)
                 snakeBlocks.get(i).addNextPosition(nextPosition);
             else {
                 if (snakeBlocks.get(i - 1).isActiveBlock()) {
-                    System.out.println("SnakeBlock " + (i - 1) + " Active");
+                   // System.out.println("SnakeBlock " + (i - 1) + " Active");
                     snakeBlocks.get(i).addNextPosition(nextPosition);
                 }
             }
@@ -44,7 +50,7 @@ public class Snake {
     }
 
     public ImageView incrementSnake(){
-        SnakeBlock tail = new SnakeBlock(snakeBlocks.get(0).X_Position, snakeBlocks.get(0).Y_Position);
+        SnakeBlock tail = new SnakeBlock(snakeBlocks.get(0).X_Position, snakeBlocks.get(0).Y_Position, load);
         tail.Direction = snakeBlocks.get(0).Direction;
         snakeBlocks.add(tail);
         Tail = tail;

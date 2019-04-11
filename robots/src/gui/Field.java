@@ -2,6 +2,8 @@ package gui;
 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,14 +24,17 @@ public class Field {
     {
         this.snake = snake;
         this.target = target;
-        for(Wall wall: walls){
-            FieldCell cell = FieldCell.getCell(wall.X_Position, wall.Y_Position);
-            badCells.add(cell);
+        if(walls != null) {
+            for (Wall wall : walls) {
+                FieldCell cell = FieldCell.getCell(wall.X_Position, wall.Y_Position);
+                badCells.add(cell);
+            }
         }
-
-        for(Mine mine: mines){
-            FieldCell cell = FieldCell.getCell(mine.X_Position, mine.Y_Position);
-            badCells.add(cell);
+        if(mines != null) {
+            for (Mine mine : mines) {
+                FieldCell cell = FieldCell.getCell(mine.X_Position, mine.Y_Position);
+                badCells.add(cell);
+            }
         }
     }
 
@@ -52,7 +57,7 @@ public class Field {
         target.setTargetPosition(nextCell.X * FieldCell.translateFactor, nextCell.Y * FieldCell.translateFactor);
     }
 
-    private boolean isSmash()
+    public boolean isSmash()
     {
         return badCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
     }

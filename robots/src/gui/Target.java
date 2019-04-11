@@ -7,9 +7,9 @@ public class Target extends GameObject {
         Y_Position = y;
     }
 
-    Target(double x, double y)
+    public Target(double x, double y, boolean load)
     {
-        super(x, y, "apple.png", 30);
+        super(x, y, "apple.png", 30, load);
         Direction = - Math.PI / 2;
     }
 }

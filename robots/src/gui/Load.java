@@ -10,6 +10,12 @@ import java.util.ArrayList;
 public class Load {
     private	String fileMines = "mine.txt";
     private	String fileWall = "wall.txt";
+    private boolean loadPicture;
+
+    public Load(boolean loadPicture)
+    {
+        this.loadPicture = loadPicture;
+    }
 
     private String load(String fileName) {
         String content = "";
@@ -43,8 +49,8 @@ public class Load {
         String x = lines[0];
         String y = lines[1];
         if (lines.length != 2)
-            return new Mine(0, 0);
-        return new Mine(Double.parseDouble(x), Double.parseDouble(y));
+            return new Mine(0, 0, loadPicture);
+        return new Mine(Double.parseDouble(x), Double.parseDouble(y), loadPicture);
     }
 
     public ArrayList<Mine> returnMines() {
@@ -74,7 +80,7 @@ public class Load {
         String x = lines[0];
         String y = lines[1];
         if (lines.length != 2)
-            return new Wall(0, 0);
-        return new Wall(Double.parseDouble(x), Double.parseDouble(y));
+            return new Wall(0, 0, loadPicture);
+        return new Wall(Double.parseDouble(x), Double.parseDouble(y), loadPicture);
     }
 }

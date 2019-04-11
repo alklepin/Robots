@@ -7,7 +7,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 
 
@@ -27,7 +26,7 @@ public class GameField {
     private Field field;
     private double lastDirection = Directions.LEFT;
 
-    private Load loadObjects = new Load();
+    private Load loadObjects = new Load(true);
     private ArrayList<Mine> mines;
     private ArrayList<Wall> walls;
 
@@ -39,10 +38,10 @@ public class GameField {
         this.pane = panne;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
 
-        Target apple = new Target(250, 100);
+        Target apple = new Target(250, 100, true);
         this.pane.getChildren().add(apple.Picture);
 
-        Snake snake = new Snake(100, 100);
+        Snake snake = new Snake(100, 100, true);
         this.pane.getChildren().add(snake.Head.Picture);
 
         mines = loadObjects.returnMines();
