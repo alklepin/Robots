@@ -26,7 +26,7 @@ public class GameField {
     private Field field;
     private double lastDirection = Directions.LEFT;
 
-    private Load loadObjects = new Load(true);
+    private Load loadObjects = new Load();
     private ArrayList<Mine> mines;
     private ArrayList<Wall> walls;
 
@@ -38,10 +38,10 @@ public class GameField {
         this.pane = panne;
         grass = loadFile("grass.jpg", this.pane.getWidth(), this.pane.getHeight());
 
-        Target apple = new Target(250, 100, true);
+        Target apple = new Target(250, 100);
         this.pane.getChildren().add(apple.Picture);
 
-        Snake snake = new Snake(100, 100, true);
+        Snake snake = new Snake(100, 100);
         this.pane.getChildren().add(snake.Head.Picture);
 
         mines = loadObjects.returnMines();

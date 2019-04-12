@@ -8,9 +8,9 @@ public class SnakeBlock extends GameObject {
     private Queue<SnakeBlockPosition> queue = new ArrayDeque<>();
     private double queueSize = 30;
 
-    SnakeBlock(double x, double y, boolean load)
+    SnakeBlock(double x, double y)
     {
-        super(x, y, "bug_1.png", FieldCell.translateFactor, load);
+        super(x, y, "bug_1.png", FieldCell.translateFactor);
     }
 
     public boolean isActiveBlock()

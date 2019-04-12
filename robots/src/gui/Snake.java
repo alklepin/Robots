@@ -6,16 +6,14 @@ import java.util.ArrayList;
 
 public class Snake {
     private ArrayList<SnakeBlock> snakeBlocks = new ArrayList<>();
-    private final double maxVelocity = 0.2;
+    private final double maxVelocity = Config.SPEED;
 
     public SnakeBlock Head;
     public SnakeBlock Tail;
-    public boolean load;
 
-    public Snake(double x, double y, boolean load)
+    public Snake(double x, double y)
     {
-        this.load = load;
-        snakeBlocks.add(new SnakeBlock(x, y, load));
+        snakeBlocks.add(new SnakeBlock(x, y));
         Head = snakeBlocks.get(0);
         Tail = Head;
     }
@@ -50,7 +48,7 @@ public class Snake {
     }
 
     public ImageView incrementSnake(){
-        SnakeBlock tail = new SnakeBlock(snakeBlocks.get(0).X_Position, snakeBlocks.get(0).Y_Position, load);
+        SnakeBlock tail = new SnakeBlock(snakeBlocks.get(0).X_Position, snakeBlocks.get(0).Y_Position);
         tail.Direction = snakeBlocks.get(0).Direction;
         snakeBlocks.add(tail);
         Tail = tail;

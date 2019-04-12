@@ -11,10 +11,10 @@ public abstract class GameObject {
     public final double Size;
     public ImageView Picture;
 
-    public GameObject(double x, double y, String path, double size, boolean load)
+    public GameObject(double x, double y, String path, double size)
     {
         Size = size;
-        if (load)
+        if (Config.LOAD)
             loadImage(path, size, size);
         X_Position = x;
         Y_Position = y;

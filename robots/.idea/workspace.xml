@@ -35,62 +35,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/GameObject.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="12" selection-start-line="17" selection-start-column="12" selection-end-line="17" selection-end-column="12" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/GameField.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="476">
-              <caret line="28" column="44" selection-start-line="28" selection-start-column="44" selection-end-line="28" selection-end-column="44" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/Load.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="14" column="10" selection-start-line="14" selection-start-column="10" selection-end-line="14" selection-end-column="10" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/gui/Field.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1003">
-              <caret line="59" column="10" selection-start-line="59" selection-start-column="10" selection-end-line="59" selection-end-column="10" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/GameFieldTest.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            <state relative-caret-position="120">
+              <caret line="30" column="56" selection-start-line="30" selection-start-column="56" selection-end-line="30" selection-end-column="56" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/gui/Config.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="38" selection-start-line="4" selection-start-column="38" selection-end-line="4" selection-end-column="38" />
             </state>
           </provider>
         </entry>
@@ -113,7 +74,7 @@
         <entry file="file://$PROJECT_DIR$/src/gui/Target.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="187">
-              <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+              <caret line="11" column="37" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -159,6 +120,7 @@
         <option value="$PROJECT_DIR$/src/gui/Load.java" />
         <option value="$PROJECT_DIR$/src/gui/Field.java" />
         <option value="$PROJECT_DIR$/src/gui/GameFieldTest.java" />
+        <option value="$PROJECT_DIR$/src/gui/Config.java" />
         <option value="$PROJECT_DIR$/src/test/GameFieldTest.java" />
       </list>
     </option>
@@ -203,6 +165,12 @@
               <item name="Robots" type="b2602c69:ProjectViewProjectNode" />
               <item name="robots" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="log" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Robots" type="b2602c69:ProjectViewProjectNode" />
+              <item name="robots" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="test" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
@@ -220,9 +188,9 @@
     <property name="Repository.Attach.Sources" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555008382970" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1555087153420" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
@@ -244,7 +212,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.RobotsProgram">
+  <component name="RunManager" selected="JUnit.GameFieldTest">
     <configuration name="RobotsProgram" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="gui.RobotsProgram" />
       <module name="Robots" />
@@ -322,8 +290,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.RobotsProgram" />
         <item itemvalue="JUnit.GameFieldTest" />
+        <item itemvalue="Application.RobotsProgram" />
         <item itemvalue="JUnit.GameFieldTest (1)" />
         <item itemvalue="JUnit.GameFieldTest.snackEatTargetTest" />
         <item itemvalue="JUnit.GameFieldTest.moveSnackRight" />
@@ -348,15 +316,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="GameFieldTest - 2019.04.11 at 23h 20m 19s.xml">
-      <configuration name="GameFieldTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="GameFieldTest - 2019.04.11 at 23h 28m 16s.xml">
-      <configuration name="GameFieldTest" configurationId="JUnit" />
-    </history-entry>
-    <history-entry file="GameFieldTest - 2019.04.11 at 23h 29m 03s.xml">
-      <configuration name="GameFieldTest" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="GameFieldTest - 2019.04.11 at 23h 33m 28s.xml">
       <configuration name="GameFieldTest" configurationId="JUnit" />
     </history-entry>
@@ -378,6 +337,15 @@
     <history-entry file="GameFieldTest - 2019.04.12 at 21h 15m 00s.xml">
       <configuration name="GameFieldTest" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="GameFieldTest - 2019.04.12 at 21h 32m 18s.xml">
+      <configuration name="GameFieldTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GameFieldTest - 2019.04.12 at 21h 32m 51s.xml">
+      <configuration name="GameFieldTest" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="GameFieldTest - 2019.04.12 at 21h 33m 37s.xml">
+      <configuration name="GameFieldTest" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
     <option name="totallyTimeSpent" value="45526000" />
@@ -393,8 +361,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2872483" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.29127517" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -632,7 +601,7 @@
     <entry file="file://$PROJECT_DIR$/src/gui/GameField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="476">
-          <caret line="28" column="44" selection-start-line="28" selection-start-column="44" selection-end-line="28" selection-end-column="44" />
+          <caret line="28" column="42" selection-start-line="28" selection-start-column="42" selection-end-line="28" selection-end-column="42" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -672,14 +641,21 @@
     <entry file="file://$PROJECT_DIR$/src/gui/Target.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
-          <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+          <caret line="11" column="37" selection-start-line="11" selection-start-column="37" selection-end-line="11" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/gui/Config.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="38" selection-start-line="4" selection-start-column="38" selection-end-line="4" selection-end-column="38" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/GameFieldTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        <state relative-caret-position="120">
+          <caret line="30" column="56" selection-start-line="30" selection-start-column="56" selection-end-line="30" selection-end-column="56" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
