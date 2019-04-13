@@ -9,8 +9,6 @@ public class GameFieldTest{
     private Snake snake;
     private Target target;
     private Field field;
-    private Load load = new Load();
-
 
     @Test
     public void snackEatTargetTest() {
@@ -22,13 +20,12 @@ public class GameFieldTest{
         Assert.assertTrue(field.isHitTarget());
     }
 
-
     @Test
     public void moveSnackRight()
     {
         snake = new Snake(100, 100);
         snake.onModelUpdateEvent(Directions.RIGHT);
-        Assert.assertEquals(snake.Head.X_Position, 100.4, 0.002);
+        Assert.assertEquals(snake.Head.X_Position, 100 + Config.SPEED, 0.002);
         Assert.assertEquals(snake.Head.Y_Position, 100, 0.002);
     }
 
@@ -38,7 +35,7 @@ public class GameFieldTest{
         snake = new Snake(100, 100);
         snake.onModelUpdateEvent(Directions.DOWN);
         Assert.assertEquals(snake.Head.X_Position, 100, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 100.4, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 + Config.SPEED, 0.002);
     }
 
     @Test
@@ -47,7 +44,7 @@ public class GameFieldTest{
         snake = new Snake(100, 100);
         snake.onModelUpdateEvent(Directions.UP);
         Assert.assertEquals(snake.Head.X_Position, 100, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 99.6, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - Config.SPEED, 0.002);
     }
 
     @Test
@@ -55,7 +52,7 @@ public class GameFieldTest{
     {
         snake = new Snake(100, 100);
         snake.onModelUpdateEvent(Directions.LEFT);
-        Assert.assertEquals(snake.Head.X_Position, 99.6, 0.002);
+        Assert.assertEquals(snake.Head.X_Position, 100 - Config.SPEED, 0.002);
         Assert.assertEquals(snake.Head.Y_Position, 100, 0.002);
     }
 
@@ -87,11 +84,11 @@ public class GameFieldTest{
         field = new Field(snake, target, null, null);
         field.onModelUpdateEvent(Directions.UP);
         Assert.assertEquals(snake.getSnakeBlocks().size(), 1);
-        Assert.assertEquals(snake.Tail.Y_Position, 99.6, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 99.6, 0.002);
+        Assert.assertEquals(snake.Tail.Y_Position, 100 - Config.SPEED, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - Config.SPEED, 0.002);
         field.onModelUpdateEvent(Directions.UP);
-        Assert.assertEquals(snake.Tail.Y_Position, 99.2, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 99.2, 0.002);
+        Assert.assertEquals(snake.Tail.Y_Position, 100 - 2 * Config.SPEED, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - 2 * Config.SPEED, 0.002);
     }
 
     @Test
@@ -105,13 +102,13 @@ public class GameFieldTest{
         target.setTargetPosition(200.4, 99.6);
         field.onModelUpdateEvent(Directions.UP);
         Assert.assertEquals(snake.getSnakeBlocks().size(), 3);
-        Assert.assertEquals(snake.Tail.Y_Position, 99.2, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 99.2, 0.002);
+        Assert.assertEquals(snake.Tail.Y_Position, 100 - 2 * Config.SPEED, 0.001);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - 2 * Config.SPEED, 0.002);
         field.onModelUpdateEvent(Directions.UP);
-        Assert.assertEquals(snake.Tail.Y_Position, 99.2, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 98.8, 0.002);
+        Assert.assertEquals(snake.Tail.Y_Position, 100 - 2 * Config.SPEED, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - 3 * Config.SPEED, 0.002);
         field.onModelUpdateEvent(Directions.UP);
-        Assert.assertEquals(snake.Tail.Y_Position, 99.2, 0.002);
-        Assert.assertEquals(snake.Head.Y_Position, 98.4, 0.002);
+        Assert.assertEquals(snake.Tail.Y_Position, 100 - 2 * Config.SPEED, 0.002);
+        Assert.assertEquals(snake.Head.Y_Position, 100 - 4 * Config.SPEED, 0.001);
     }
 }
