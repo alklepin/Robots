@@ -9,8 +9,8 @@ public class RobotsProgram extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Robots");
-        primaryStage.setMaxHeight(800);
-        primaryStage.setMaxWidth(1250);
+        primaryStage.setMaxHeight(Field.Height);
+        primaryStage.setMaxWidth(Field.Width);
         new MainApplicationStage(primaryStage, new LogWindowSource(5));
         primaryStage.show();
     }

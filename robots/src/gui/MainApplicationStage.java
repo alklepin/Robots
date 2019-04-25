@@ -30,7 +30,6 @@ public class MainApplicationStage {
             @Override
             public void handle(ActionEvent event) {
                 primaryStage.setScene(scenes.get(choiceBox.getValue()));
-                primaryStage.setFullScreen(true);
                 choiceBox2.setValue(logWindowName);
             }
         });
@@ -39,12 +38,10 @@ public class MainApplicationStage {
             @Override
             public void handle(ActionEvent event) { ;
                 primaryStage.setScene(scenes.get(choiceBox2.getValue()));
-                primaryStage.setFullScreen(true);
                 choiceBox.setValue(gameWindowName);
             }
         });
         primaryStage.setScene(scenes.get(gameWindowName));
-        primaryStage.setFullScreen(true);
     }
 
     private HashMap<String, Scene> getScenes(Pane gameWindow, Pane logWindow) {

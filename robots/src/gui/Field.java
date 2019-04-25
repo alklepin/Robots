@@ -10,7 +10,7 @@ public class Field {
     public static double Width = 1300;
     public static double Height = 850;
 
-    private Set<FieldCell> badCells = new HashSet<>();
+    private Set<FieldCell> emptyCells = new HashSet<>();
     private Set<FieldCell> snakeCells = new HashSet<>();
 
     private Snake snake;
@@ -22,16 +22,19 @@ public class Field {
         this.snake = snake;
         this.target = target;
         this.zombie = zombie;
+        for (int i = 0; i < Width; i++)
+            for(int j = 0; j < Height; j++)
+                emptyCells.add(new FieldCell(i, j));
         if(walls != null) {
             for (Wall wall : walls) {
                 FieldCell cell = FieldCell.getCell(wall.X_Position, wall.Y_Position);
-                badCells.add(cell);
+                emptyCells.remove(cell);
             }
         }
         if(mines != null) {
             for (Mine mine : mines) {
                 FieldCell cell = FieldCell.getCell(mine.X_Position, mine.Y_Position);
-                badCells.add(cell);
+                emptyCells.remove(cell);
             }
         }
     }
@@ -54,7 +57,7 @@ public class Field {
     private void generateNextTargetPosition()
     {
         FieldCell nextCell = new FieldCell(-1, -1);
-        while (nextCell.equals(new FieldCell(-1, -1)) & !badCells.contains(nextCell))
+        while (nextCell.equals(new FieldCell(-1, -1)) & emptyCells.contains(nextCell))
         {
             double x = Math.random() * Field.Width;
             double y = Math.random() * Field.Height;
@@ -68,20 +71,20 @@ public class Field {
         FieldCell zombieCell = FieldCell.getCell(zombie.X_Position, zombie.Y_Position);
         ArrayList<Double> result = new ArrayList<>();
         double[] directions = {Directions.LEFT, Directions.UP, Directions.DOWN, Directions.RIGHT};
-        int counter = 0;
+        int counter = -1;
         for (int i = -1; i <= 1;i++)
             for(int j = -1; j <= 1; j++)
             {
                 if ((i + j) % 2 == 0)
                     continue;
+                counter++;
                 if (zombieCell.X + i < 0 || zombieCell.X + i > Width / FieldCell.translateFactor)
                     continue;
                 if (zombieCell.Y + j < 0 || zombieCell.Y + j > Height / FieldCell.translateFactor)
                     continue;
                 FieldCell nextCell = new FieldCell(zombieCell.X + i, zombieCell.Y + j);
-                if (!badCells.contains(nextCell))
+                if (emptyCells.contains(nextCell))
                     result.add(directions[counter]);
-                counter++;
             }
         return result;
     }
@@ -94,32 +97,32 @@ public class Field {
 
     public boolean isSmash()
     {
-        return badCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
+        return !emptyCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
     }
 
-    public ImageView onModelUpdateEvent(double direction){
-        snake.onModelUpdateEvent(direction);
-        if (isSmash()) {
-            System.out.println("Snake is dead...");
-            System.exit(0);
-        }
-        updateBadCells();
-        if (zombieCatchSnake())
-        {
-            System.out.println("Zombie is eating snake. Snake is dead...");
-            System.exit(0);
-        }
-        if (isHitTarget())
-        {
-            generateNextTargetPosition();
-            return snake.incrementSnake();
-        }
+    public void moveZombie()
+    {
         zombie.move(getZombiePossiblePositions());
         if (zombieCatchSnake())
         {
             System.out.println("Zombie is eating snake. Snake is dead...");
             System.exit(0);
         }
+    }
+
+    public ImageView onModelUpdateEvent(double direction){
+        snake.onModelUpdateEvent(direction);
+        if (isSmash() || zombieCatchSnake()) {
+            System.out.println("Snake is dead...");
+            System.exit(0);
+        }
+        updateBadCells();
+        if (isHitTarget())
+        {
+            generateNextTargetPosition();
+            return snake.incrementSnake();
+        }
+        moveZombie();
         return null;
     }
 

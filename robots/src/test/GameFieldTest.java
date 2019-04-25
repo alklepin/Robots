@@ -10,6 +10,30 @@ public class GameFieldTest{
     private Target target;
     private Field field;
 
+    private void startTesting(){
+        Config.LOAD = false;
+    }
+
+    private void endTesting(){
+        Config.LOAD = true;
+    }
+
+    @Test
+    public void zombieInCornerTest(){
+        startTesting();
+        Zombie zombie = new Zombie(10, 10);
+        field = new Field(null, null, zombie, null, null);
+        for (int i = 0; i < 10000; i++) {
+            field.moveZombie();
+            Assert.assertTrue(zombie.X_Position >= 0
+                    && zombie.X_Position <= Field.Width / FieldCell.translateFactor);
+            Assert.assertTrue(zombie.Y_Position >= 0
+                    && zombie.Y_Position <= Field.Height / FieldCell.translateFactor);
+        }
+        endTesting();
+    }
+
+
     @Test
     public void snackEatTargetTest() {
         target = new Target(100.4, 100);
