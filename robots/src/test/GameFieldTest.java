@@ -21,14 +21,23 @@ public class GameFieldTest{
     @Test
     public void zombieInCornerTest(){
         startTesting();
-        Zombie zombie = new Zombie(10, 10);
-        field = new Field(null, null, zombie, null, null);
+        Zombie[] zombie = {new Zombie(10, 10)};
+        field = new Field(null, null, zombie,null, null, null);
         for (int i = 0; i < 10000; i++) {
-            field.moveZombie();
-            Assert.assertTrue(zombie.X_Position >= 0
-                    && zombie.X_Position <= Field.Width / FieldCell.translateFactor);
-            Assert.assertTrue(zombie.Y_Position >= 0
-                    && zombie.Y_Position <= Field.Height / FieldCell.translateFactor);
+            field.moveZombies();
+            Assert.assertTrue(zombie[0].X_Position >= 0
+                    && zombie[0].X_Position <= Field.Width);
+            Assert.assertTrue(zombie[0].Y_Position >= 0
+                    && zombie[0].Y_Position <= Field.Height);
+        }
+        zombie[0].X_Position = Field.Width - 1;
+        zombie[0].Y_Position = Field.Height - 1;
+        for (int i = 0; i < 10000; i++) {
+            field.moveZombies();
+            Assert.assertTrue(zombie[0].X_Position >= 0
+                    && zombie[0].X_Position <= Field.Width);
+            Assert.assertTrue(zombie[0].Y_Position >= 0
+                    && zombie[0].Y_Position <= Field.Height);
         }
         endTesting();
     }
@@ -38,7 +47,7 @@ public class GameFieldTest{
     public void snackEatTargetTest() {
         target = new Target(100.4, 100);
         snake = new Snake(100, 100);
-        field = new Field(snake, target,null, null, null);
+        field = new Field(snake, target,null, null,null, null);
         snake.onModelUpdateEvent(Directions.RIGHT);
         snake.onModelUpdateEvent(Directions.RIGHT);
         Assert.assertTrue(field.isHitTarget());
@@ -96,7 +105,7 @@ public class GameFieldTest{
     public void snackGrowUpTest() {
         target = new Target(99.8, 100);
         snake = new Snake(100, 100);
-        field = new Field(snake, target, null, null, null);
+        field = new Field(snake, target, null,null, null, null);
         field.onModelUpdateEvent(Directions.LEFT);
         Assert.assertEquals(snake.getSnakeBlocks().size(), 2);
     }
@@ -105,7 +114,7 @@ public class GameFieldTest{
     public void moveSnackTailTest() {
         target = new Target(100, 99.8);
         snake = new Snake(100, 100);
-        field = new Field(snake, target, null, null, null);
+        field = new Field(snake, target, null, null,null, null);
         field.onModelUpdateEvent(Directions.UP);
         Assert.assertEquals(snake.getSnakeBlocks().size(), 1);
         Assert.assertEquals(snake.Tail.Y_Position, 100 - Config.SPEED, 0.002);
@@ -119,7 +128,7 @@ public class GameFieldTest{
     public void moveSnackTest() {
         target = new Target(200.2, 100);
         snake = new Snake(200, 100);
-        field = new Field(snake, target, null, null, null);
+        field = new Field(snake, target, null, null, null,null);
         field.onModelUpdateEvent(Directions.RIGHT);
         field.onModelUpdateEvent(Directions.RIGHT);
         field.onModelUpdateEvent(Directions.UP);

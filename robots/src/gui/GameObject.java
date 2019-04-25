@@ -5,9 +5,9 @@ import javafx.scene.image.ImageView;
 import java.io.File;
 
 public abstract class GameObject {
-    public volatile double X_Position;
-    public volatile double Y_Position;
-    public volatile double Direction = 0;
+    public double X_Position;
+    public double Y_Position;
+    public double Direction = 0;
     public final double Size;
     public ImageView Picture;
 

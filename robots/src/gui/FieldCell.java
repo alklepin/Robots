@@ -19,6 +19,13 @@ public class FieldCell {
         return new FieldCell(cellX, cellY);
     }
 
+    public static FieldCell getCell(GameObject obj)
+    {
+        double x = obj.X_Position;
+        double y = obj.Y_Position;
+        return FieldCell.getCell(x, y);
+    }
+
     @Override
     public int hashCode() {
         return X * 3559 + Y * Y;

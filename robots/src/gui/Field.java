@@ -1,9 +1,8 @@
 package gui;
 
 import javafx.scene.image.ImageView;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+
+import java.util.*;
 
 public class Field {
 
@@ -11,35 +10,50 @@ public class Field {
     public static double Height = 850;
 
     private Set<FieldCell> emptyCells = new HashSet<>();
+    private ArrayList<FieldCell> emptyCellsArray = new ArrayList<>();
+
     private Set<FieldCell> snakeCells = new HashSet<>();
+
+    private HashMap<FieldCell, Platform> platformCells = new HashMap<FieldCell, Platform>();
+
 
     private Snake snake;
     private Target target;
-    private Zombie zombie;
+    private Zombie[] zombies;
 
-    public Field(Snake snake, Target target,Zombie zombie, ArrayList<Wall> walls, ArrayList<Mine> mines)
+    public Field(Snake snake, Target target, Zombie[] zombies, Platform[] platforms, ArrayList<Wall> walls, ArrayList<Mine> mines)
     {
         this.snake = snake;
         this.target = target;
-        this.zombie = zombie;
+        this.zombies = zombies;
         for (int i = 0; i < Width; i++)
-            for(int j = 0; j < Height; j++)
-                emptyCells.add(new FieldCell(i, j));
+            for(int j = 0; j < Height; j++) {
+                FieldCell cell = new FieldCell(i, j);
+                emptyCells.add(cell);
+                emptyCellsArray.add(cell);
+            }
         if(walls != null) {
             for (Wall wall : walls) {
                 FieldCell cell = FieldCell.getCell(wall.X_Position, wall.Y_Position);
                 emptyCells.remove(cell);
+                emptyCellsArray.remove(cell);
             }
         }
         if(mines != null) {
             for (Mine mine : mines) {
                 FieldCell cell = FieldCell.getCell(mine.X_Position, mine.Y_Position);
                 emptyCells.remove(cell);
+                emptyCellsArray.remove(cell);
+            }
+        }
+        if (platforms != null) {
+            for (Platform platform : platforms) {
+                platformCells.put(FieldCell.getCell(platform), platform);
             }
         }
     }
 
-    private void updateBadCells()
+    private void updateSnakeCells()
     {
         FieldCell newCell = FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position);
         FieldCell lastCell = FieldCell.getCell(snake.Tail.X_Position, snake.Tail.Y_Position);
@@ -51,22 +65,17 @@ public class Field {
     {
         double x = target.X_Position - snake.Head.X_Position;
         double y = target.Y_Position - snake.Head.Y_Position;
-        return Math.sqrt(x * x - y * y) < 5;
+        return Math.sqrt(x * x + y * y) < 10;
     }
 
     private void generateNextTargetPosition()
     {
-        FieldCell nextCell = new FieldCell(-1, -1);
-        while (nextCell.equals(new FieldCell(-1, -1)) & emptyCells.contains(nextCell))
-        {
-            double x = Math.random() * Field.Width;
-            double y = Math.random() * Field.Height;
-            nextCell = FieldCell.getCell(x, y);
-        }
-        target.setTargetPosition(nextCell.X * FieldCell.translateFactor, nextCell.Y * FieldCell.translateFactor);
+        int number = (int)Math.round(Math.random() * (emptyCellsArray.size() - 2));
+        FieldCell cell = emptyCellsArray.get(number);
+        target.setTargetPosition(cell.X, cell.Y);
     }
 
-    private ArrayList<Double> getZombiePossiblePositions()
+    private ArrayList<Double> getZombiePossiblePositions(Zombie zombie)
     {
         FieldCell zombieCell = FieldCell.getCell(zombie.X_Position, zombie.Y_Position);
         ArrayList<Double> result = new ArrayList<>();
@@ -91,45 +100,76 @@ public class Field {
 
     private boolean zombieCatchSnake()
     {
-        FieldCell zombiePosition = FieldCell.getCell(zombie.X_Position, zombie.Y_Position);
-        return snakeCells.contains(zombiePosition);
+        for(Zombie zombie: zombies) {
+            FieldCell zombiePosition = FieldCell.getCell(zombie.X_Position, zombie.Y_Position);
+            if (snakeCells.contains(zombiePosition))
+                return true;
+        }
+        return false;
     }
 
     public boolean isSmash()
     {
-        return !emptyCells.contains(FieldCell.getCell(snake.Head.X_Position, snake.Head.Y_Position));
+        return !emptyCells.contains(FieldCell.getCell(snake.Head));
     }
 
-    public void moveZombie()
+    public void moveZombies()
     {
-        zombie.move(getZombiePossiblePositions());
-        if (zombieCatchSnake())
+        for (Zombie zombie: zombies) {
+            if (platformCells.containsKey(FieldCell.getCell(zombie)))
+                moveOnPlatform(zombie);
+            else
+                zombie.move(getZombiePossiblePositions(zombie));
+            if (zombieCatchSnake()) {
+                System.out.println("Zombie is eating snake. Snake is dead...");
+                System.exit(0);
+            }
+        }
+    }
+
+    private void moveOnPlatform(GameObject gameObject)
+    {
+        Platform platform = platformCells.get(FieldCell.getCell(gameObject));
+        if (gameObject instanceof Zombie)
         {
-            System.out.println("Zombie is eating snake. Snake is dead...");
-            System.exit(0);
+            ArrayList<Double> direction = new ArrayList<>();
+            direction.add(platform.Direction);
+            Zombie zombie = (Zombie)gameObject;
+            zombie.move(direction);
+        }
+        if (gameObject instanceof SnakeBlock)
+        {
+            snake.onModelUpdateEvent(platform.Direction);
         }
     }
 
     public ImageView onModelUpdateEvent(double direction){
-        snake.onModelUpdateEvent(direction);
+        FieldCell cell = FieldCell.getCell(snake.Head);
+        if (platformCells.containsKey(cell))
+            moveOnPlatform(snake.Head);
+        else
+            snake.onModelUpdateEvent(direction);
         if (isSmash() || zombieCatchSnake()) {
-            System.out.println("Snake is dead...");
+            System.out.println("Snake is dead...!");
             System.exit(0);
         }
-        updateBadCells();
+        updateSnakeCells();
         if (isHitTarget())
         {
             generateNextTargetPosition();
             return snake.incrementSnake();
         }
-        moveZombie();
+        moveZombies();
         return null;
     }
 
-    public void draw()
+    void draw()
     {
+        for (Platform platform: platformCells.values())
+            platform.draw();
         snake.draw();
         target.draw();
-        zombie.draw();
+        for (Zombie zombie: zombies)
+            zombie.draw();
     }
 }

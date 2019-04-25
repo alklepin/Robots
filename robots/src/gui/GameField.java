@@ -44,8 +44,11 @@ public class GameField {
         Snake snake = new Snake(100, 100);
         this.pane.getChildren().add(snake.Head.Picture);
 
-        Zombie zombie = new Zombie(600, 200);
-        this.pane.getChildren().add(zombie.Picture);
+        Zombie zombies[] = {new Zombie(600, 200)};
+        for(Zombie zombie: zombies)
+        {
+            this.pane.getChildren().add(zombie.Picture);
+        }
 
         mines = loadObjects.returnMines();
         for(Mine mine: mines){
@@ -57,7 +60,10 @@ public class GameField {
             this.pane.getChildren().add(wall.Picture);
         }
 
-        field = new Field(snake, apple, zombie, walls, mines);
+        gui.Platform[] platforms = {new gui.Platform(300, 200, Directions.DOWN)};
+        this.pane.getChildren().add(platforms[0].Picture);
+
+        field = new Field(snake, apple, zombies, platforms, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);
