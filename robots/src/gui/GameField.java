@@ -44,6 +44,9 @@ public class GameField {
         Snake snake = new Snake(100, 100);
         this.pane.getChildren().add(snake.Head.Picture);
 
+        Zombie zombie = new Zombie(600, 200);
+        this.pane.getChildren().add(zombie.Picture);
+
         mines = loadObjects.returnMines();
         for(Mine mine: mines){
             this.pane.getChildren().add(mine.Picture);
@@ -54,7 +57,7 @@ public class GameField {
             this.pane.getChildren().add(wall.Picture);
         }
 
-        field = new Field(snake, apple, walls, mines);
+        field = new Field(snake, apple, zombie, walls, mines);
 
         canvas = new Canvas();
         this.pane.getChildren().add(canvas);

@@ -32,14 +32,12 @@ public class Snake {
         {
             SnakeBlockPosition position = new SnakeBlockPosition();
             if (snakeBlocks.get(i).isActiveBlock()) {
-                //System.out.println("SnakeBlock " + i + " Active, change 'nextPosition'");
                 position = snakeBlocks.get(i).getLastPosition();
             }
             if (i == 0)
                 snakeBlocks.get(i).addNextPosition(nextPosition);
             else {
                 if (snakeBlocks.get(i - 1).isActiveBlock()) {
-                   // System.out.println("SnakeBlock " + (i - 1) + " Active");
                     snakeBlocks.get(i).addNextPosition(nextPosition);
                 }
             }
