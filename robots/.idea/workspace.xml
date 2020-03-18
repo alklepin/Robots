@@ -2,8 +2,23 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="771c682c-ba25-4e0a-bc4e-3adc963b3ac7" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/gui/LogWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/gui/LogWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/robots.iml" beforeDir="false" afterPath="$PROJECT_DIR$/robots.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/LogWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/LogWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/MainApplicationFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainApplicationFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/log/LogWindowSource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/log/LogWindowSource.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/GameVisualizer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/GameWindow.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/LogWindow.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/MainApplicationFrame.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/MenuBar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/gui/RobotsProgram.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/log/LogChangeListener.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/log/LogEntry.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/log/LogLevel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/log/LogWindowSource.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/log/Logger.java" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -45,6 +60,7 @@
   <component name="ProjectId" id="1YelC5ffSWTanAhasLZiCQDBdKW" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -105,7 +121,10 @@
       <workItem from="1583353464092" duration="66000" />
       <workItem from="1583395135024" duration="463000" />
       <workItem from="1583400984684" duration="3303000" />
-      <workItem from="1584542971502" duration="1371000" />
+      <workItem from="1584542971502" duration="1621000" />
+      <workItem from="1584546897536" duration="24000" />
+      <workItem from="1584547074133" duration="80000" />
+      <workItem from="1584547223727" duration="39000" />
     </task>
     <servers />
   </component>

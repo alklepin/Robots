@@ -6,6 +6,8 @@ import java.awt.TextArea;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 import log.LogChangeListener;
 import log.LogEntry;
@@ -29,6 +31,13 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         getContentPane().add(panel);
         pack();
         updateLogContent();
+
+
+        addInternalFrameListener(new InternalFrameAdapter(){
+            public void internalFrameClosing(InternalFrameEvent e) {
+                m_logSource.unregisterListener((LogChangeListener) e.getInternalFrame());
+            }
+        });
     }
 
     private void updateLogContent()
