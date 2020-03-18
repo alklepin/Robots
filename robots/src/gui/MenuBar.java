@@ -5,13 +5,16 @@ import log.Logger;
 import javax.swing.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.ResourceBundle;
 
 public class MenuBar extends JMenuBar {
     private JFrame parentObj;
+    private final ResourceBundle localization;
 
-    public MenuBar(JFrame par)
+    public MenuBar(JFrame par, ResourceBundle localization)
     {
         parentObj = par;
+        this.localization = localization;
 
         add(createMenuCategory_LookAndFeel());
         add(createMenuCategory_Test());
@@ -48,15 +51,15 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_LookAndFeel()
     {
-        JMenu lookAndFeelMenu = createMenuCategory("Режим отображения", KeyEvent.VK_V, "Управление режимом отображения приложения");
+        JMenu lookAndFeelMenu = createMenuCategory(localization.getString("displayMode"), KeyEvent.VK_V, localization.getString("displayModeDesc"));
 
-        JMenuItem systemLook = createMenuItem("Системная схема", KeyEvent.VK_S, (event) -> {
+        JMenuItem systemLook = createMenuItem(localization.getString("systemScheme"), KeyEvent.VK_S, (event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
         });
         lookAndFeelMenu.add(systemLook);
 
-        JMenuItem universalLook = createMenuItem("Универсальная схема", KeyEvent.VK_S,(event) -> {
+        JMenuItem universalLook = createMenuItem(localization.getString("universalScheme"), KeyEvent.VK_S,(event) -> {
             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
             this.invalidate();
         });
@@ -67,10 +70,10 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Test()
     {
-        JMenu testMenu = createMenuCategory("Тесты", KeyEvent.VK_T, "Тестовые команды");
+        JMenu testMenu = createMenuCategory(localization.getString("tests"), KeyEvent.VK_T, localization.getString("testsDesc"));
 
-        JMenuItem logMessage = createMenuItem("Сообщение в лог", KeyEvent.VK_S, (event) -> {
-            Logger.debug("Новая строка");
+        JMenuItem logMessage = createMenuItem(localization.getString("logMessage"), KeyEvent.VK_S, (event) -> {
+            Logger.debug(localization.getString("newString"));
         });
         testMenu.add(logMessage);
 
