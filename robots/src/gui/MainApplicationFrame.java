@@ -21,9 +21,11 @@ public class MainApplicationFrame extends JFrame
     private final ResourceBundle localization;
     
     public MainApplicationFrame() {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
+
         localization = getLocalization();
+
+        // English version:
+        //localization = ResourceBundle.getBundle("resources/LocalizationResources", new Locale("en", "US"));
 
         int inset = 50;        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -43,13 +45,17 @@ public class MainApplicationFrame extends JFrame
 
         setJMenuBar(new MenuBar(this, localization));
 
+        // Confirm close window
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
-            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-                if (JOptionPane.showConfirmDialog((Component) windowEvent.getSource(),
-                        "Are you sure you want to close this window?", "Close Window?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+            public void windowClosing(java.awt.event.WindowEvent e) {
+                Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+                if (JOptionPane.showOptionDialog((Component) e.getSource(),
+                        localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
+                        0,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null, options, null) == 0)
+                {
                     System.exit(0);
                 }
             }

@@ -85,13 +85,16 @@ public class MenuBar extends JMenuBar {
 
     private JMenu createMenuCategory_Tools()
     {
-        JMenu toolMenu = createMenuCategory("Инструменты", KeyEvent.VK_I, "Инструменты");
+        JMenu toolMenu = createMenuCategory(localization.getString("menuBarTools"), KeyEvent.VK_I, localization.getString("menuBarTools"));
 
-        JMenuItem exitItem = createMenuItem("Выход", KeyEvent.VK_E, (event) -> {
-            if (JOptionPane.showConfirmDialog(this.getParent(),
-                    "Are you sure you want to close this window?", "Close Window?",
-                    JOptionPane.YES_NO_OPTION,
-                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+        // Close window with confirm window
+        JMenuItem exitItem = createMenuItem(localization.getString("menuItemExit"), KeyEvent.VK_E, (event) -> {
+            Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+            if (JOptionPane.showOptionDialog(this.getParent(),
+                    localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
+                    0,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null, options, null) == 0)
             {
                 System.exit(0);
             }

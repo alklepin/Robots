@@ -38,15 +38,18 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         pack();
         updateLogContent();
 
-        // Set close button configuration
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
+        // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                if (JOptionPane.showConfirmDialog(e.getInternalFrame(),
-                        "Are you sure you want to close this window?", "Close Window?",
-                        JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+                Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+                if (JOptionPane.showOptionDialog(e.getInternalFrame(),
+                        localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
+                        0,
+                        JOptionPane.QUESTION_MESSAGE,
+                        null, options, null) == 0)
                 {
                     m_logSource.unregisterListener((LogChangeListener) e.getInternalFrame());
                     e.getInternalFrame().getDesktopPane().getDesktopManager().closeFrame(e.getInternalFrame());
