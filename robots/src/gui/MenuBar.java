@@ -1,8 +1,10 @@
 package gui;
 
+import log.LogChangeListener;
 import log.Logger;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
@@ -15,6 +17,7 @@ public class MenuBar extends JMenuBar {
 
         add(createMenuCategory_LookAndFeel());
         add(createMenuCategory_Test());
+        add(createMenuCategory_Tools());
     }
 
     private JMenu createMenuCategory(String name, int key, String descriprion)
@@ -77,4 +80,22 @@ public class MenuBar extends JMenuBar {
         return testMenu;
     }
 
+    private JMenu createMenuCategory_Tools()
+    {
+        JMenu toolMenu = createMenuCategory("Инструменты", KeyEvent.VK_I, "Инструменты");
+
+        JMenuItem exitItem = createMenuItem("Выход", KeyEvent.VK_E, (event) -> {
+            if (JOptionPane.showConfirmDialog(this.getParent(),
+                    "Are you sure you want to close this window?", "Close Window?",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+            {
+                System.exit(0);
+            }
+        });
+
+        toolMenu.add(exitItem);
+
+        return toolMenu;
+    }
 }

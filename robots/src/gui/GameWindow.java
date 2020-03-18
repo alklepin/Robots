@@ -1,9 +1,12 @@
 package gui;
 
-import java.awt.BorderLayout;
+import log.LogChangeListener;
 
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 
 public class GameWindow extends JInternalFrame
 {
@@ -15,6 +18,23 @@ public class GameWindow extends JInternalFrame
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
+
+        //set close button config
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        addInternalFrameListener(new InternalFrameAdapter(){
+            public void internalFrameClosing(InternalFrameEvent e) {
+                if (JOptionPane.showConfirmDialog(e.getInternalFrame(),
+                        "Are you sure you want to close this window?", "Close Window?",
+                        JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION)
+                {
+                    e.getInternalFrame().getDesktopPane().getDesktopManager().closeFrame(e.getInternalFrame());
+                }
+            }
+        });
+        ////
+
         pack();
     }
 }
