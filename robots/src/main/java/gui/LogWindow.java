@@ -32,12 +32,12 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         pack();
         updateLogContent();
 
-        // TODO Сделать по закрытию программы удаление
-//        addInternalFrameListener(new InternalFrameAdapter(){
-//            public void internalFrameClosing(InternalFrameEvent e) {
-//                m_logSource.unregisterListener(this);
-//            }
-//        });
+
+        addInternalFrameListener(new InternalFrameAdapter(){
+            public void internalFrameClosing(InternalFrameEvent e) {
+                m_logSource.unregisterListener((LogChangeListener) e.getInternalFrame());
+            }
+        });
     }
 
     private void updateLogContent()
