@@ -7,20 +7,26 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class MenuBar extends JMenuBar {
     private JFrame parentObj;
     private final ResourceBundle localization;
+    private final Properties config;
 
-    public MenuBar(JFrame par, ResourceBundle localization)
+    public MenuBar(JFrame par, ResourceBundle localization, Properties configuration)
     {
         parentObj = par;
         this.localization = localization;
+        config = configuration;
 
         add(createMenuCategory_LookAndFeel());
         add(createMenuCategory_Test());
         add(createMenuCategory_Tools());
+        add(createMenuCategory_Language());
     }
 
     private JMenu createMenuCategory(String name, int key, String descriprion)
@@ -103,5 +109,39 @@ public class MenuBar extends JMenuBar {
         toolMenu.add(exitItem);
 
         return toolMenu;
+    }
+
+    private JMenu createMenuCategory_Language()
+    {
+        JMenu langMenu = createMenuCategory(localization.getString("menuBarLang"), KeyEvent.VK_L, localization.getString("menuBarLang"));
+
+
+        // Close window with confirm window
+        JMenuItem rusLangItem = createMenuItem(localization.getString("menuItemLangRus"), KeyEvent.VK_R, (event) -> {
+            try {
+                config.setProperty("lang", "ru");
+                config.setProperty("country", "RU");
+                config.store(new FileOutputStream("src/resources/config.properties"), null);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        JMenuItem engLangItem = createMenuItem(localization.getString("menuItemLangEng"), KeyEvent.VK_E, (event) -> {
+            try {
+                config.setProperty("lang", "en");
+                config.setProperty("country", "US");
+                config.store(new FileOutputStream("src/resources/config.properties"), null);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        langMenu.add(rusLangItem);
+        langMenu.add(engLangItem);
+
+        return langMenu;
     }
 }

@@ -6,8 +6,12 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.*;
@@ -19,13 +23,11 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle localization;
+    private final Properties config;
     
     public MainApplicationFrame() {
-
+        config = getConfiguration();
         localization = getLocalization();
-
-        // English version:
-        //localization = ResourceBundle.getBundle("resources/LocalizationResources", new Locale("en", "US"));
 
         int inset = 50;        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -43,7 +45,7 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
-        setJMenuBar(new MenuBar(this, localization));
+        setJMenuBar(new MenuBar(this, localization, config));
 
         // Confirm close window
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -63,19 +65,29 @@ public class MainApplicationFrame extends JFrame
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
-    
+
+    private Properties getConfiguration() {
+
+        FileInputStream fis;
+        Properties property = new Properties();
+
+        try {
+            fis = new FileInputStream("src/resources/config.properties");
+            property.load(fis);
+        } catch (IOException e) {
+            System.err.println("Error! Config file not found");
+            System.exit(5);
+        }
+
+        return property;
+    }
+
     protected ResourceBundle getLocalization()
     {
-        Locale currentLocale = Locale.getDefault();
         ResourceBundle resources;
-        try
-        {
-            resources = ResourceBundle.getBundle("resources/LocalizationResources", currentLocale);
-        }
-        catch (MissingResourceException e)
-        {
-            resources = ResourceBundle.getBundle("resources/LocalizationResources", new Locale("en", "US"));
-        }
+        resources = ResourceBundle.getBundle("resources/LocalizationResources",
+                new Locale(config.getProperty("lang"), config.getProperty("country")));
+
         return resources;
     }
 
