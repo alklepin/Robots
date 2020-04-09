@@ -1,22 +1,14 @@
 package gui;
 
-import java.awt.*;
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import log.Logger;
 
 import javax.swing.*;
-
-import log.Logger;
+import java.awt.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Properties;
+import java.util.ResourceBundle;
 
 
 public class MainApplicationFrame extends JFrame
@@ -54,7 +46,7 @@ public class MainApplicationFrame extends JFrame
                 Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
                 if (JOptionPane.showOptionDialog((Component) e.getSource(),
                         localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                        0,
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)
                 {

@@ -1,10 +1,8 @@
 package gui;
 
-import log.LogChangeListener;
 import log.Logger;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
@@ -98,7 +96,7 @@ public class MenuBar extends JMenuBar {
             Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
             if (JOptionPane.showOptionDialog(this.getParent(),
                     localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                    0,
+                    JOptionPane.YES_NO_OPTION,
                     JOptionPane.QUESTION_MESSAGE,
                     null, options, null) == 0)
             {

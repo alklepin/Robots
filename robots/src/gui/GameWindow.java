@@ -1,16 +1,10 @@
 package gui;
 
-import log.LogChangeListener;
-import java.awt.BorderLayout;
-import java.util.ResourceBundle;
-
-import java.awt.*;
-
 import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
+import java.awt.*;
+import java.util.ResourceBundle;
 
 public class GameWindow extends JInternalFrame
 {
@@ -34,7 +28,7 @@ public class GameWindow extends JInternalFrame
                 Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
                         localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                        0,
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)
                 {

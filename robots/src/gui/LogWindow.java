@@ -1,21 +1,14 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-import java.util.ResourceBundle;
-import java.awt.*;
-import java.beans.PropertyVetoException;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-import javax.swing.*;
-import javax.swing.event.InternalFrameAdapter;
-import javax.swing.event.InternalFrameEvent;
-
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+
+import javax.swing.*;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import java.awt.*;
+import java.util.ResourceBundle;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {
@@ -47,7 +40,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
                 Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
                         localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
-                        0,
+                        JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)
                 {
