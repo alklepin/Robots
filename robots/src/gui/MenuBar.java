@@ -119,7 +119,7 @@ public class MenuBar extends JMenuBar {
             try {
                 config.setProperty("lang", "ru");
                 config.setProperty("country", "RU");
-                config.store(new FileOutputStream("src/resources/config.properties"), null);
+                config.store(new FileOutputStream("./resources/config.properties"), null);
             } catch (IOException ex) {
                 ex.printStackTrace();
             }

@@ -64,7 +64,7 @@ public class MainApplicationFrame extends JFrame
         Properties property = new Properties();
 
         try {
-            fis = new FileInputStream("src/resources/config.properties");
+            fis = new FileInputStream("./resources/config.properties");
             property.load(fis);
         } catch (IOException e) {
             System.err.println("Error! Config file not found");
