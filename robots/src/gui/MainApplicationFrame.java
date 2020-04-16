@@ -128,9 +128,9 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), localization);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
+        logWindow.pack();
         if (userWantsToRestoreWindows)
             loadWindowConfig(logWindow, "log");
-        logWindow.pack();
         Logger.debug(localization.getString("protocolWorking"));
         return logWindow;
     }
