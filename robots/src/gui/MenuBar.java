@@ -93,7 +93,7 @@ public class MenuBar extends JMenuBar {
 
         // Close window with confirm window
         JMenuItem exitItem = createMenuItem(localization.getString("menuItemExit"), KeyEvent.VK_E, (event) -> {
-            Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+            Object[] options = { localization.getString("yes"), localization.getString("no") };
             if (JOptionPane.showOptionDialog(this.getParent(),
                     localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
                     JOptionPane.YES_NO_OPTION,
@@ -123,7 +123,7 @@ public class MenuBar extends JMenuBar {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this.getParent(), localization.getString("changeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
         });
 
         JMenuItem engLangItem = createMenuItem(localization.getString("menuItemLangEng"), KeyEvent.VK_E, (event) -> {
@@ -134,7 +134,7 @@ public class MenuBar extends JMenuBar {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            JOptionPane.showMessageDialog(this.getParent(), localization.getString("ChangeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(this.getParent(), localization.getString("changeLangInfo"),"",JOptionPane.INFORMATION_MESSAGE);
         });
 
         langMenu.add(rusLangItem);

@@ -25,7 +25,7 @@ public class GameWindow extends JInternalFrame
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                Object[] options = { localization.getString("closeWindowYes"), localization.getString("closeWindowNo") };
+                Object[] options = { localization.getString("yes"), localization.getString("no") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
                         localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
                         JOptionPane.YES_NO_OPTION,

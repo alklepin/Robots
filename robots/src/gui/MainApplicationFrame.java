@@ -42,11 +42,12 @@ public class MainApplicationFrame extends JFrame {
 
         setJMenuBar(new MenuBar(this, localization, config));
 
+
         // Confirm close window
         addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosing(java.awt.event.WindowEvent e) {
-                Object[] options = {localization.getString("closeWindowYes"), localization.getString("closeWindowNo")};
+                Object[] options = {localization.getString("yes"), localization.getString("no")};
                 if (JOptionPane.showOptionDialog((Component) e.getSource(),
                         localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
                         JOptionPane.YES_NO_OPTION,
