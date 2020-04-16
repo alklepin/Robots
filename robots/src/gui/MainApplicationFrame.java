@@ -19,6 +19,7 @@ public class MainApplicationFrame extends JFrame {
     private final Properties config;
     private final String configPath = "resources/config.properties";
     private final String localizationPath = "resources/LocalizationResources";
+    private boolean userWantsToRestoreWindows;
     private LogWindow logWindow;
     private GameWindow gameWindow;
 
@@ -34,6 +35,8 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
+        askUserAboutRestoringWindows();
+
         logWindow = createLogWindow();
         addWindow(logWindow);
 
@@ -41,7 +44,6 @@ public class MainApplicationFrame extends JFrame {
         addWindow(gameWindow);
 
         setJMenuBar(new MenuBar(this, localization, config));
-
 
         // Confirm close window
         addWindowListener(new java.awt.event.WindowAdapter() {
@@ -60,6 +62,17 @@ public class MainApplicationFrame extends JFrame {
         });
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    }
+
+    private void askUserAboutRestoringWindows()
+    {
+        Object[] options = {localization.getString("yes"), localization.getString("no")};
+        userWantsToRestoreWindows = JOptionPane.showOptionDialog(this,
+                localization.getString("restoreWindowsQuestion"),
+                localization.getString("restoreWindowsTitle"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null, options, null) == 0;
     }
 
     private Properties getConfiguration() {
@@ -115,7 +128,8 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), localization);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
-        loadWindowConfig(logWindow, "log");
+        if (userWantsToRestoreWindows)
+            loadWindowConfig(logWindow, "log");
         logWindow.pack();
         Logger.debug(localization.getString("protocolWorking"));
         return logWindow;
@@ -124,7 +138,8 @@ public class MainApplicationFrame extends JFrame {
     protected GameWindow createGameWindow() {
         gameWindow = new GameWindow(localization);
         gameWindow.setSize(400, 400);
-        loadWindowConfig(gameWindow, "game");
+        if (userWantsToRestoreWindows)
+            loadWindowConfig(gameWindow, "game");
         return gameWindow;
     }
 
