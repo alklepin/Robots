@@ -153,7 +153,6 @@ public class MainApplicationFrame extends JFrame{
         return menuBar;
     }
 
-
     private void setLookAndFeel(String className)
     {
         try
