@@ -19,7 +19,6 @@ public class MainApplicationFrame extends JFrame {
     private final Properties config;
     private final String configPath = "resources/config.properties";
     private final String localizationPath = "resources/LocalizationResources";
-    private boolean userWantsToRestoreWindows;
     private LogWindow logWindow;
     private GameWindow gameWindow;
 
@@ -33,15 +32,16 @@ public class MainApplicationFrame extends JFrame {
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2);
 
-        setContentPane(desktopPane);
-
-        askUserAboutRestoringWindows();
+        setContentPane(desktopPane);;
 
         logWindow = createLogWindow();
         addWindow(logWindow);
 
         gameWindow = createGameWindow();
         addWindow(gameWindow);
+
+        if (windowConfigsArePresent() && userWantsToRestoreWindows())
+            loadWindowStates();
 
         setJMenuBar(new MenuBar(this, localization, config));
 
@@ -55,7 +55,7 @@ public class MainApplicationFrame extends JFrame {
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0) {
-                    saveWindowsState();
+                    saveWindowStates();
                     System.exit(0);
                 }
             }
@@ -64,10 +64,10 @@ public class MainApplicationFrame extends JFrame {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
 
-    private void askUserAboutRestoringWindows()
+    private boolean userWantsToRestoreWindows()
     {
         Object[] options = {localization.getString("yes"), localization.getString("no")};
-        userWantsToRestoreWindows = JOptionPane.showOptionDialog(this,
+        return JOptionPane.showOptionDialog(this,
                 localization.getString("restoreWindowsQuestion"),
                 localization.getString("restoreWindowsTitle"),
                 JOptionPane.YES_NO_OPTION,
@@ -91,17 +91,17 @@ public class MainApplicationFrame extends JFrame {
         return property;
     }
 
-    private void saveWindowsState() {
-        saveWindowState(logWindow, "log");
-        saveWindowState(gameWindow, "game");
+    private void saveWindowStates() {
+        for (var frame: desktopPane.getAllFrames())
+            saveWindowState(frame, frame.getClass().getName());
         saveConfig();
     }
 
     private void saveWindowState(JInternalFrame window, String name) {
         if (!window.isClosed()) {
-            config.setProperty(name + "WindowMinimized", String.valueOf(window.isIcon()));
-            config.setProperty(name + "WindowPositionX", String.valueOf(window.getX()));
-            config.setProperty(name + "WindowPositionY", String.valueOf(window.getY()));
+            config.setProperty(name + "Minimized", String.valueOf(window.isIcon()));
+            config.setProperty(name + "PositionX", String.valueOf(window.getX()));
+            config.setProperty(name + "PositionY", String.valueOf(window.getY()));
         }
     }
 
@@ -114,12 +114,40 @@ public class MainApplicationFrame extends JFrame {
         }
     }
 
+    private boolean windowConfigsArePresent() {
+        for (var frame: desktopPane.getAllFrames()) {
+            if (config.containsKey(frame.getClass().getName() + "Minimized"))
+                return true;
+        }
+        return false;
+    }
+
+    private void loadWindowStates()
+    {
+        for (var frame: desktopPane.getAllFrames()) {
+            var name = frame.getClass().getName();
+            if (config.containsKey(name + "Minimized"))
+                loadWindowConfig(frame, name);
+        }
+    }
+
+    protected void loadWindowConfig(JInternalFrame window, String name) {
+        var isMinimized = Boolean.parseBoolean(config.getProperty(name + "Minimized"));
+        var x = Integer.parseInt(config.getProperty(name + "PositionX"));
+        var y = Integer.parseInt(config.getProperty(name + "PositionY"));
+        try {
+            window.setIcon(isMinimized);
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
+        window.setLocation(x, y);
+    }
+
     protected ResourceBundle getLocalization()
     {
         ResourceBundle resources;
         resources = ResourceBundle.getBundle(localizationPath,
                 new Locale(config.getProperty("lang"), config.getProperty("country")));
-
         return resources;
     }
 
@@ -129,8 +157,6 @@ public class MainApplicationFrame extends JFrame {
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        if (userWantsToRestoreWindows)
-            loadWindowConfig(logWindow, "log");
         Logger.debug(localization.getString("protocolWorking"));
         return logWindow;
     }
@@ -138,23 +164,7 @@ public class MainApplicationFrame extends JFrame {
     protected GameWindow createGameWindow() {
         gameWindow = new GameWindow(localization);
         gameWindow.setSize(400, 400);
-        if (userWantsToRestoreWindows)
-            loadWindowConfig(gameWindow, "game");
         return gameWindow;
-    }
-
-    protected void loadWindowConfig(JInternalFrame window, String name) {
-        if (config.containsKey(name + "WindowMinimized")) {
-            var isMinimized = Boolean.parseBoolean(config.getProperty(name + "WindowMinimized"));
-            var x = Integer.parseInt(config.getProperty(name + "WindowPositionX"));
-            var y = Integer.parseInt(config.getProperty(name + "WindowPositionY"));
-            try {
-                window.setIcon(isMinimized);
-            } catch (PropertyVetoException e) {
-                e.printStackTrace();
-            }
-            window.setLocation(x, y);
-        }
     }
     
     protected void addWindow(JInternalFrame frame)
