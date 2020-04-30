@@ -8,18 +8,17 @@ import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
-import java.util.ResourceBundle;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
-    private final ResourceBundle localization;
+    private final Config config;
 
-    public LogWindow(LogWindowSource logSource, ResourceBundle localization)
+    public LogWindow(LogWindowSource logSource, Config config)
     {
-        super(localization.getString("protocol"), true, true, true, true);
-        this.localization = localization;
+        super(config.getLocalization("protocol"), true, true, true, true);
+        this.config = config;
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
@@ -37,9 +36,9 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                Object[] options = { localization.getString("yes"), localization.getString("no") };
+                Object[] options = { config.getLocalization("yes"), config.getLocalization("no") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
-                        localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
+                        config.getLocalization("closeWindowQuestion"), config.getLocalization("closeWindowTitle"),
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)

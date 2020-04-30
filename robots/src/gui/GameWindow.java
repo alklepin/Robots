@@ -4,16 +4,15 @@ import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 import java.awt.*;
-import java.util.ResourceBundle;
 
 public class GameWindow extends JInternalFrame
 {
     private final GameVisualizer m_visualizer;
-    private final ResourceBundle localization;
-    public GameWindow(ResourceBundle localization)
+    private final Config config;
+    public GameWindow(Config config)
     {
-        super(localization.getString("gameField"), true, true, true, true);
-        this.localization = localization;
+        super(config.getLocalization("gameField"), true, true, true, true);
+        this.config = config;
         m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
@@ -25,9 +24,9 @@ public class GameWindow extends JInternalFrame
         // Confirm close window
         addInternalFrameListener(new InternalFrameAdapter(){
             public void internalFrameClosing(InternalFrameEvent e) {
-                Object[] options = { localization.getString("yes"), localization.getString("no") };
+                Object[] options = { config.getLocalization("yes"), config.getLocalization("no") };
                 if (JOptionPane.showOptionDialog(e.getInternalFrame(),
-                        localization.getString("closeWindowQuestion"), localization.getString("closeWindowTitle"),
+                        config.getLocalization("closeWindowQuestion"), config.getLocalization("closeWindowTitle"),
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
                         null, options, null) == 0)
