@@ -20,16 +20,21 @@ public class Config {
         localization = loadLocalization(localizationPath);
     }
 
-    public boolean windowConfigsArePresent(JInternalFrame[] frames) {
-        for (var frame: frames) {
-            if (properties.containsKey(frame.getClass().getName() + "Minimized"))
+    public boolean windowConfigsArePresent() {
+        return hasPrefix("gui");
+    }
+
+    private boolean hasPrefix(String prefix) {
+        var keys = properties.propertyNames();
+        while (keys.hasMoreElements()) {
+            var key = (String) keys.nextElement();
+            if (key.startsWith(prefix))
                 return true;
         }
         return false;
     }
 
     private Properties loadProperties(String path) {
-
         FileInputStream fis;
         Properties property = new Properties();
 
@@ -46,15 +51,16 @@ public class Config {
 
     public void saveWindowStates(JInternalFrame[] frames) {
         for (var frame: frames)
-            saveWindowState(frame, frame.getClass().getName());
+            saveWindowState(frame);
         save();
     }
 
-    private void saveWindowState(JInternalFrame window, String name) {
+    private void saveWindowState(JInternalFrame window) {
+        var name = window.getClass().getName();
         if (!window.isClosed()) {
-            properties.setProperty(name + "Minimized", String.valueOf(window.isIcon()));
-            properties.setProperty(name + "PositionX", String.valueOf(window.getX()));
-            properties.setProperty(name + "PositionY", String.valueOf(window.getY()));
+            setProperty(name, "Minimized", String.valueOf(window.isIcon()));
+            setProperty(name, "PositionX", String.valueOf(window.getX()));
+            setProperty(name, "PositionY", String.valueOf(window.getY()));
         }
     }
 
@@ -81,21 +87,30 @@ public class Config {
     {
         for (var frame: frames) {
             var name = frame.getClass().getName();
-            if (properties.containsKey(name + "Minimized"))
-                loadWindowConfig(frame, name);
+            if (hasPrefix(name))
+                loadWindowState(frame);
         }
     }
 
-    protected void loadWindowConfig(JInternalFrame window, String name) {
-        var isMinimized = Boolean.parseBoolean(properties.getProperty(name + "Minimized"));
-        var x = Integer.parseInt(properties.getProperty(name + "PositionX"));
-        var y = Integer.parseInt(properties.getProperty(name + "PositionY"));
+    protected void loadWindowState(JInternalFrame window) {
+        var name = window.getClass().getName();
+        var isMinimized = Boolean.parseBoolean(getProperty(name, "Minimized"));
+        var x = Integer.parseInt(getProperty(name, "PositionX"));
+        var y = Integer.parseInt(getProperty(name, "PositionY"));
         try {
             window.setIcon(isMinimized);
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
         window.setLocation(x, y);
+    }
+
+    private String getProperty(String prefix, String property) {
+        return properties.getProperty(prefix + "." + property);
+    }
+
+    private void setProperty(String prefix, String property, String value) {
+        properties.setProperty(prefix + "." + property, value);
     }
 
     protected ResourceBundle loadLocalization(String localizationPath)

@@ -29,8 +29,7 @@ public class MainApplicationFrame extends JFrame {
         addWindow(gameWindow);
 
         var windows = desktopPane.getAllFrames();
-        if (config.windowConfigsArePresent(windows)
-                && userWantsToRestoreWindows())
+        if (config.windowConfigsArePresent() && userWantsToRestoreWindows())
             config.loadWindowStates(windows);
 
         setJMenuBar(new MenuBar(this, config));
