@@ -1,12 +1,14 @@
 package gui;
 
 import java.awt.*;
+import java.awt.desktop.SystemEventListener;
 import java.awt.event.*;
 import java.util.Locale;
 
 import javax.swing.*;
 
 import log.Logger;
+
 
 /**
  * Что требуется сделать:
@@ -37,8 +39,28 @@ public class MainApplicationFrame extends JFrame{
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
+        addWindowListener(createExitActionListener());
+
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    }
+
+    protected WindowAdapter createExitActionListener() {
+        return new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                UIManager.put("OptionPane.yesButtonText", "Да");
+                UIManager.put("OptionPane.noButtonText", "Нет");
+                int result = JOptionPane.showConfirmDialog(
+                        null,
+                        "Вы уверенны что хотите выйти?",
+                        "Окно подтверждения",
+                        JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION){
+                    System.exit(0);
+                }
+            }
+        };
     }
 
     protected LogWindow createLogWindow()
@@ -87,7 +109,7 @@ public class MainApplicationFrame extends JFrame{
 //        return menuBar;
 //    }
 
-    private void exitManager(JMenuItem menuItem)
+    private void exit()
     {
         UIManager.put("OptionPane.yesButtonText", "Да");
         UIManager.put("OptionPane.noButtonText", "Нет");
@@ -142,14 +164,19 @@ public class MainApplicationFrame extends JFrame{
             testMenu.add(addLogMessageItem);
         }
 
-        JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_X | KeyEvent.VK_ALT);
-        exitItem.addActionListener((event) -> {
-            exitManager(exitItem);
-        });
+        JMenu appManageMenu = new JMenu("Управление");
+        {
+            JMenuItem exitItem = new JMenuItem("Выход");
+            exitItem.setSize(0, 0);
+            exitItem.addActionListener((event) -> {
+                exit();
+            });
+            appManageMenu.add(exitItem);
+        }
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
-        menuBar.add(exitItem);
+        menuBar.add(appManageMenu);
         return menuBar;
     }
 
