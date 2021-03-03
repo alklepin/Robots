@@ -1,7 +1,10 @@
 package robots.log;
 
+import java.util.Queue;
 import java.util.ArrayList;
 import java.util.Collections;
+
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 
 /**
  * Что починить:
@@ -13,16 +16,13 @@ import java.util.Collections;
  * ограниченного размера)
  */
 public class LogWindowSource {
-    private int QueueLength;
-
-    private ArrayList<LogEntry> messages;
+    private Queue<LogEntry> messages;
     private final ArrayList<LogChangeListener> listeners;
     private volatile LogChangeListener[] activeListeners;
 
-    public LogWindowSource(int QueueLength) {
-        this.QueueLength = QueueLength;
-        messages = new ArrayList<LogEntry>(QueueLength);
-        listeners = new ArrayList<LogChangeListener>();
+    public LogWindowSource(int queueLength) {
+        messages = new CircularFifoQueue<>(queueLength);
+        listeners = new ArrayList<>();
     }
 
     public void registerListener(LogChangeListener listener) {
@@ -65,7 +65,7 @@ public class LogWindowSource {
             return Collections.emptyList();
         }
         int indexTo = Math.min(startFrom + count, messages.size());
-        return messages.subList(startFrom, indexTo);
+        return new ArrayList<>(messages).subList(startFrom, indexTo);
     }
 
     public Iterable<LogEntry> all() {
