@@ -42,13 +42,9 @@ public class LogWindowSource {
     public void append(LogLevel logLevel, String message) {
         LogEntry entry = new LogEntry(logLevel, message);
         messages.add(entry);
-        LogChangeListener[] activeListeners = this.activeListeners;
         if (activeListeners == null) {
             synchronized (listeners) {
-                if (this.activeListeners == null) {
-                    activeListeners = listeners.toArray(new LogChangeListener[0]);
-                    this.activeListeners = activeListeners;
-                }
+                this.activeListeners = listeners.toArray(new LogChangeListener[0]);
             }
         }
         for (LogChangeListener listener : activeListeners) {
