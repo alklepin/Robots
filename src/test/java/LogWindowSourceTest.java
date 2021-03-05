@@ -30,5 +30,6 @@ public class LogWindowSourceTest {
         Assert.assertEquals(testLogLevel, firstEntry.getLevel());
         Assert.assertEquals(thirdMsg, secondEntry.getMessage());
         Assert.assertEquals(testLogLevel, secondEntry.getLevel());
+        Assert.assertFalse(entriesIterator.hasNext());
     }
 }
