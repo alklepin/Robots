@@ -1,14 +1,25 @@
 package gui;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyVetoException;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
+import javax.swing.JInternalFrame.JDesktopIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -28,7 +39,10 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+    private final String filename = System.getProperty("user.home") +
+			System.getProperty("file.separator") + "robot_settings.xml";
+    private LogWindow logWindow;
+    private GameWindow gameWindow;
     public MainApplicationFrame() {
     	
     	// russian text on buttons
@@ -45,15 +59,18 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
         
-        
-        LogWindow logWindow = createLogWindow();
+        logWindow = createLogWindow();
+        logWindow.setName("LogWindow");
         addWindow(logWindow);
-
-        GameWindow gameWindow = new GameWindow();
+        
+        gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
+        gameWindow.setName("GameWindow");
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
+        
+        restorePositionFromFile(); // load coordinates and size from xml
         
         // exit button listener
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -67,6 +84,70 @@ public class MainApplicationFrame extends JFrame
         });
     }
     
+    public String getPosition()
+    {
+    	String position = String.format( "%d,%d,%d,%d", 
+    			getX(), getY(), getWidth(), getHeight() );
+    	return position;
+    }
+    public void restorePosition(String position)
+    {
+    	String[] pos = position.split(",");
+		setBounds(	Integer.parseInt(pos[0]), Integer.parseInt(pos[1]),
+						Integer.parseInt(pos[2]), Integer.parseInt(pos[3]));
+    }
+    
+    // save windows settings
+    protected void savePositionToFile() 
+    {
+    	Properties pr = new Properties();
+    	
+    	// main window
+        pr.setProperty( this.getName(), this.getPosition() );
+     
+        // internal frames
+        pr.setProperty(logWindow.getName(), logWindow.getPosition());
+        pr.setProperty(gameWindow.getName(), gameWindow.getPosition());
+    	
+    	// save to file
+    	try {
+			OutputStream os = new FileOutputStream(filename);
+			pr.storeToXML(os, null);
+			os.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    // restore windows settings
+    protected void restorePositionFromFile()
+    {
+    	// try open file and load properties
+    	InputStream is;
+    	Properties pr = new Properties();
+    	try {
+			is = new FileInputStream(filename);
+			pr.loadFromXML(is);
+			is.close();
+		} catch (FileNotFoundException e) {
+			// do nothing in case of exceptions
+			return;
+		} catch (InvalidPropertiesFormatException e) {
+			return;
+		} catch (IOException e) {
+			return;
+		}
+	
+    	// main window
+		this.restorePosition(pr.getProperty(this.getName()));
+		
+		// internal frames
+		logWindow.restorePosition(pr.getProperty(logWindow.getName()));
+		gameWindow.restorePosition(pr.getProperty(gameWindow.getName()));
+    }
+    
     // exit confirmation
     protected void exitDialog() 
     {
@@ -74,6 +155,7 @@ public class MainApplicationFrame extends JFrame
 	               "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
     	if (answer == JOptionPane.YES_OPTION)
     	{
+    		savePositionToFile(); // save coordinates and size to xml
     		System.exit(0);
     	}
     }
@@ -124,64 +206,57 @@ public class MainApplicationFrame extends JFrame
 //        return menuBar;
 //    }
     
+    
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
         
-        JMenu mainMenu = new JMenu("RobotsProgram");
-        mainMenu.setMnemonic(KeyEvent.VK_M);
-        mainMenu.getAccessibleContext().setAccessibleDescription(
-                "Основное меню");
+        JMenu mainMenu = createMenu(menuBar, "RobotsProgram", "Основное меню", KeyEvent.VK_M);
+        JMenuItem exitItem = createMenuItem(mainMenu, "Выход", KeyEvent.VK_Q);
+        exitItem.addActionListener((event) -> {
+        	exitDialog();
+        });
         
-        {
-            JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
-            exitItem.addActionListener((event) -> {
-                exitDialog();
-            });
-            mainMenu.add(exitItem);
-        }
-        
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
-        
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
+        JMenu lookAndFeelMenu = createMenu(menuBar, "Режим отображения", 
+        		"Управление режимом отображения приложения", KeyEvent.VK_V);
+        JMenuItem systemLookAndFeel = createMenuItem(lookAndFeelMenu, 
+        		"Системная схема", KeyEvent.VK_S);
+        addLookAndFeelListener(systemLookAndFeel, UIManager.getSystemLookAndFeelClassName());
+        JMenuItem crossplatformLookAndFeel = createMenuItem(lookAndFeelMenu, 
+        		"Универсальная схема", KeyEvent.VK_S);
+        addLookAndFeelListener(crossplatformLookAndFeel, UIManager.getCrossPlatformLookAndFeelClassName());
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
-
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
+        JMenu testMenu = createMenu(menuBar, "Тесты", "Тестовые команды", KeyEvent.VK_T);
+        JMenuItem addLogMessageItem = createMenuItem(testMenu, "Сообщение в лог", KeyEvent.VK_S);
+        addLogMessageItem.addActionListener((event) -> {
+        	Logger.debug("Новая строка");
+        });
         
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
-            testMenu.add(addLogMessageItem);
-        }
-        
-
-        menuBar.add(mainMenu);
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
         return menuBar;
+    }
+    
+    private JMenu createMenu(JMenuBar menuBar, String name, String desc, int key) 
+    {
+    	JMenu menu = new JMenu(name);
+        menu.setMnemonic(key);
+        menu.getAccessibleContext().setAccessibleDescription(desc);
+        menuBar.add(menu);
+        return menu;
+    }
+    
+    private JMenuItem createMenuItem(JMenu menu, String name, int key)
+    {
+    	JMenuItem item = new JMenuItem(name, key);
+        menu.add(item);
+        return item;
+    }
+    
+    private void addLookAndFeelListener(JMenuItem item, String name)
+    {
+    	item.addActionListener((event) -> {
+        	setLookAndFeel(name);
+        	this.invalidate();
+        });
     }
     
     private void setLookAndFeel(String className)
