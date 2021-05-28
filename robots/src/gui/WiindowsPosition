@@ -1,0 +1,77 @@
+package gui;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
+
+public class WindowsPosition {
+	private final String filename = System.getProperty("user.home") +
+			System.getProperty("file.separator") + "robot_settings.xml";
+	private LogWindow logWindow;
+    private GameWindow gameWindow;
+    private MainApplicationFrame mainWindow;
+    
+    // constructor
+    public WindowsPosition(LogWindow logWindow, GameWindow gameWindow, 
+    		MainApplicationFrame mainWindow) {
+    	this.gameWindow = gameWindow;
+    	this.logWindow = logWindow;
+    	this.mainWindow = mainWindow;
+    }
+    
+	// save windows settings
+    public void savePositionToFile() 
+    {
+    	Properties pr = new Properties();
+    	
+    	// main window
+        pr.setProperty( mainWindow.getName(), mainWindow.getPosition() );
+     
+        // internal frames
+        pr.setProperty(logWindow.getName(), logWindow.getPosition());
+        pr.setProperty(gameWindow.getName(), gameWindow.getPosition());
+    	
+    	// save to file
+    	try {
+			OutputStream os = new FileOutputStream(filename);
+			pr.storeToXML(os, null);
+			os.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    // restore windows settings
+    public void restorePositionFromFile()
+    {
+    	// try open file and load properties
+    	InputStream is;
+    	Properties pr = new Properties();
+    	try {
+			is = new FileInputStream(filename);
+			pr.loadFromXML(is);
+			is.close();
+		} catch (FileNotFoundException e) {
+			// do nothing in case of exceptions
+			return;
+		} catch (InvalidPropertiesFormatException e) {
+			return;
+		} catch (IOException e) {
+			return;
+		}
+	
+    	// main window
+    	mainWindow.restorePosition(pr.getProperty(mainWindow.getName()));
+		
+		// internal frames
+		logWindow.restorePosition(pr.getProperty(logWindow.getName()));
+		gameWindow.restorePosition(pr.getProperty(gameWindow.getName()));
+    }
+}
