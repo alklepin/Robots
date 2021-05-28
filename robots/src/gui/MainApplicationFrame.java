@@ -39,10 +39,7 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final String filename = System.getProperty("user.home") +
-			System.getProperty("file.separator") + "robot_settings.xml";
-    private LogWindow logWindow;
-    private GameWindow gameWindow;
+    private WindowsPosition position;
     public MainApplicationFrame() {
     	
     	// russian text on buttons
@@ -59,18 +56,19 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
         
-        logWindow = createLogWindow();
+        LogWindow logWindow = createLogWindow();
         logWindow.setName("LogWindow");
         addWindow(logWindow);
         
-        gameWindow = new GameWindow();
+        GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
         gameWindow.setName("GameWindow");
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
         
-        restorePositionFromFile(); // load coordinates and size from xml
+        position = new WindowsPosition(logWindow, gameWindow, this);
+        position.restorePositionFromFile(); // load coordinates and size from xml
         
         // exit button listener
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -97,57 +95,6 @@ public class MainApplicationFrame extends JFrame
 						Integer.parseInt(pos[2]), Integer.parseInt(pos[3]));
     }
     
-    // save windows settings
-    protected void savePositionToFile() 
-    {
-    	Properties pr = new Properties();
-    	
-    	// main window
-        pr.setProperty( this.getName(), this.getPosition() );
-     
-        // internal frames
-        pr.setProperty(logWindow.getName(), logWindow.getPosition());
-        pr.setProperty(gameWindow.getName(), gameWindow.getPosition());
-    	
-    	// save to file
-    	try {
-			OutputStream os = new FileOutputStream(filename);
-			pr.storeToXML(os, null);
-			os.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    // restore windows settings
-    protected void restorePositionFromFile()
-    {
-    	// try open file and load properties
-    	InputStream is;
-    	Properties pr = new Properties();
-    	try {
-			is = new FileInputStream(filename);
-			pr.loadFromXML(is);
-			is.close();
-		} catch (FileNotFoundException e) {
-			// do nothing in case of exceptions
-			return;
-		} catch (InvalidPropertiesFormatException e) {
-			return;
-		} catch (IOException e) {
-			return;
-		}
-	
-    	// main window
-		this.restorePosition(pr.getProperty(this.getName()));
-		
-		// internal frames
-		logWindow.restorePosition(pr.getProperty(logWindow.getName()));
-		gameWindow.restorePosition(pr.getProperty(gameWindow.getName()));
-    }
-    
     // exit confirmation
     protected void exitDialog() 
     {
@@ -155,7 +102,7 @@ public class MainApplicationFrame extends JFrame
 	               "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
     	if (answer == JOptionPane.YES_OPTION)
     	{
-    		savePositionToFile(); // save coordinates and size to xml
+    		position.savePositionToFile(); // save coordinates and size to xml
     		System.exit(0);
     	}
     }
