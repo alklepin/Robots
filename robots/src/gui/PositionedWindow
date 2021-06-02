@@ -1,0 +1,30 @@
+package gui;
+
+import java.util.Properties;
+
+public interface PositionedWindow {
+	void setBounds(int x, int y, int w, int h);
+	int getX();
+	int getY();
+	int getWidth();
+	int getHeight();
+	String getName();
+	default void restorePosition(Properties pr) 
+	{
+		// set coordinates and size
+		setBounds(Integer.parseInt(pr.getProperty(getName()+"x")), 
+				Integer.parseInt(pr.getProperty(getName()+"y")),
+				Integer.parseInt(pr.getProperty(getName()+"w")), 
+				Integer.parseInt(pr.getProperty(getName()+"h")));
+		
+	}
+	default Properties getPosition()
+    {
+    	Properties pr = new Properties();
+    	pr.setProperty(getName()+"x", String.valueOf(getX()));
+    	pr.setProperty(getName()+"y", String.valueOf(getY()));
+    	pr.setProperty(getName()+"h", String.valueOf(getHeight()));
+    	pr.setProperty(getName()+"w", String.valueOf(getWidth()));
+		return pr;
+    }
+}
