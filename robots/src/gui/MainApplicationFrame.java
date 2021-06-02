@@ -1,25 +1,17 @@
 package gui;
 
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyVetoException;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.InvalidPropertiesFormatException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JInternalFrame.JDesktopIcon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -36,11 +28,13 @@ import log.Logger;
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  *
  */
-public class MainApplicationFrame extends JFrame
+public class MainApplicationFrame extends JFrame implements PositionedWindow
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private WindowsPosition position;
+    private ArrayList<PositionedWindow> windows = new ArrayList<PositionedWindow>();
     public MainApplicationFrame() {
+    	windows.add(this);
     	
     	// russian text on buttons
     	UIManager.put("OptionPane.yesButtonText", "Да" );
@@ -59,16 +53,19 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         logWindow.setName("LogWindow");
         addWindow(logWindow);
+        windows.add(logWindow);
         
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
         gameWindow.setName("GameWindow");
         addWindow(gameWindow);
-
+        windows.add(gameWindow);
+        
         setJMenuBar(generateMenuBar());
         
-        position = new WindowsPosition(logWindow, gameWindow, this);
-        position.restorePositionFromFile(); // load coordinates and size from xml
+        position = new WindowsPosition();
+        Properties pr = position.readPositionFromFile(); // load coordinates and size from xml
+        position.restorePosition(pr, windows);
         
         // exit button listener
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -82,17 +79,13 @@ public class MainApplicationFrame extends JFrame
         });
     }
     
-    public String getPosition()
+    public Properties getPosition()
     {
-    	String position = String.format( "%d,%d,%d,%d", 
-    			getX(), getY(), getWidth(), getHeight() );
-    	return position;
+    	return PositionedWindow.super.getPosition();
     }
-    public void restorePosition(String position)
+    public void restorePosition(Properties pr)
     {
-    	String[] pos = position.split(",");
-		setBounds(	Integer.parseInt(pos[0]), Integer.parseInt(pos[1]),
-						Integer.parseInt(pos[2]), Integer.parseInt(pos[3]));
+    	PositionedWindow.super.restorePosition(pr);
     }
     
     // exit confirmation
@@ -102,7 +95,8 @@ public class MainApplicationFrame extends JFrame
 	               "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
     	if (answer == JOptionPane.YES_OPTION)
     	{
-    		position.savePositionToFile(); // save coordinates and size to xml
+    		Properties pr = position.createProperties(windows);
+    		position.savePositionToFile(pr); // save coordinates and size to xml
     		System.exit(0);
     	}
     }
