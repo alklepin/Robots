@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.beans.PropertyVetoException;
+import java.util.Properties;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -13,7 +14,7 @@ import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends JInternalFrame implements LogChangeListener, PositionedWindow
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -50,22 +51,18 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         EventQueue.invokeLater(this::updateLogContent);
     }
     
-    public String getPosition()
+    public Properties getPosition()
     {
-		String position = String.format( "%d,%d,%d,%d,%b", getX(), getY(), 
-									getWidth(), getHeight(), isIcon() );
-		return position;
+    	Properties pr = PositionedWindow.super.getPosition();
+		pr.setProperty(getName()+"icon", String.valueOf(isIcon()));
+		return pr;
     }
     
-    public void restorePosition(String position)
+    public void restorePosition(Properties pr)
     {
-    	// set coordinates and size
-    	String pos[] = position.split(",");
-		setBounds(Integer.parseInt(pos[0]), Integer.parseInt(pos[1]),
-					Integer.parseInt(pos[2]), Integer.parseInt(pos[3]));
-		
+    	PositionedWindow.super.restorePosition(pr);
 		 // minimize if necessary
-		if (Boolean.parseBoolean(pos[4]))
+		if (Boolean.parseBoolean(pr.getProperty(getName()+"icon")))
 		{
 			try {
 				setIcon(true);
