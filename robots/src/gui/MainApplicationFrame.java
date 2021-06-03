@@ -2,23 +2,9 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.Properties;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -31,10 +17,13 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame implements PositionedWindow
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private WindowsPosition position;
-    private ArrayList<PositionedWindow> windows = new ArrayList<PositionedWindow>();
+    private ArrayList<PositionedWindow> positionedWindowsList = new ArrayList<PositionedWindow>();
+    private String positionFilename;
+    
     public MainApplicationFrame() {
-    	windows.add(this);
+    	positionFilename = System.getProperty("user.home") +
+				System.getProperty("file.separator") + "robot_settings.xml";
+    	positionedWindowsList.add(this);
     	
     	// russian text on buttons
     	UIManager.put("OptionPane.yesButtonText", "Да" );
@@ -53,19 +42,16 @@ public class MainApplicationFrame extends JFrame implements PositionedWindow
         LogWindow logWindow = createLogWindow();
         logWindow.setName("LogWindow");
         addWindow(logWindow);
-        windows.add(logWindow);
         
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
         gameWindow.setName("GameWindow");
         addWindow(gameWindow);
-        windows.add(gameWindow);
         
         setJMenuBar(generateMenuBar());
         
-        position = new WindowsPosition();
-        Properties pr = position.readPositionFromFile(); // load coordinates and size from xml
-        position.restorePosition(pr, windows);
+        Properties pr = PropertiesFileHandler.readPositionFromFile(positionFilename); // load coordinates and size from xml
+        WindowsPosition.restorePosition(pr, positionedWindowsList);
         
         // exit button listener
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -79,15 +65,6 @@ public class MainApplicationFrame extends JFrame implements PositionedWindow
         });
     }
     
-    public Properties getPosition()
-    {
-    	return PositionedWindow.super.getPosition();
-    }
-    public void restorePosition(Properties pr)
-    {
-    	PositionedWindow.super.restorePosition(pr);
-    }
-    
     // exit confirmation
     protected void exitDialog() 
     {
@@ -95,8 +72,8 @@ public class MainApplicationFrame extends JFrame implements PositionedWindow
 	               "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
     	if (answer == JOptionPane.YES_OPTION)
     	{
-    		Properties pr = position.createProperties(windows);
-    		position.savePositionToFile(pr); // save coordinates and size to xml
+    		Properties pr = WindowsPosition.createProperties(positionedWindowsList);
+    		PropertiesFileHandler.savePositionToFile(pr, positionFilename); // save coordinates and size to xml
     		System.exit(0);
     	}
     }
@@ -115,6 +92,9 @@ public class MainApplicationFrame extends JFrame implements PositionedWindow
     protected void addWindow(JInternalFrame frame)
     {
         desktopPane.add(frame);
+        if (frame instanceof PositionedWindow) {
+        	positionedWindowsList.add((PositionedWindow) frame);
+        }
         frame.setVisible(true);
     }
     
