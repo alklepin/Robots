@@ -1,0 +1,42 @@
+package gui;
+
+import java.io.*;
+import java.util.*;
+
+public class PropertiesFileHandler {
+	// save windows settings
+    public static void savePositionToFile(Properties pr, String filename) 
+    {
+    	// save to file
+    	try {
+			OutputStream os = new FileOutputStream(filename);
+			pr.storeToXML(os, null);
+			os.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+    
+    // read properties from file
+    public static Properties readPositionFromFile(String filename)
+    {
+    	// try open file and load properties
+    	InputStream is;
+    	Properties pr = new Properties();
+    	try {
+			is = new FileInputStream(filename);
+			pr.loadFromXML(is);
+			is.close();
+		} catch (FileNotFoundException e) {
+			// do nothing in case of exceptions
+			return null;
+		} catch (InvalidPropertiesFormatException e) {
+			return null;
+		} catch (IOException e) {
+			return null;
+		}
+    	return pr;
+    }
+}

@@ -1,0 +1,46 @@
+package gui;
+
+import java.util.*;
+
+public class WindowsPosition {
+    
+	// create properties
+	public static Properties createProperties(ArrayList<PositionedWindow> windows) 
+    {
+    	Properties pr = new Properties();
+    	for (PositionedWindow w : windows) 
+    	{
+    		Properties pWindow = w.getPosition();
+    		Set<String> keys = pWindow.stringPropertyNames();
+    	    for (String key : keys) {
+    	      pr.setProperty(w.getName()+"."+key, pWindow.getProperty(key));
+    	    }
+    	}
+    	return pr;
+    }
+    
+    // restore windows settings
+    public static void restorePosition(Properties pr, ArrayList<PositionedWindow> windows)
+    {
+    	if (pr == null) 
+    	{
+    		return;
+    	}
+    	for (PositionedWindow w : windows) 
+    	{
+    		Map<String, String> mapProperties = getPropertiesAsMap(pr, w.getName());
+    		w.restorePosition(mapProperties);
+    	}
+    }
+    
+    public static Map<String, String> getPropertiesAsMap(Properties pr, String name) {
+    	Map<String, String> mapProperties = new HashMap<String, String>();
+    	Set<String> keys = pr.stringPropertyNames();
+	    for (String key : keys) {
+	      if (key.startsWith(name)) {
+	    	  mapProperties.put(key.substring(name.length()+1), pr.getProperty(key));
+	      }
+	    }
+	    return mapProperties;
+    }
+}

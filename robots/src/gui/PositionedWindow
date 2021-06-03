@@ -1,0 +1,31 @@
+package gui;
+
+import java.util.Map;
+import java.util.Properties;
+
+public interface PositionedWindow {
+	void setBounds(int x, int y, int w, int h);
+	int getX();
+	int getY();
+	int getWidth();
+	int getHeight();
+	String getName();
+	default void restorePosition(Map<String, String> pr) 
+	{
+		// set coordinates and size
+		setBounds(Integer.parseInt(pr.get("x")), 
+				Integer.parseInt(pr.get("y")),
+				Integer.parseInt(pr.get("w")), 
+				Integer.parseInt(pr.get("h")));
+		
+	}
+	default Properties getPosition()
+    {
+    	Properties pr = new Properties();
+    	pr.setProperty("x", String.valueOf(getX()));
+    	pr.setProperty("y", String.valueOf(getY()));
+    	pr.setProperty("h", String.valueOf(getHeight()));
+    	pr.setProperty("w", String.valueOf(getWidth()));
+		return pr;
+    }
+}

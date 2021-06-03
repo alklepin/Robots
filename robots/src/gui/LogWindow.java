@@ -3,15 +3,19 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
+import java.beans.PropertyVetoException;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
+import javax.swing.JInternalFrame.JDesktopIcon;
 
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends JInternalFrame implements LogChangeListener, PositionedWindow
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -46,5 +50,28 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
     public void onLogChanged()
     {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+    
+    @Override
+    public Properties getPosition()
+    {
+    	Properties pr = PositionedWindow.super.getPosition();
+		pr.setProperty("icon", String.valueOf(isIcon()));
+		return pr;
+    }
+    
+    @Override
+    public void restorePosition(Map<String, String> pr)
+    {
+    	PositionedWindow.super.restorePosition(pr);
+		 // minimize if necessary
+		if (Boolean.parseBoolean(pr.get("icon")))
+		{
+			try {
+				setIcon(true);
+			} catch (PropertyVetoException e) {
+				e.printStackTrace();
+			}
+		}
     }
 }
