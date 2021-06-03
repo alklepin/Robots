@@ -1,22 +1,11 @@
 package gui;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.InvalidPropertiesFormatException;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 public class WindowsPosition {
-	private final String filename = System.getProperty("user.home") +
-			System.getProperty("file.separator") + "robot_settings.xml";
     
 	// create properties
-	public Properties createProperties(ArrayList<PositionedWindow> windows) 
+	public static Properties createProperties(ArrayList<PositionedWindow> windows) 
     {
     	Properties pr = new Properties();
     	for (PositionedWindow w : windows) 
@@ -24,50 +13,14 @@ public class WindowsPosition {
     		Properties pWindow = w.getPosition();
     		Set<String> keys = pWindow.stringPropertyNames();
     	    for (String key : keys) {
-    	      pr.setProperty(key, pWindow.getProperty(key));
+    	      pr.setProperty(w.getName()+"."+key, pWindow.getProperty(key));
     	    }
     	}
     	return pr;
     }
-	
-	// save windows settings
-    public void savePositionToFile(Properties pr) 
-    {
-    	// save to file
-    	try {
-			OutputStream os = new FileOutputStream(filename);
-			pr.storeToXML(os, null);
-			os.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-    }
-    
-    // read properties from file
-    public Properties readPositionFromFile()
-    {
-    	// try open file and load properties
-    	InputStream is;
-    	Properties pr = new Properties();
-    	try {
-			is = new FileInputStream(filename);
-			pr.loadFromXML(is);
-			is.close();
-		} catch (FileNotFoundException e) {
-			// do nothing in case of exceptions
-			return null;
-		} catch (InvalidPropertiesFormatException e) {
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
-    	return pr;
-    }
     
     // restore windows settings
-    public void restorePosition(Properties pr, ArrayList<PositionedWindow> windows)
+    public static void restorePosition(Properties pr, ArrayList<PositionedWindow> windows)
     {
     	if (pr == null) 
     	{
@@ -75,7 +28,19 @@ public class WindowsPosition {
     	}
     	for (PositionedWindow w : windows) 
     	{
-    		w.restorePosition(pr);
+    		Map<String, String> mapProperties = getPropertiesAsMap(pr, w.getName());
+    		w.restorePosition(mapProperties);
     	}
+    }
+    
+    public static Map<String, String> getPropertiesAsMap(Properties pr, String name) {
+    	Map<String, String> mapProperties = new HashMap<String, String>();
+    	Set<String> keys = pr.stringPropertyNames();
+	    for (String key : keys) {
+	      if (key.startsWith(name)) {
+	    	  mapProperties.put(key.substring(name.length()+1), pr.getProperty(key));
+	      }
+	    }
+	    return mapProperties;
     }
 }
