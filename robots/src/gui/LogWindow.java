@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.beans.PropertyVetoException;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.JInternalFrame;
@@ -51,18 +52,20 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Posi
         EventQueue.invokeLater(this::updateLogContent);
     }
     
+    @Override
     public Properties getPosition()
     {
     	Properties pr = PositionedWindow.super.getPosition();
-		pr.setProperty(getName()+"icon", String.valueOf(isIcon()));
+		pr.setProperty("icon", String.valueOf(isIcon()));
 		return pr;
     }
     
-    public void restorePosition(Properties pr)
+    @Override
+    public void restorePosition(Map<String, String> pr)
     {
     	PositionedWindow.super.restorePosition(pr);
 		 // minimize if necessary
-		if (Boolean.parseBoolean(pr.getProperty(getName()+"icon")))
+		if (Boolean.parseBoolean(pr.get("icon")))
 		{
 			try {
 				setIcon(true);
