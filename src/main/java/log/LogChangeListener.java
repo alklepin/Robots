@@ -1,4 +1,4 @@
-package robots.src.log;
+package log;
 
 public interface LogChangeListener
 {

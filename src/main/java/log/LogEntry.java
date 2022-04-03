@@ -1,24 +1,20 @@
-package robots.src.log;
+package log;
 
-public class LogEntry
-{
-    private LogLevel m_logLevel;
-    private String m_strMessage;
-    
-    public LogEntry(LogLevel logLevel, String strMessage)
-    {
-        m_strMessage = strMessage;
-        m_logLevel = logLevel;
+public class LogEntry {
+    private LogLevel logLevel;
+    private String message;
+
+    public LogEntry(LogLevel logLevel, String message) {
+        this.message = message;
+        this.logLevel = logLevel;
     }
-    
-    public String getMessage()
-    {
-        return m_strMessage;
+
+    public String getMessage() {
+        return message;
     }
-    
-    public LogLevel getLevel()
-    {
-        return m_logLevel;
+
+    public LogLevel getLevel() {
+        return logLevel;
     }
 }
 

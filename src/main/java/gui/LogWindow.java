@@ -7,9 +7,9 @@ import java.awt.TextArea;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import robots.src.log.LogChangeListener;
-import robots.src.log.LogEntry;
-import robots.src.log.LogWindowSource;
+import log.LogChangeListener;
+import log.LogEntry;
+import log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {

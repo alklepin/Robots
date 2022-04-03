@@ -1,4 +1,4 @@
-package robots.src.log;
+package log;
 
 public final class Logger
 {
@@ -11,14 +11,12 @@ public final class Logger
     {
     }
 
-    public static void debug(String strMessage)
-    {
-        defaultLogSource.append(LogLevel.Debug, strMessage);
+    public static void debug(String message) {
+        defaultLogSource.append(LogLevel.Debug, message);
     }
-    
-    public static void error(String strMessage)
-    {
-        defaultLogSource.append(LogLevel.Error, strMessage);
+
+    public static void error(String message) {
+        defaultLogSource.append(LogLevel.Error, message);
     }
 
     public static LogWindowSource getDefaultLogSource()
