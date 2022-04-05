@@ -2,23 +2,18 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+import java.util.Locale;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
 /**
  * Что требуется сделать:
- * 1. Метод создания меню перегружен функционалом и трудно читается. 
+ * 1. Метод создания меню перегружен функционалом и трудно читается.
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  *
  */
@@ -36,16 +31,7 @@ public class MainApplicationFrame extends JFrame
             screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        
-        
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
-
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
-        addWindow(gameWindow);
-
-        setJMenuBar(generateMenuBar());
+        createWindow();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
@@ -65,35 +51,16 @@ public class MainApplicationFrame extends JFrame
         desktopPane.add(frame);
         frame.setVisible(true);
     }
-    
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
+
+    protected JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+        JMenu menu = new JMenu("Document");
+        menu.setMnemonic(KeyEvent.VK_D);
+        menuBar.add(menu);
+        createButtons("New", KeyEvent.VK_N, menu);
+        createButtons("Quit", KeyEvent.VK_Q, menu);
+        return menuBar;
+    }
     
     private JMenuBar generateMenuBar()
     {
@@ -129,9 +96,7 @@ public class MainApplicationFrame extends JFrame
         
         {
             JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
+            addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
             testMenu.add(addLogMessageItem);
         }
 
@@ -152,5 +117,25 @@ public class MainApplicationFrame extends JFrame
         {
             // just ignore
         }
+    }
+
+    private void createButtons(String str, int code, JMenu menu){
+        JMenuItem menuItem = new JMenuItem(str);
+        menuItem.setMnemonic(code);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                code, InputEvent.ALT_MASK));
+        menuItem.setActionCommand(str.toLowerCase(Locale.getDefault()));
+        menu.add(menuItem);
+    }
+
+    private void createWindow(){
+        LogWindow logWindow = createLogWindow();
+        addWindow(logWindow);
+
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setSize(400,  400);
+        addWindow(gameWindow);
+
+        setJMenuBar(generateMenuBar());
     }
 }
