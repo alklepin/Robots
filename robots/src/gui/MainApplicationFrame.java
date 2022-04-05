@@ -1,15 +1,12 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
+import log.Logger;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.util.Locale;
-
-import javax.swing.*;
-
-import log.Logger;
 
 /**
  * Что требуется сделать:
