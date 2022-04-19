@@ -3,16 +3,10 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -29,6 +23,8 @@ public class MainApplicationFrame extends JFrame
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
         int inset = 50;        
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -36,8 +32,21 @@ public class MainApplicationFrame extends JFrame
             screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        
-        
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                int result = JOptionPane.showConfirmDialog(MainApplicationFrame.this,
+                        "Вы действительно хотите закрыть приложение?",
+                        "Закрытие приложения",
+                        JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
+            }
+        });
+
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
@@ -99,44 +108,36 @@ public class MainApplicationFrame extends JFrame
     {
         JMenuBar menuBar = new JMenuBar();
         
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
+        Menu lookAndFeelMenu = new Menu("Режим отображения", KeyEvent.VK_V,
                 "Управление режимом отображения приложения");
-        
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
+
+            lookAndFeelMenu.createMenuItem("Системная схема", KeyEvent.VK_S, (event) -> {
                 setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 this.invalidate();
             });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
+            lookAndFeelMenu.createMenuItem("Универсальная схема", KeyEvent.VK_S, (event) -> {
                 setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                 this.invalidate();
             });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
 
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
+        Menu testMenu = new Menu("Тесты", KeyEvent.VK_T,
                 "Тестовые команды");
-        
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
-            testMenu.add(addLogMessageItem);
-        }
 
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
+            testMenu.createMenuItem("Сообщение в лог", KeyEvent.VK_S,
+                    (event) -> Logger.debug("Новая строка"));
+
+        Menu quitMenu = new Menu("Выход", KeyEvent.VK_V,
+                "Закрытие приложения") ;
+
+            quitMenu.createMenuItem("Закрыть приложение", KeyEvent.VK_X | KeyEvent.VK_ALT,
+                    (event) -> Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                    new WindowEvent(this, WindowEvent.WINDOW_CLOSING)));
+
+        menuBar.add(lookAndFeelMenu.getMenu());
+        menuBar.add(testMenu.getMenu());
+        menuBar.add(quitMenu.getMenu());
+
         return menuBar;
     }
     
