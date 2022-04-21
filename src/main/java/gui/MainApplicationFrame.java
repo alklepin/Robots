@@ -44,7 +44,8 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
-        setJMenuBar(generateMenuBar());
+        MenuGenerator menuGenerator = new MenuGenerator(this);
+        setJMenuBar(menuGenerator.generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
@@ -93,55 +94,5 @@ public class MainApplicationFrame extends JFrame
 // 
 //        return menuBar;
 //    }
-    
-    private JMenuBar generateMenuBar()
-    {
-        JMenuBar menuBar = new JMenuBar();
-        menuBar.add(generateLookAndFeelMenu());
-        menuBar.add(generateTestMenu());
-        return menuBar;
-    }
 
-    private JMenu generateTestMenu() {
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
-        addTestField(testMenu, "Сообщение в лог", "Новая строка");
-        return testMenu;
-    }
-
-    private void addTestField(JMenu testMenu, String name, String message) {
-        JMenuItem addLogMessageItem = new JMenuItem(name, KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> Logger.debug(message));
-        testMenu.add(addLogMessageItem);
-    }
-
-    private JMenu generateLookAndFeelMenu() {
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
-
-        addScheme(lookAndFeelMenu, "Системная схема", UIManager.getSystemLookAndFeelClassName());
-        addScheme(lookAndFeelMenu, "Универсальная схема", UIManager.getCrossPlatformLookAndFeelClassName());
-        return lookAndFeelMenu;
-    }
-
-    private void addScheme(JMenu lookAndFeelMenu, String theme, String systemLookAndFeelClassName) {
-        JMenuItem systemLookAndFeel = new JMenuItem(theme, KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(systemLookAndFeelClassName);
-            this.invalidate();
-        });
-        lookAndFeelMenu.add(systemLookAndFeel);
-    }
-
-    private void setLookAndFeel(String className) {
-        try {
-            UIManager.setLookAndFeel(className);
-            SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException
-                | IllegalAccessException | UnsupportedLookAndFeelException ignored) {
-        }
-    }
 }
