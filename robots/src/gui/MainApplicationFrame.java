@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JDesktopPane;
@@ -10,6 +11,7 @@ import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -17,16 +19,22 @@ import javax.swing.UnsupportedLookAndFeelException;
 import log.Logger;
 
 /**
- * –ß—Ç–æ —Ç—Ä–µ–±—É–µ—Ç—Å—è —Å–¥–µ–ª–∞—Ç—å:
- * 1. –ú–µ—Ç–æ–¥ —Å–æ–∑–¥–∞–Ω–∏—è –º–µ–Ω—é –ø–µ—Ä–µ–≥—Ä—É–∂–µ–Ω —Ñ—É–Ω–∫—Ü–∏–æ–Ω–∞–ª–æ–º –∏ —Ç—Ä—É–¥–Ω–æ —á–∏—Ç–∞–µ—Ç—Å—è. 
- * –°–ª–µ–¥—É–µ—Ç —Ä–∞–∑–¥–µ–ª–∏—Ç—å –µ–≥–æ –Ω–∞ —Å–µ—Ä–∏—é –±–æ–ª–µ–µ –ø—Ä–æ—Å—Ç—ã—Ö –º–µ—Ç–æ–¥–æ–≤ (–∏–ª–∏ –≤–æ–æ–±—â–µ –≤—ã–¥–µ–ª–∏—Ç—å –æ—Ç–¥–µ–ª—å–Ω—ã–π –∫–ª–∞—Å—Å).
+ * ◊ÚÓ ÚÂ·ÛÂÚÒˇ Ò‰ÂÎ‡Ú¸:
+ * 1. ÃÂÚÓ‰ ÒÓÁ‰‡ÌËˇ ÏÂÌ˛ ÔÂÂ„ÛÊÂÌ ÙÛÌÍˆËÓÌ‡ÎÓÏ Ë ÚÛ‰ÌÓ ˜ËÚ‡ÂÚÒˇ. 
+ * —ÎÂ‰ÛÂÚ ‡Á‰ÂÎËÚ¸ Â„Ó Ì‡ ÒÂË˛ ·ÓÎÂÂ ÔÓÒÚ˚ı ÏÂÚÓ‰Ó‚ (ËÎË ‚ÓÓ·˘Â ‚˚‰ÂÎËÚ¸ ÓÚ‰ÂÎ¸Ì˚È ÍÎ‡ÒÒ).
  *
  */
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private static MainApplicationFrame frame;
     
-    public MainApplicationFrame() {
+    public static MainApplicationFrame instanceOf() {
+    	if(frame==null)
+    		frame = new MainApplicationFrame();
+    	return frame;
+    }
+    private MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        
@@ -55,8 +63,11 @@ public class MainApplicationFrame extends JFrame
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
+        ///////////////
+        logWindow.setJMenuBar(createMenuBar());
+        ////////////////
         logWindow.pack();
-        Logger.debug("–ü—Ä–æ—Ç–æ–∫–æ–ª —Ä–∞–±–æ—Ç–∞–µ—Ç");
+        Logger.debug("œÓÚÓÍÓÎ ‡·ÓÚ‡ÂÚ");
         return logWindow;
     }
     
@@ -66,91 +77,60 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
     
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
+    protected JMenuBar createMenuBar() {
+        JMenuBar menuBar = new JMenuBar();
+ 
+        //Set up the lone menu.
+        JMenu menu = new JMenu("Document");
+        menu.setMnemonic(KeyEvent.VK_D);
+        menuBar.add(menu);
+ 
+        //Set up the first menu item.
+        JMenuItem menuItem = new JMenuItem("New");
+        menuItem.setMnemonic(KeyEvent.VK_N);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_N, ActionEvent.ALT_MASK));
+        menuItem.setActionCommand("new");
+        //menuItem.addActionListener(this);
+        menu.add(menuItem);
+ 
+        //Set up the second menu item.
+        menuItem = new JMenuItem("Quit");
+        menuItem.setMnemonic(KeyEvent.VK_Q);
+        menuItem.setAccelerator(KeyStroke.getKeyStroke(
+                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
+        menuItem.setActionCommand("quit");
+        //menuItem.addActionListener(this);
+        menu.add(menuItem);
+ 
+        return menuBar;
+    }
     
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
         
-        JMenu lookAndFeelMenu = new JMenu("–†–µ–∂–∏–º –æ—Ç–æ–±—Ä–∞–∂–µ–Ω–∏—è");
+        JMenu lookAndFeelMenu = new JMenu("–ÂÊËÏ ÓÚÓ·‡ÊÂÌËˇ");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "–£–ø—Ä–∞–≤–ª–µ–Ω–∏–µ —Ä–µ–∂–∏–º–æ–º –æ—Ç–æ–±—Ä–∞–∂–µ–Ω–∏—è –ø—Ä–∏–ª–æ–∂–µ–Ω–∏—è");
+        		"”Ô‡‚ÎÂÌËÂ ÂÊËÏÓÏ ÓÚÓ·‡ÊÂÌËˇ ÔËÎÓÊÂÌËˇ");
         
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("–°–∏—Å—Ç–µ–º–Ω–∞—è —Å—Ö–µ–º–∞", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
-
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("–£–Ω–∏–≤–µ—Ä—Å–∞–ª—å–Ω–∞—è —Å—Ö–µ–º–∞", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
-
-        JMenu testMenu = new JMenu("–¢–µ—Å—Ç—ã");
+        FactoryMenuItems menuItems = new FactoryMenuItems(this);
+        
+        lookAndFeelMenu.add(menuItems.addSystemTheme());
+        lookAndFeelMenu.add(menuItems.addUniversalTheme());
+        
+        JMenu testMenu = new JMenu("“ÂÒÚ˚");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
-                "–¢–µ—Å—Ç–æ–≤—ã–µ –∫–æ–º–∞–Ω–¥—ã");
+        		"“ÂÒÚÓ‚˚Â ÍÓÏ‡Ì‰˚");
         
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("–°–æ–æ–±—â–µ–Ω–∏–µ –≤ –ª–æ–≥", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("–ù–æ–≤–∞—è —Å—Ç—Ä–æ–∫–∞");
-            });
-            testMenu.add(addLogMessageItem);
-        }
-
+        testMenu.add(menuItems.addLogMessageItem());
+        
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         return menuBar;
     }
     
-    private void setLookAndFeel(String className)
-    {
-        try
-        {
-            UIManager.setLookAndFeel(className);
-            SwingUtilities.updateComponentTreeUI(this);
-        }
-        catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException | UnsupportedLookAndFeelException e)
-        {
-            // just ignore
-        }
-    }
+    
 }

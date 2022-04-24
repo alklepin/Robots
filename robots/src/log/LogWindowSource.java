@@ -1,16 +1,17 @@
 package log;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 
 /**
- * Р§С‚Рѕ РїРѕС‡РёРЅРёС‚СЊ:
- * 1. Р­С‚РѕС‚ РєР»Р°СЃСЃ РїРѕСЂРѕР¶РґР°РµС‚ СѓС‚РµС‡РєСѓ СЂРµСЃСѓСЂСЃРѕРІ (СЃРІСЏР·Р°РЅРЅС‹Рµ СЃР»СѓС€Р°С‚РµР»Рё РѕРєР°Р·С‹РІР°СЋС‚СЃСЏ
- * СѓРґРµСЂР¶РёРІР°РµРјС‹РјРё РІ РїР°РјСЏС‚Рё)
- * 2. Р­С‚РѕС‚ РєР»Р°СЃСЃ С…СЂР°РЅРёС‚ Р°РєС‚РёРІРЅС‹Рµ СЃРѕРѕР±С‰РµРЅРёСЏ Р»РѕРіР°, РЅРѕ РІ С‚Р°РєРѕР№ СЂРµР°Р»РёР·Р°С†РёРё РѕРЅ 
- * РёС… Р»РёС€СЊ РЅР°РєР°РїР»РёРІР°РµС‚. РќР°РґРѕ Р¶Рµ, С‡С‚РѕР±С‹ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРѕРѕР±С‰РµРЅРёР№ РІ Р»РѕРіРµ Р±С‹Р»Рѕ РѕРіСЂР°РЅРёС‡РµРЅРѕ 
- * РІРµР»РёС‡РёРЅРѕР№ m_iQueueLength (С‚.Рµ. СЂРµР°Р»СЊРЅРѕ РЅСѓР¶РЅР° РѕС‡РµСЂРµРґСЊ СЃРѕРѕР±С‰РµРЅРёР№ 
- * РѕРіСЂР°РЅРёС‡РµРЅРЅРѕРіРѕ СЂР°Р·РјРµСЂР°) 
+ * Что починить:
+ * 1. Этот класс порождает утечку ресурсов (связанные слушатели оказываются
+ * удерживаемыми в памяти)
+ * 2. Этот класс хранит активные сообщения лога, но в такой реализации он 
+ * их лишь накапливает. Надо же, чтобы количество сообщений в логе было ограничено 
+ * величиной m_iQueueLength (т.е. реально нужна очередь сообщений 
+ * ограниченного размера) 
  */
 public class LogWindowSource
 {
@@ -18,7 +19,7 @@ public class LogWindowSource
     
     private ArrayList<LogEntry> m_messages;
     private final ArrayList<LogChangeListener> m_listeners;
-    private volatile LogChangeListener[] m_activeListeners;
+    private volatile WeakReference<LogChangeListener[]> m_activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
@@ -48,20 +49,28 @@ public class LogWindowSource
     public void append(LogLevel logLevel, String strMessage)
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        m_messages.add(entry);
-        LogChangeListener [] activeListeners = m_activeListeners;
+        synchronized(m_messages) {
+	        if(m_messages.size()<m_iQueueLength)
+	        	m_messages.add(entry);
+	        else {
+	        	m_messages.remove(0);
+	        	m_messages.add(entry);
+	        }
+        }
+        
+        var activeListeners = m_activeListeners;
         if (activeListeners == null)
         {
             synchronized (m_listeners)
             {
                 if (m_activeListeners == null)
                 {
-                    activeListeners = m_listeners.toArray(new LogChangeListener [0]);
-                    m_activeListeners = activeListeners;
+                    activeListeners = new WeakReference<>(m_listeners.toArray(new LogChangeListener [0]));
+                    m_activeListeners =  activeListeners;
                 }
             }
         }
-        for (LogChangeListener listener : activeListeners)
+        for (LogChangeListener listener : activeListeners.get())
         {
             listener.onLogChanged();
         }
