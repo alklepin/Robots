@@ -63,9 +63,7 @@ public class MainApplicationFrame extends JFrame
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
-        ///////////////
-        logWindow.setJMenuBar(createMenuBar());
-        ////////////////
+        
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
@@ -77,7 +75,7 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
     
-    protected JMenuBar createMenuBar() {
+    /*protected JMenuBar createMenuBar() {
         JMenuBar menuBar = new JMenuBar();
  
         //Set up the lone menu.
@@ -104,7 +102,7 @@ public class MainApplicationFrame extends JFrame
         menu.add(menuItem);
  
         return menuBar;
-    }
+    }*/
     
     private JMenuBar generateMenuBar()
     {
