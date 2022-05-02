@@ -7,6 +7,10 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 public class LocalizationManager {
+    private static final String RESOURCES_NAME = "Resources";
+
+    private static LocalizationManager localization_manager_instance = null;
+
     private static final ResourceBundle.Control CONTROL =
             ResourceBundle.Control.getNoFallbackControl(ResourceBundle.Control.FORMAT_DEFAULT);
 
@@ -14,7 +18,7 @@ public class LocalizationManager {
     private final List<ResourceItem> items;
     private ResourceBundle resourceBundle;
 
-    public LocalizationManager(String baseName) {
+    private LocalizationManager(String baseName) {
         this.baseName = baseName;
         items = new LinkedList<>();
         resourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault(), CONTROL);
@@ -50,4 +54,13 @@ public class LocalizationManager {
             this.setter = setter;
         }
     }
+
+    public static LocalizationManager getInstance()
+    {
+        if (localization_manager_instance == null)
+            localization_manager_instance = new LocalizationManager(RESOURCES_NAME);
+
+        return localization_manager_instance;
+    }
 }
+

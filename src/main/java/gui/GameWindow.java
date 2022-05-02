@@ -1,11 +1,11 @@
 package gui;
 
+import listeners.InternalFrameListenerImpl;
 import localization.LocalizationManager;
 
 import java.awt.BorderLayout;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame
 {
@@ -16,5 +16,9 @@ public class GameWindow extends JInternalFrame
 
         getContentPane().add(new GameVisualizer(), BorderLayout.CENTER);
         pack();
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
+
     }
 }
