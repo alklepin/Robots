@@ -2,19 +2,13 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
 import java.util.Locale;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
+import listeners.WindowListenerImpl;
 import localization.LocalizationManager;
 import log.Logger;
 
@@ -49,7 +43,8 @@ public class MainApplicationFrame extends JFrame {
 
         MenuGenerator menuGenerator = new MenuGenerator(this);
         setJMenuBar(menuGenerator.generateMenuBar(localizationManager));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addWindowListener(new WindowListenerImpl(localizationManager));
     }
     
     protected LogWindow createLogWindow(LocalizationManager localizationManager)

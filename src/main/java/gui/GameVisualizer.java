@@ -167,7 +167,7 @@ public class GameVisualizer extends JPanel
     {
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
-        Painter painter = new Painter(g2d);
+        RoboPainter painter = new RoboPainter(g2d);
         painter.drawRobot(round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
         painter.drawTarget(m_targetPositionX, m_targetPositionY);
     }

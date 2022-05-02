@@ -3,10 +3,10 @@ package gui;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-public class Painter {
+public class RoboPainter {
     private static Graphics2D g2d;
 
-    public Painter(Graphics2D _g2d) {
+    public RoboPainter(Graphics2D _g2d) {
         g2d = _g2d;
     }
 

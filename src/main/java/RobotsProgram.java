@@ -7,7 +7,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class RobotsProgram {
-  private static final String RESOURCES_NAME = "Resources";
 
    public static void main(String[] args) {
      try {
@@ -19,10 +18,7 @@ public class RobotsProgram {
        e.printStackTrace();
      }
 
-     var languageManager = new LocalizationManager(RESOURCES_NAME);
-
-
      SwingUtilities.invokeLater(() -> {
-       SwingUtilities.invokeLater(() -> new MainApplicationFrame(languageManager).setVisible(true));
+       SwingUtilities.invokeLater(() -> new MainApplicationFrame(LocalizationManager.getInstance()).setVisible(true));
      });
    }}

@@ -1,5 +1,6 @@
 package gui;
 
+import listeners.MenuListenerImpl;
 import localization.LocalizationManager;
 
 import javax.swing.*;
@@ -13,6 +14,11 @@ class MenuBuilder {
     MenuBuilder(LocalizationManager languageManager) {
         this.languageManager = languageManager;
         menu = new JMenu();
+    }
+
+    MenuBuilder addMListener(MenuListenerImpl menuListener){
+        menu.addMenuListener(menuListener);
+        return this;
     }
 
     MenuBuilder setText(String key) {
