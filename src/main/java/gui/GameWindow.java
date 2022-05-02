@@ -1,20 +1,24 @@
 package gui;
 
+import listeners.InternalFrameListenerImpl;
+import localization.LocalizationManager;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame
 {
-    private final GameVisualizer m_visualizer;
-    public GameWindow() 
+    public GameWindow(LocalizationManager localizationManager)
     {
-        super("Игровое поле", true, true, true, true);
-        m_visualizer = new GameVisualizer();
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
-        getContentPane().add(panel);
+        super(null, true, true, true, true);
+        localizationManager.bindField("gameWindow.title", this::setTitle);
+
+        getContentPane().add(new GameVisualizer(), BorderLayout.CENTER);
         pack();
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
+
     }
 }
