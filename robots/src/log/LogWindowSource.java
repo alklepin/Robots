@@ -4,6 +4,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Что починить:
@@ -19,14 +20,17 @@ public class LogWindowSource
     private int m_iQueueLength;
     
     private ArrayList<LogEntry> m_messages;
-    private final ArrayList<LogChangeListener> m_listeners;
-    private volatile LogChangeListener[] m_activeListeners;
+    private final ArrayList<WeakReference<LogChangeListener>> m_listeners;
+    //private final ArrayList<LogChangeListener> m_listeners;
+    //private volatile LogChangeListener[] m_activeListeners;
+    private volatile ArrayList<WeakReference<LogChangeListener>> m_activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
         m_iQueueLength = iQueueLength;
         m_messages = new ArrayList<LogEntry>(iQueueLength);
-        m_listeners = new ArrayList<LogChangeListener>();
+        m_listeners = new ArrayList<WeakReference<LogChangeListener>>();
+        //m_listeners = new ArrayList<LogChangeListener>();
     }
     
     public void registerListener(LogChangeListener listener)
@@ -34,8 +38,9 @@ public class LogWindowSource
     	
         synchronized(m_listeners)
         {
-        	
-        	m_listeners.add(listener);
+        	WeakReference<LogChangeListener> weakListener = new WeakReference(listener);
+        	m_listeners.add(weakListener);
+        	//m_listeners.add(listener);
             m_activeListeners = null;
         }
     }
@@ -44,8 +49,9 @@ public class LogWindowSource
     {
         synchronized(m_listeners)
         {
-        	
-        	m_listeners.remove(listener);
+        	WeakReference<LogChangeListener> weakListener = new WeakReference(listener);
+        	m_listeners.remove(weakListener);
+        	//m_listeners.remove(listener);
             m_activeListeners = null;
         }
     }
@@ -53,30 +59,32 @@ public class LogWindowSource
     public void append(LogLevel logLevel, String strMessage)
     {
         LogEntry entry = new LogEntry(logLevel, strMessage);
-        synchronized(m_messages) {
-	        if(m_messages.size()<m_iQueueLength)
-	        	m_messages.add(entry);
-	        else {
-	        	m_messages.remove(0);
-	        	m_messages.add(entry);
-	        }
-        }
+        	synchronized(m_messages) {
+    	        if(m_messages.size()<m_iQueueLength)
+    	        	m_messages.add(entry);
+    	        else {
+    	        	m_messages.remove(0);
+    	        	m_messages.add(entry);
+    	        }
+        	}
         
-        LogChangeListener[] activeListeners = m_activeListeners;
+        //LogChangeListener[] activeListeners = m_activeListeners;
+        ArrayList<WeakReference<LogChangeListener>> activeListeners = m_activeListeners;
         if (activeListeners == null)
         {
             synchronized (m_listeners)
             {
                 if (m_activeListeners == null)
                 {
-                	activeListeners = m_listeners.toArray(new LogChangeListener [0]);
+                	//activeListeners = m_listeners.toArray(new LogChangeListener [0]);
+                	activeListeners = m_listeners;
                     m_activeListeners =  activeListeners;
                 }
             }
         }
-        for (LogChangeListener listener : activeListeners)
+        for (WeakReference<LogChangeListener> listener : activeListeners)
         {
-            listener.onLogChanged();
+            listener.get().onLogChanged();
         }
     }
     
