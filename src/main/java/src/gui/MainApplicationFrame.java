@@ -1,4 +1,4 @@
-package gui;
+package src.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -8,7 +8,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
-import log.Logger;
+import src.log.Logger;
 
 /**
  * Что требуется сделать:
