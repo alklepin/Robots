@@ -7,13 +7,13 @@ public class Menu {
 
     private JMenu menu;
 
-    public Menu(String s, Integer keyEvent, String description){
+    public Menu(String s, Integer keyEvent, String description) {
         menu = new JMenu(s);
         menu.setMnemonic(keyEvent);
         menu.getAccessibleContext().setAccessibleDescription(description);
     }
 
-    public void createMenuItem(String text, Integer keyEvent, ActionListener actionListener){
+    public void createMenuItem(String text, Integer keyEvent, ActionListener actionListener) {
         JMenuItem menuItem = new JMenuItem(text, keyEvent);
         menuItem.addActionListener(actionListener);
         menu.add(menuItem);
