@@ -1,10 +1,6 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -31,7 +27,7 @@ public class GameVisualizer extends JPanel
     private volatile int m_targetPositionY = 100;
     
     private static final double maxVelocity = 0.1; 
-    private static final double maxAngularVelocity = 0.01;
+    private static final double maxAngularVelocity = 0.001;
     
     public GameVisualizer() 
     {
@@ -99,15 +95,26 @@ public class GameVisualizer extends JPanel
         double velocity = maxVelocity;
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
-        if (angleToTarget > m_robotDirection || angleToTarget + Math.PI < m_robotDirection)
-        {
-            angularVelocity = maxAngularVelocity;
+        if (angleToTarget < Math.PI) {
+            if (m_robotDirection < Math.PI) {
+                if (m_robotDirection < angleToTarget) {angularVelocity = maxAngularVelocity;}
+                else {angularVelocity = -maxAngularVelocity;}
+            }
+            else if (m_robotDirection > Math.PI) {
+                if (m_robotDirection - Math.PI < angleToTarget) {angularVelocity = -maxAngularVelocity;}
+                else {angularVelocity = maxAngularVelocity;}
+            }
         }
-        else if (angleToTarget < m_robotDirection)
-        {
-            angularVelocity = -maxAngularVelocity;
+        else if (angleToTarget > Math.PI) {
+            if (m_robotDirection < Math.PI) {
+                if (Math.PI + m_robotDirection < angleToTarget) {angularVelocity = -maxAngularVelocity;}
+                else {angularVelocity = maxAngularVelocity;}
+            }
+            else if (m_robotDirection > Math.PI) {
+                if (m_robotDirection < angleToTarget) {angularVelocity = maxAngularVelocity;}
+                else {angularVelocity = -maxAngularVelocity;}
+            }
         }
-        
         moveRobot(velocity, angularVelocity, 10);
     }
     
@@ -119,7 +126,7 @@ public class GameVisualizer extends JPanel
             return max;
         return value;
     }
-    
+
     private void moveRobot(double velocity, double angularVelocity, double duration)
     {
         velocity = applyLimits(velocity, 0, maxVelocity);
@@ -138,6 +145,11 @@ public class GameVisualizer extends JPanel
         {
             newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
         }
+        Dimension sizes = this.getSize();
+        if (newX < 0) {newX = sizes.width;}
+        else if (newX > sizes.width) {newX = 0;}
+        else if (newY < 0) {newY = sizes.height;}
+        else if (newY > sizes.height) {newY = 0;}
         m_robotPositionX = newX;
         m_robotPositionY = newY;
         double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); 
