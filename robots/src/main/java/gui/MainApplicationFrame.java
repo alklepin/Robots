@@ -4,8 +4,9 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.util.Locale;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import javax.swing.*;
 
@@ -38,8 +39,25 @@ public class MainApplicationFrame extends JFrame
             @Override
             public void windowClosing(WindowEvent e) {
                 super.windowClosing(e);
-                int result = JOptionPane.showConfirmDialog(MainApplicationFrame.this, "Закрыть приложение?", "Окно подтверждения", JOptionPane.YES_NO_OPTION);
+                int result = JOptionPane.showConfirmDialog(MainApplicationFrame.this,
+                        "Закрыть приложение?", "Окно подтверждения", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
+                    JInternalFrame[] frames = desktopPane.getAllFrames();
+                    GameWindow gameWindow = new GameWindow();
+                    LogWindow logWindow = new LogWindow();
+                    try {
+                        Files.deleteIfExists(Paths.get(String.format("%s/windows_states.txt", System.getProperty("user.dir"))));
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                    for (int i = 0; i < frames.length; i++) {
+                        if (frames[i].getTitle() == "Игровое поле") {
+                            gameWindow.saveState(frames[i].getWidth(), frames[i].getHeight());
+                        }
+                        else if (frames[i].getTitle() == "Протокол работы") {
+                            logWindow.saveState(frames[i].getWidth() - 12, frames[i].getHeight() - 25);
+                        }
+                    }
                     System.exit(0);
                 }
             }
@@ -49,7 +67,14 @@ public class MainApplicationFrame extends JFrame
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        FileManager saveToFile = new FileManager();
+        if (saveToFile.isExist("windows_states.txt")) {
+            gameWindow.setSize(Integer.valueOf(gameWindow.getRecoveryState().getDictState().get("width")),
+                               Integer.valueOf(gameWindow.getRecoveryState().getDictState().get("height")));
+        }
+        else{
+            gameWindow.setSize(400, 400);
+        }
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
