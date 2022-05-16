@@ -2,6 +2,7 @@ package listeners;
 
 import gui.ExitDialog;
 import localization.LocalizationManager;
+import serialization.WindowStorage;
 
 import javax.swing.*;
 import javax.swing.event.InternalFrameEvent;

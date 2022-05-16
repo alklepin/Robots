@@ -1,5 +1,6 @@
 import gui.MainApplicationFrame;
 import localization.LocalizationManager;
+import serialization.WindowStorage;
 
 import java.awt.Frame;
 
@@ -9,6 +10,7 @@ import javax.swing.UIManager;
 public class RobotsProgram {
 
     private static final String RESOURCES_NAME = "Resources";
+    private static final String WINDOW_PATH = "window.ser";
 
     public static void main(String[] args) {
      try {
@@ -18,5 +20,7 @@ public class RobotsProgram {
      }
 
      var localeManager = new LocalizationManager(RESOURCES_NAME);
-     SwingUtilities.invokeLater(() -> new MainApplicationFrame(localeManager).setVisible(true));
+     var windowStorage = new WindowStorage(WINDOW_PATH);
+
+     SwingUtilities.invokeLater(() -> new MainApplicationFrame(localeManager, windowStorage).setVisible(true));
    }}

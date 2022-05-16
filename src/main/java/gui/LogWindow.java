@@ -12,14 +12,19 @@ import localization.LocalizationManager;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import serialization.WindowStorage;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener {
-    private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
-    public LogWindow(LogWindowSource logSource, LocalizationManager localizationManager) {
+    public WindowStorage m_windowStorage;
+    public LogWindowSource m_logSource;
+
+    public LogWindow(LogWindowSource logSource, LocalizationManager localizationManager, WindowStorage windowStorage) {
         super(null, true, true, true, true);
         localizationManager.bindField("logWindow.title", this::setTitle);
+
+        m_windowStorage = windowStorage;
 
         m_logSource = logSource;
         m_logSource.registerListener(this);
@@ -30,7 +35,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener {
         getContentPane().add(m_logContent, BorderLayout.CENTER);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
+        //addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
 
         setVisible(true);
     }

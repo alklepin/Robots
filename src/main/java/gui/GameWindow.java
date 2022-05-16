@@ -18,7 +18,7 @@ public class GameWindow extends JInternalFrame
         pack();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
+        //addInternalFrameListener(new InternalFrameListenerImpl(localizationManager));
 
     }
 }

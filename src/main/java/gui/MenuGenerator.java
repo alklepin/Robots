@@ -6,6 +6,7 @@ import log.Logger;
 
 import javax.swing.*;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.util.Locale;
 
 public class MenuGenerator {
@@ -50,7 +51,10 @@ public class MenuGenerator {
 
         var exitMenu = new MenuBuilder(localizationManager)
                 .setText("exitAppMenu.text")
-                .addMListener(new MenuListenerImpl(localizationManager))
+                .addMenuItem("exitAppMenu.text", KeyEvent.VK_X,
+                        e -> mainApplicationFrame.dispatchEvent(
+                                new WindowEvent(mainApplicationFrame, WindowEvent.WINDOW_CLOSING)
+                        ))
                 .build();
         menuBar.add(exitMenu);
 
