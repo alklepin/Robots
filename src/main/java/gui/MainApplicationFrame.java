@@ -11,6 +11,7 @@ import javax.swing.JInternalFrame;
 import listeners.WindowListenerImpl;
 import localization.LocalizationManager;
 import log.Logger;
+import serialization.WindowStorage;
 
 /**
  * Что требуется сделать:
@@ -20,7 +21,23 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame {
     private static final Locale LOCALE_RU = new Locale("ru");
 
-    private final JDesktopPane desktopPane = new JDesktopPane();
+    private JDesktopPane desktopPane = new JDesktopPane();
+    private JInternalFrame logWindow, gameWindow;
+    private WindowStorage windowStorage;
+
+    public MainApplicationFrame(LocalizationManager localizationManager, WindowStorage windowStorage) {
+        this(localizationManager);
+        this.windowStorage = windowStorage;
+
+        if (windowStorage != null && windowStorage.isRestored()) {
+            windowStorage.restore(this.getClass().toString(), this);
+            windowStorage.restore(logWindow.getClass().toString(), logWindow);
+            windowStorage.restore(gameWindow.getClass().toString(), gameWindow);
+        } else {
+            setExtendedState(MAXIMIZED_BOTH);
+            pack();
+        }
+    }
     
     public MainApplicationFrame(LocalizationManager localizationManager) {
         //Make the big window be indented 50 pixels from each edge

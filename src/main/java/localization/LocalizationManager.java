@@ -18,7 +18,7 @@ public class LocalizationManager {
     private final List<ResourceItem> items;
     private ResourceBundle resourceBundle;
 
-    private LocalizationManager(String baseName) {
+    public LocalizationManager(String baseName) {
         this.baseName = baseName;
         items = new LinkedList<>();
         resourceBundle = ResourceBundle.getBundle(baseName, Locale.getDefault(), CONTROL);
