@@ -21,7 +21,8 @@ import serialization.WindowStorage;
 public class MainApplicationFrame extends JFrame {
     private static final Locale LOCALE_RU = new Locale("ru");
 
-    private JDesktopPane desktopPane = new JDesktopPane();
+    private static final int INSET = 50;
+
     private JInternalFrame logWindow, gameWindow;
     private WindowStorage windowStorage;
 
@@ -40,26 +41,21 @@ public class MainApplicationFrame extends JFrame {
     }
     
     public MainApplicationFrame(LocalizationManager localizationManager) {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
-        int inset = 50;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
+        var screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(INSET, INSET, screenSize.width - INSET * 2, screenSize.height - INSET * 2);
 
-        setContentPane(desktopPane);
+        setContentPane(new JDesktopPane());
+        setJMenuBar(new MenuGenerator(this).generateMenuBar(localizationManager));
 
-
-        LogWindow logWindow = createLogWindow(localizationManager);
+        logWindow = createLogWindow(localizationManager);
         addWindow(logWindow);
+        setMinimumSize(logWindow.getSize());
+        Logger.debug("Протокол работает");
 
-        GameWindow gameWindow = new GameWindow(localizationManager);
-        gameWindow.setSize(400,  400);
+        gameWindow = new GameWindow(localizationManager);
+        gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
-        MenuGenerator menuGenerator = new MenuGenerator(this);
-        setJMenuBar(menuGenerator.generateMenuBar(localizationManager));
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListenerImpl(localizationManager));
     }
@@ -77,7 +73,6 @@ public class MainApplicationFrame extends JFrame {
     
     protected void addWindow(JInternalFrame frame)
     {
-        desktopPane.add(frame);
-        frame.setVisible(true);
+        add(frame).setVisible(true);
     }
 }
