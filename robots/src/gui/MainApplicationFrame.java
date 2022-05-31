@@ -4,15 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -45,7 +37,7 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
-        setJMenuBar(generateMenuBar());
+        setJMenuBar(generateMenuBar(this));
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
@@ -94,8 +86,8 @@ public class MainApplicationFrame extends JFrame
 // 
 //        return menuBar;
 //    }
-    
-    private JMenuBar generateMenuBar()
+
+    private JMenuBar generateMenuBar(JFrame frame)
     {
         JMenuBar menuBar = new JMenuBar();
         
@@ -137,6 +129,24 @@ public class MainApplicationFrame extends JFrame
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        // 1. Добавить пункт меню, позволяющий закрыть приложение и сделать так,
+        // чтобы в методе выдавался запрос на подтверждение выхода (класс JOptionPane)
+        JMenuItem exitItem = new JMenuItem("Выход из программы", KeyEvent.VK_ESCAPE);
+        // Добавляем обработчик события (событие - нажатие на пункт меню).
+        exitItem.addActionListener((event) -> {
+            //Logger.debug("Выход из программы");
+            if (JOptionPane.showConfirmDialog(frame, // Родительское окно
+                    "Выйти из приложения?", // Сообщение в окне
+                    "Подтверждение выхода", // Заголовок окна
+                    JOptionPane.YES_NO_OPTION // Какие кнопки
+            ) == JOptionPane.YES_OPTION) {
+                frame.dispose(); // Закрываем основное окно
+                System.exit(0); // Закрываем программу
+            } else {
+                Logger.debug("При подтверждении выхода вы нажали НЕТ или закрыли окно");
+            }
+        });
+        menuBar.add(exitItem); // Добавляем пункт меню "Выход" в общее меню
         return menuBar;
     }
     
