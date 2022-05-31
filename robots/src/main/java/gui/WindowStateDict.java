@@ -1,5 +1,6 @@
 package gui;
 
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,21 +11,36 @@ public class WindowStateDict {
         map = new HashMap<>();
     }
 
-    public void unite(String name, DictState dictState) {
-        map.put(name, dictState);
+    public Map<String, DictState> getWindowStateDict() {
+        return map;
     }
 
-    public DictState getDictStateByName(String name) {
-        return map.get(name);
+    public void setNewState(JInternalFrame[] frames) {
+        GameWindow gameWindow = new GameWindow();
+        LogWindow logWindow = new LogWindow();
+        map = new HashMap<>();
+        for (int i = 0; i < frames.length; i++) {
+            if (frames[i].getTitle() == "Игровое поле") {
+                map = gameWindow.saveState(frames[i], map);
+            }
+            else {
+                map = logWindow.saveState(frames[i], map);
+            }
+        }
     }
 
-    public void writeStateToFile() {
-        FileManager saveToFile = new FileManager();
-        saveToFile.write(map);
-    }
-
-    public void readStateFromFile() {
-        FileManager saveToFile = new FileManager();
-        map = saveToFile.read();
+    public void recoverNewState(JInternalFrame[] frames) {
+        FileManager fileManager = new FileManager("read");
+        Map<String, DictState> mapStates = fileManager.read();
+        for (int i = 0; i < frames.length; i++) {
+            if (frames[i].getTitle() == "Игровое поле") {
+                GameWindow gameWindow = new GameWindow();
+                gameWindow.setRecoveryState(frames[i], mapStates);
+            }
+            else {
+                LogWindow logWindow = new LogWindow();
+                logWindow.setRecoveryState(frames[i], mapStates);
+            }
+        }
     }
 }

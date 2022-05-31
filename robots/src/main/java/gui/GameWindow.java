@@ -1,6 +1,8 @@
 package gui;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.beans.PropertyVetoException;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -19,19 +21,23 @@ public class GameWindow extends JInternalFrame implements Recoverable
     }
 
     @Override
-    public void saveState(int width, int height) {
-        DictState formDictState = new DictState();
-        formDictState.addState("width", String.valueOf(width));
-        formDictState.addState("height", String.valueOf(height));
-        WindowStateDict uniteDict = new WindowStateDict();
-        uniteDict.unite("model", formDictState);
-        uniteDict.writeStateToFile();
+    public Map<String, DictState> saveState(JInternalFrame frame, Map<String, DictState> map) {
+        FrameStates frameStates = new FrameStates();
+        return frameStates.addStates(frame, "model", map);
     }
 
     @Override
-    public DictState getRecoveryState() {
-        WindowStateDict uniteDict = new WindowStateDict();
-        uniteDict.readStateFromFile();
-        return uniteDict.getDictStateByName("model");
+    public void setRecoveryState(JInternalFrame frame, Map<String, DictState> map) {
+        DictState dictState = map.get("model");
+        frame.setSize(Integer.valueOf(dictState.getDictState().get("width")), Integer.valueOf(dictState.getDictState().get("height")));
+        frame.setLocation(Integer.valueOf(dictState.getDictState().get("x")), Integer.valueOf(dictState.getDictState().get("y")));
+        //setVisible(Boolean.valueOf(dictState.getDictState().get("is_extended")));
+        if (Boolean.valueOf(dictState.getDictState().get("is_icon"))) {
+            try {
+                frame.setIcon(true);
+            } catch (PropertyVetoException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

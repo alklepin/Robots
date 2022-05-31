@@ -4,9 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.util.Map;
 
 import javax.swing.*;
 
@@ -21,10 +19,14 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private WindowStateDict windowStateDict;
+    private Map<String, DictState> mapStates;
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
+        windowStateDict = new WindowStateDict();
+        //windowStateDict.readStateFromFile();
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         UIManager.put("OptionPane.yesButtonText", "Да");
@@ -43,40 +45,21 @@ public class MainApplicationFrame extends JFrame
                         "Закрыть приложение?", "Окно подтверждения", JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
                     JInternalFrame[] frames = desktopPane.getAllFrames();
-                    GameWindow gameWindow = new GameWindow();
-                    LogWindow logWindow = new LogWindow();
-                    try {
-                        Files.deleteIfExists(Paths.get(String.format("%s/windows_states.txt", System.getProperty("user.dir"))));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    for (int i = 0; i < frames.length; i++) {
-                        if (frames[i].getTitle() == "Игровое поле") {
-                            gameWindow.saveState(frames[i].getWidth(), frames[i].getHeight());
-                        }
-                        else if (frames[i].getTitle() == "Протокол работы") {
-                            logWindow.saveState(frames[i].getWidth() - 12, frames[i].getHeight() - 25);
-                        }
-                    }
+                    windowStateDict.setNewState(frames);
+                    FileManager fileManager = new FileManager("write");
+                    fileManager.write(windowStateDict.getWindowStateDict());
                     System.exit(0);
                 }
             }
         });
-
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
-        FileManager saveToFile = new FileManager();
-        if (saveToFile.isExist("windows_states.txt")) {
-            gameWindow.setSize(Integer.valueOf(gameWindow.getRecoveryState().getDictState().get("width")),
-                               Integer.valueOf(gameWindow.getRecoveryState().getDictState().get("height")));
-        }
-        else{
-            gameWindow.setSize(400, 400);
-        }
         addWindow(gameWindow);
 
+        JInternalFrame[] frames = desktopPane.getAllFrames();
+        windowStateDict.recoverNewState(frames);
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     }
@@ -84,8 +67,6 @@ public class MainApplicationFrame extends JFrame
     protected LogWindow createLogWindow()
     {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10,10);
-        logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug("Протокол работает");

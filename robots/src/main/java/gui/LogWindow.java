@@ -1,8 +1,8 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
+import java.awt.*;
+import java.beans.PropertyVetoException;
+import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -25,15 +25,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Reco
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
-        FileManager saveToFile = new FileManager();
-        if (saveToFile.isExist("windows_states.txt")) {
-            m_logContent.setSize(Integer.valueOf(logWindow.getRecoveryState().getDictState().get("width")),
-                    Integer.valueOf(logWindow.getRecoveryState().getDictState().get("height")));
-        }
-        else{
-            m_logContent.setSize(200, 500);
-        }
-
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_logContent, BorderLayout.CENTER);
         getContentPane().add(panel);
@@ -59,19 +50,23 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Reco
     }
 
     @Override
-    public void saveState(int width, int height) {
-        DictState formDictState = new DictState();
-        formDictState.addState("width", String.valueOf(width));
-        formDictState.addState("height", String.valueOf(height));
-        WindowStateDict uniteDict = new WindowStateDict();
-        uniteDict.unite("log", formDictState);
-        uniteDict.writeStateToFile();
+    public Map<String, DictState> saveState(JInternalFrame frame, Map<String, DictState> map) {
+        FrameStates frameStates = new FrameStates();
+        return frameStates.addStates(frame, "log", map);
     }
 
     @Override
-    public DictState getRecoveryState() {
-        WindowStateDict uniteDict = new WindowStateDict();
-        uniteDict.readStateFromFile();
-        return uniteDict.getDictStateByName("log");
+    public void setRecoveryState(JInternalFrame frame, Map<String, DictState> map) {
+        DictState dictState = map.get("log");
+        frame.setSize(Integer.valueOf(dictState.getDictState().get("width")), Integer.valueOf(dictState.getDictState().get("height")));
+        frame.setLocation(Integer.valueOf(dictState.getDictState().get("x")), Integer.valueOf(dictState.getDictState().get("y")));
+        if (Boolean.valueOf(dictState.getDictState().get("is_icon"))) {
+            try {
+                frame.setIcon(true);
+
+            } catch (PropertyVetoException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
