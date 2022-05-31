@@ -14,6 +14,11 @@ public class RobotsProgram
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 //        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        // 3. Сделать так, чтобы диалог на основе JOptionPane
+        // выдавал текст на кнопках на русском языке
+        // Нам нужны для интерфейса только Да и Нет
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
       } catch (Exception e) {
         e.printStackTrace();
       }
