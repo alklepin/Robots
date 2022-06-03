@@ -3,17 +3,29 @@ package listeners;
 import gui.ExitDialog;
 import gui.MainApplicationFrame;
 import localization.LocalizationManager;
+import serialization.StorageHelper;
+import serialization.WindowStorage;
 
 import javax.swing.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
+
 public class WindowListenerImpl implements WindowListener {
 
     private final LocalizationManager languageManager;
+    private WindowStorage windowStorage;
+    private JFrame frame;
+    private StorageHelper helper;
+    private JInternalFrame[] windows;
 
-    public WindowListenerImpl(LocalizationManager _languageManager) {
+    public WindowListenerImpl(LocalizationManager _languageManager, WindowStorage _windowStorage, JFrame _frame, StorageHelper _helper, JInternalFrame[] _windows) {
         this.languageManager = _languageManager;
+        this.windowStorage = _windowStorage;
+        this.frame = _frame;
+        this.helper = _helper;
+        this.windows = _windows;
     }
 
 
@@ -24,20 +36,14 @@ public class WindowListenerImpl implements WindowListener {
 
     @Override
     public void windowClosing(WindowEvent event) {
-
         var dialog = new ExitDialog(this.languageManager, this.languageManager.getString("exitApp.ask"));
         var option = dialog.show();
 
         if (option == 0) {
-            var frame = (MainApplicationFrame) event.getWindow();
-            if (frame.windowStorage != null) {
-                frame.windowStorage.store(frame.getClass().toString(), frame);
-                frame.windowStorage.store(frame.logWindow.getClass().toString(), frame.logWindow);
-                frame.windowStorage.store(frame.gameWindow.getClass().toString(), frame.gameWindow);
-                frame.windowStorage.save();
+            frame.setDefaultCloseOperation(EXIT_ON_CLOSE);
+            if (windowStorage != null) {
+                helper.storeWindows(frame, windows);
             }
-
-            System.exit(0);
         }
     }
 
