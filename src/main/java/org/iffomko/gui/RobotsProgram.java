@@ -1,4 +1,4 @@
-package gui;
+package org.iffomko.gui;
 
 import java.awt.Frame;
 

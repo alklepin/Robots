@@ -1,4 +1,4 @@
-package log;
+package org.iffomko.log;
 
 public final class Logger
 {
