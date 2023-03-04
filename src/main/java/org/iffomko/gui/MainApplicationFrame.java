@@ -2,7 +2,9 @@ package org.iffomko.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.function.Consumer;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -117,40 +119,42 @@ public class MainApplicationFrame extends JFrame
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
-        
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
+        lookAndFeelMenu.add(generateMenuItem("Системная схема", KeyEvent.VK_S, (event) -> {
+            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            this.invalidate();
+        }));
+
+        lookAndFeelMenu.add(generateMenuItem("Универсальная схема", KeyEvent.VK_S, (event) -> {
+            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            this.invalidate();
+        }));
 
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
-        
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
-            testMenu.add(addLogMessageItem);
-        }
 
+        testMenu.add(generateMenuItem("Сообщение в лог", KeyEvent.VK_S, (event) -> {
+            Logger.debug("Новая строка");
+        }));
+        
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         return menuBar;
+    }
+
+    /**
+     * Генерирует элемент меню
+     * @param text - название элемента
+     * @param keyEventNumber - номер клавиши, на который будет переключаться
+     * @param listener - слушатель этого элемента, который активируется при активации этого элемента
+     * @return - готовый элемент меню
+     */
+    private JMenuItem generateMenuItem(String text, int keyEventNumber, ActionListener listener) {
+        JMenuItem item = new JMenuItem(text, keyEventNumber);
+        item.addActionListener(listener);
+
+        return item;
     }
 
     /**
