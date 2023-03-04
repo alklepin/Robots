@@ -9,8 +9,8 @@ public class RobotsProgram
 {
     public static void main(String[] args) {
       try {
-        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-//        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+//        UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel"); // стиль окошка программы
 //        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 //        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
       } catch (Exception e) {
@@ -18,8 +18,8 @@ public class RobotsProgram
       }
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame();
-        frame.pack();
+        frame.pack(); // устанавливает минимально необходимые размеры для фрейма
         frame.setVisible(true);
-        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH /* фрейм максимизируется по горизонтали и вертикали */); // устанавливает состояние фрейма
       });
     }}

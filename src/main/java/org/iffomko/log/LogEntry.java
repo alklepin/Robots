@@ -1,5 +1,8 @@
 package org.iffomko.log;
 
+/**
+ * Immutable class, который содержит в себе информации о логе: уровень лога, сообщение лога
+ */
 public class LogEntry
 {
     private LogLevel m_logLevel;

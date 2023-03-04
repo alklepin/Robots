@@ -24,8 +24,11 @@ import org.iffomko.log.Logger;
  */
 public class MainApplicationFrame extends JFrame
 {
-    private final JDesktopPane desktopPane = new JDesktopPane();
-    
+    private final JDesktopPane desktopPane = new JDesktopPane(); // окно с ещё окнами внутри
+
+    /**
+     * Конструктор, который создает контейнер с окнами: окно с игрой, окно с логами, генерирует меню. И настраивает их.
+     */
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
@@ -48,7 +51,11 @@ public class MainApplicationFrame extends JFrame
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
+
+    /**
+     * Создает окно с логами и настраивает его
+     * @return - возвращает объект окна с логами
+     */
     protected LogWindow createLogWindow()
     {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
@@ -59,7 +66,11 @@ public class MainApplicationFrame extends JFrame
         Logger.debug("Протокол работает");
         return logWindow;
     }
-    
+
+    /**
+     * Добавляет фрейм в контейнер с окнами
+     * @param frame - фрейм, который нужно добавить
+     */
     protected void addWindow(JInternalFrame frame)
     {
         desktopPane.add(frame);
@@ -94,15 +105,18 @@ public class MainApplicationFrame extends JFrame
 // 
 //        return menuBar;
 //    }
-    
+
+    /**
+     * Генерирует меню со всеми разделами
+     * @return - возвращает сгенерированное меню
+     */
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
         
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
+        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
         
         {
             JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
@@ -124,8 +138,7 @@ public class MainApplicationFrame extends JFrame
 
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
+        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
         
         {
             JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
@@ -139,7 +152,11 @@ public class MainApplicationFrame extends JFrame
         menuBar.add(testMenu);
         return menuBar;
     }
-    
+
+    /**
+     * Устанавливает текущий стиль окошка и обновляет внешний вид от рисованного UI
+     * @param className - имя класса, стиль которого нужно установить
+     */
     private void setLookAndFeel(String className)
     {
         try
