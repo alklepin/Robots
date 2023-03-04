@@ -1,20 +1,13 @@
 package org.iffomko.gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import org.iffomko.log.Logger;
 
@@ -42,7 +35,6 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
         
-        
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
@@ -51,7 +43,13 @@ public class MainApplicationFrame extends JFrame
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onWindowClosing(e);
+            }
+        });
     }
 
     /**
@@ -109,6 +107,35 @@ public class MainApplicationFrame extends JFrame
 //    }
 
     /**
+     * Метод, который дергается, когда приложение хочет закрыться
+     * @param event - информация о событии
+     */
+    private void onWindowClosing(WindowEvent event) {
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        Object[] options = {"Да", "Нет"};
+
+        int response = JOptionPane.showOptionDialog(
+                event.getWindow(),
+                "Закрыть приложение?",
+                "Подтверждение",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                options,
+                options[1]
+        );
+
+        if (response == 0) {
+            event.getWindow().setVisible(false);
+            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                    new WindowEvent(event.getWindow(), WindowEvent.WINDOW_CLOSING)
+            );
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
+    }
+
+    /**
      * Генерирует меню со всеми разделами
      * @return - возвращает сгенерированное меню
      */
@@ -116,9 +143,11 @@ public class MainApplicationFrame extends JFrame
     {
         JMenuBar menuBar = new JMenuBar();
         
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription("Управление режимом отображения приложения");
+        JMenu lookAndFeelMenu = generateMenu(
+                "Режим отображения",
+                KeyEvent.VK_V,
+                "Управление режимом отображения приложения"
+        );
 
         lookAndFeelMenu.add(generateMenuItem("Системная схема", KeyEvent.VK_S, (event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -130,17 +159,39 @@ public class MainApplicationFrame extends JFrame
             this.invalidate();
         }));
 
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
+        JMenu testMenu = generateMenu("Тесты", KeyEvent.VK_T, "Тестовые команды");
 
         testMenu.add(generateMenuItem("Сообщение в лог", KeyEvent.VK_S, (event) -> {
             Logger.debug("Новая строка");
         }));
-        
+
+        JMenu closeMenu = generateMenu("Закрыть", KeyEvent.VK_X, "Закрывает приложение");
+
+        closeMenu.add(generateMenuItem("Выход", KeyEvent.VK_X, (event) -> {
+            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                    new WindowEvent(this, WindowEvent.WINDOW_CLOSING)
+            );
+        }));
+
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        menuBar.add(closeMenu);
         return menuBar;
+    }
+
+    /**
+     * Генерирует меню
+     * @param title - название меню
+     * @param mnemonic - клавиша, с которой ассоциируется меню
+     * @param descriptionText - описание меню
+     * @return - готовое меню
+     */
+    private JMenu generateMenu(String title, int mnemonic, String descriptionText) {
+        JMenu menu = new JMenu(title);
+        menu.setMnemonic(mnemonic);
+        menu.getAccessibleContext().setAccessibleDescription(descriptionText);
+
+        return menu;
     }
 
     /**
