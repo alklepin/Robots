@@ -1,4 +1,4 @@
-package gui;
+package org.iffomko.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -7,15 +7,22 @@ import java.awt.TextArea;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
+import org.iffomko.log.LogChangeListener;
+import org.iffomko.log.LogEntry;
+import org.iffomko.log.LogWindowSource;
 
+/**
+ * Окно с содержанием логов
+ */
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
+    /**
+     * Создает окно с логами
+     * @param logSource - объект со всеми логами
+     */
     public LogWindow(LogWindowSource logSource) 
     {
         super("Протокол работы", true, true, true, true);
@@ -31,6 +38,9 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         updateLogContent();
     }
 
+    /**
+     * Перебирает все накопленные логи и добавляет их текст в область с текстом
+     */
     private void updateLogContent()
     {
         StringBuilder content = new StringBuilder();
@@ -41,7 +51,10 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
         m_logContent.setText(content.toString());
         m_logContent.invalidate();
     }
-    
+
+    /**
+     * Этот метод дергается при изменении логов
+     */
     @Override
     public void onLogChanged()
     {
