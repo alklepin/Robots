@@ -11,8 +11,8 @@ public class MenuBar {
     private MenuBar() {};
 
     /**
-     * Генерирует меню со всеми разделами
-     * @return - возвращает сгенерированное меню
+     * Возвращает объект на меню
+     * @return - меню
      */
     public static JMenuBar getMenu()
     {
@@ -23,6 +23,10 @@ public class MenuBar {
         return menuBar;
     }
 
+    /**
+     * Генерирует меню со всеми разделами
+     * @return - возвращает сгенерированное меню
+     */
     private static JMenuBar generateMenu() {
         JMenuBar menuBar = new JMenuBar();
 
