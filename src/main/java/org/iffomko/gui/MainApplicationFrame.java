@@ -4,6 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import javax.swing.*;
@@ -103,7 +105,8 @@ public class MainApplicationFrame extends JFrame
     private void onWindowClosing(WindowEvent event) {
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        Object[] options = {"Да", "Нет"};
+        UIManager.put("OptionPane.yesButtonText", "Да");
+        UIManager.put("OptionPane.noButtonText", "Нет");
 
         int response = JOptionPane.showOptionDialog(
                 event.getWindow(),
@@ -112,11 +115,11 @@ public class MainApplicationFrame extends JFrame
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
-                options,
-                options[1]
+                null,
+                null
         );
 
-        if (response == 0) {
+        if (response == JOptionPane.YES_OPTION) {
             event.getWindow().setVisible(false);
             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                     new WindowEvent(event.getWindow(), WindowEvent.WINDOW_CLOSING)
