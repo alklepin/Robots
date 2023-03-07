@@ -2,21 +2,13 @@ package org.iffomko.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
-import java.util.function.Consumer;
 
 import javax.swing.*;
 
 import org.iffomko.log.Logger;
 
 /**
- * Что требуется сделать:
- * 1. Метод создания меню перегружен функционалом и трудно читается. 
- * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
- *
+ * Приложение со всеми окнами
  */
 public class MainApplicationFrame extends JFrame
 {
