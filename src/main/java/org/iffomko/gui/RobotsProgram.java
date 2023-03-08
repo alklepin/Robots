@@ -1,5 +1,7 @@
 package org.iffomko.gui;
 
+import org.iffomko.gui.mainApplicationFrame.MainApplicationFrame;
+
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
