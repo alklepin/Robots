@@ -173,22 +173,28 @@ public class GameVisualizer extends JPanel
     {
         velocity = applyLimits(velocity, 0, maxVelocity); // нормализуем обычную скорость робота
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity); // Нормализуем угловую скорость робота, т. е. скорость при вращении
-        double newX = m_robotPositionX + velocity / angularVelocity * 
-            (Math.sin(m_robotDirection  + angularVelocity * duration) - Math.sin(m_robotDirection));
-        if (!Double.isFinite(newX))
-        {
+
+        double newX = m_robotPositionX + velocity / angularVelocity *
+                (Math.sin(m_robotDirection  + angularVelocity * duration) + Math.sin(m_robotDirection));
+
+        if (!Double.isFinite(newX)) {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
+
         double newY = m_robotPositionY - velocity / angularVelocity * 
             (Math.cos(m_robotDirection  + angularVelocity * duration) -
                 Math.cos(m_robotDirection));
+
         if (!Double.isFinite(newY))
         {
             newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
         }
+
         m_robotPositionX = newX;
         m_robotPositionY = newY;
+
         double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); // меняем направление робота
+
         m_robotDirection = newDirection;
     }
 

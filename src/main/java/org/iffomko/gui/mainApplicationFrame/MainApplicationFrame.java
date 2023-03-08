@@ -1,10 +1,12 @@
-package org.iffomko.gui;
+package org.iffomko.gui.mainApplicationFrame;
 
 import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
 
+import org.iffomko.gui.GameWindow;
+import org.iffomko.gui.LogWindow;
 import org.iffomko.log.Logger;
 
 /**
@@ -35,27 +37,7 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
-        JMenuBar menuBar = MenuBar.getMenu();
-
-        menuBar.getMenu(0).getItem(0).addActionListener((event) -> {
-            this.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            this.invalidate();
-        });
-
-        menuBar.getMenu(0).getItem(1).addActionListener((event) -> {
-            this.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            this.invalidate();
-        });
-
-        menuBar.getMenu(1).getItem(0).addActionListener((event) -> Logger.debug("Новая строка"));
-
-        menuBar.getMenu(2).getItem(0).addActionListener((event) -> {
-            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-                    new WindowEvent(this, WindowEvent.WINDOW_CLOSING)
-            );
-        });
-
-        setJMenuBar(menuBar);
+        setJMenuBar(MenuBar.getMenu(this));
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -124,7 +106,7 @@ public class MainApplicationFrame extends JFrame
      * Устанавливает текущий стиль окошка и обновляет внешний вид от рисованного UI
      * @param className - имя класса, стиль которого нужно установить
      */
-    public void setLookAndFeel(String className)
+    void setLookAndFeel(String className)
     {
         try
         {
