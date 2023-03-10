@@ -8,5 +8,5 @@ public interface LogChangeListener
     /**
      * Метод, который будет вызываться при изменении в логах
      */
-    public void onLogChanged(); 
+    public void onLogChanged();
 }
