@@ -3,8 +3,6 @@ package org.iffomko.gui.mainApplicationFrame;
 import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyVetoException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.*;
 
@@ -20,7 +18,6 @@ import org.iffomko.savers.ComponentSaver;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane(); // окно с ещё окнами внутри
-    private final List<ComponentSaver> saverList = new ArrayList<>();
 
     /**
      * Конструктор, который создает контейнер с окнами: окно с игрой, окно с логами, генерирует меню. И настраивает их.
@@ -44,7 +41,7 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         logWindow.setName(logWindowName);
 
-        restoreSettings(logWindow, logWindowName);
+        restoreFrame(logWindow, logWindowName);
 
         addWindow(logWindow);
 
@@ -52,7 +49,7 @@ public class MainApplicationFrame extends JFrame
         gameWindow.setSize(400,  400);
         gameWindow.setName(gameWindowName);
 
-        restoreSettings(gameWindow, gameWindowName);
+        restoreFrame(gameWindow, gameWindowName);
 
         addWindow(gameWindow);
 
@@ -67,11 +64,11 @@ public class MainApplicationFrame extends JFrame
     }
 
     /**
-     * <p>Восстанавливает расположение на экране фрейма и сохраняет его свернутость</p>
+     * <p>Восстанавливает настройки фрейма: такие как свернутость, расположение на экране и т. д.</p>
      * @param frame - фрейм, у которого нужно сохранить настройки
      * @param name - имя фрейма
      */
-    private void restoreSettings(JInternalFrame frame, String name) {
+    private void restoreFrame(JInternalFrame frame, String name) {
         ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
 
         ComponentSaver gameSave = applicationSaver.getState(name);
@@ -90,6 +87,37 @@ public class MainApplicationFrame extends JFrame
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
+
+        Dimension frameSize = new Dimension(
+                Integer.parseInt(gameSave.get("width")),
+                Integer.parseInt(gameSave.get("height"))
+        );
+
+        frame.setSize(frameSize);
+    }
+
+    /**
+     * <p>Сохраняет все фреймы внутри desktopPane</p>
+     * <p>Если у фрейма нет имени, то вылетит ошибка <code>SaversException</code></p>
+     */
+    private void saveFrames() {
+        ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
+
+        for (JInternalFrame frame : desktopPane.getAllFrames()) {
+            ComponentSaver componentSaver = new ComponentSaver(frame.getName());
+
+            Point locationPoint = frame.getLocation();
+
+            componentSaver.put("x", String.valueOf(locationPoint.getX()));
+            componentSaver.put("y", String.valueOf(locationPoint.getY()));
+            componentSaver.put("state", String.valueOf(frame.isIcon()));
+            componentSaver.put("width", String.valueOf(frame.getWidth()));
+            componentSaver.put("height", String.valueOf(frame.getHeight()));
+
+            applicationSaver.addState(componentSaver);
+        }
+
+        applicationSaver.save();
     }
 
     /**
@@ -139,21 +167,7 @@ public class MainApplicationFrame extends JFrame
         );
 
         if (response == JOptionPane.YES_OPTION) {
-            ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
-
-            for (JInternalFrame frame : desktopPane.getAllFrames()) {
-                ComponentSaver componentSaver = new ComponentSaver(frame.getName());
-
-                Point locationPoint = frame.getLocation();
-
-                componentSaver.put("x", String.valueOf(locationPoint.getX()));
-                componentSaver.put("y", String.valueOf(locationPoint.getY()));
-                componentSaver.put("state", String.valueOf(frame.isIcon()));
-
-                applicationSaver.addState(componentSaver);
-            }
-
-            applicationSaver.save();
+            saveFrames();
 
             event.getWindow().setVisible(false);
             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
