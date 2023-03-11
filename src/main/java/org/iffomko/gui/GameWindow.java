@@ -1,5 +1,7 @@
 package org.iffomko.gui;
 
+import org.iffomko.savers.ComponentSaver;
+
 import java.awt.BorderLayout;
 
 import javax.swing.JInternalFrame;

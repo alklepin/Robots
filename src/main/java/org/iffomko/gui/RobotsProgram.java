@@ -1,8 +1,11 @@
 package org.iffomko.gui;
 
 import org.iffomko.gui.mainApplicationFrame.MainApplicationFrame;
+import org.iffomko.savers.ApplicationSaver;
+import org.iffomko.savers.ComponentSaver;
 
 import java.awt.Frame;
+import java.util.Map;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
