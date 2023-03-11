@@ -26,6 +26,7 @@ public class ApplicationSaver extends AbstractMap<String, String> {
     private static ApplicationSaver applicationSaver = null;
 
     private final Map<String, String> state;
+    private boolean restored;
 
     /**
      * <p>Собирает и возвращает множество всех объектов, которые содержат ключи с определенным префиксом и их значение</p>
@@ -135,6 +136,7 @@ public class ApplicationSaver extends AbstractMap<String, String> {
 
     private ApplicationSaver() {
         state = new HashMap<String, String>();
+        restored = false;
     }
 
     /**
@@ -209,6 +211,7 @@ public class ApplicationSaver extends AbstractMap<String, String> {
      */
     public boolean restore() {
         if (state.size() != 0) {
+            restored = false;
             return false;
         }
 
@@ -217,10 +220,13 @@ public class ApplicationSaver extends AbstractMap<String, String> {
         File robotsSave = new File(homeCatalogPath + "robotsSave.bin");
 
         if (!robotsSave.exists()) {
+            restored = false;
             return false;
         }
 
         state.putAll((Map<String, String>) readObject(robotsSave));
+
+        restored = true;
 
         return true;
     }
@@ -434,5 +440,13 @@ public class ApplicationSaver extends AbstractMap<String, String> {
     @Override
     public String merge(String key, String value, BiFunction<? super String, ? super String, ? extends String> remappingFunction) {
         return state.merge(key, value, remappingFunction);
+    }
+
+    /**
+     * <p>Проверяет восстановлены ли данные</p>
+     * @return - выдает <code>true</code> если восстановлены, и <code>false</code> в противном случае
+     */
+    public boolean isRestored() {
+        return restored;
     }
 }

@@ -1,5 +1,7 @@
 package org.iffomko.gui;
 
+import org.iffomko.savers.ComponentSaver;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
