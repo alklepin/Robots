@@ -1,4 +1,4 @@
-package gui;
+package PersikNaYmnichax.gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
@@ -7,9 +7,9 @@ import java.awt.TextArea;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
+import PersikNaYmnichax.log.LogChangeListener;
+import PersikNaYmnichax.log.LogEntry;
+import PersikNaYmnichax.log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {

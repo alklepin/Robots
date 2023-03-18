@@ -1,4 +1,4 @@
-package log;
+package PersikNaYmnichax.log;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,8 +20,7 @@ public class LogWindowSource
     private final ArrayList<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
     
-    public LogWindowSource(int iQueueLength) 
-    {
+    public LogWindowSource(int iQueueLength) {
         m_iQueueLength = iQueueLength;
         m_messages = new ArrayList<LogEntry>(iQueueLength);
         m_listeners = new ArrayList<LogChangeListener>();
