@@ -136,12 +136,9 @@ public class GameVisualizer extends JPanel
         double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
 
-        if (angleToTarget > m_robotDirection)
-        {
+        if (angleToTarget > m_robotDirection) {
             angularVelocity = maxAngularVelocity;
-        }
-
-        if (angleToTarget < m_robotDirection)
+        } else if (angleToTarget < m_robotDirection)
         {
             angularVelocity = -maxAngularVelocity;
         }
@@ -175,15 +172,15 @@ public class GameVisualizer extends JPanel
     {
         velocity = applyLimits(velocity, 0, maxVelocity); // нормализуем обычную скорость робота
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity); // Нормализуем угловую скорость робота, т. е. скорость при вращении
-        double newX = m_robotPositionX + velocity / angularVelocity *
-                (Math.sin(m_robotDirection  + angularVelocity * duration) - Math.sin(m_robotDirection));
+        double newX = m_robotPositionX + velocity *
+                (Math.sin(m_robotDirection  + angularVelocity * duration) - Math.sin(m_robotDirection)) / angularVelocity;
         if (!Double.isFinite(newX))
         {
             newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
         }
-        double newY = m_robotPositionY - velocity / angularVelocity *
+        double newY = m_robotPositionY - velocity  *
                 (Math.cos(m_robotDirection  + angularVelocity * duration) -
-                        Math.cos(m_robotDirection));
+                        Math.cos(m_robotDirection)) / angularVelocity;
         if (!Double.isFinite(newY))
         {
             newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
