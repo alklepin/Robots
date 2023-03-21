@@ -6,23 +6,10 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-/*
-    Можно подумать над паттерном subscriber, чтобы все ComponentSaver'ы получали свои ресторы
-    Тут возникает проблемка: как уведомлять классы, после перезапуска приложения
- */
-
-
-/*
-    Также супер важно придумать как сохраняться все будет. Есть одна идея:
-        1. Сохраняемся мы при выходе из приложения. Можно даже сделать соответствующее диалоговое окошко
-        2. Восстанавливаемся мы при запуске приложения. Все соответствующие классы подтягивают свои данные при создании.
-           Можно сделать прелоадер даже.
- */
-
 /**
  * Сохраняет состояние всех своих под-словарей в файлы
  */
-public class ApplicationSaver extends AbstractMap<String, String> {
+public class ApplicationSaver extends AbstractMap<String, String> implements Saver {
     private static ApplicationSaver applicationSaver = null;
 
     private final Map<String, String> state;
