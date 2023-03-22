@@ -11,6 +11,7 @@ import org.iffomko.gui.LogWindow;
 import org.iffomko.log.Logger;
 import org.iffomko.savers.ApplicationSaver;
 import org.iffomko.savers.ComponentSaver;
+import org.iffomko.savers.Saver;
 
 /**
  * Приложение со всеми окнами
@@ -69,7 +70,7 @@ public class MainApplicationFrame extends JFrame
      * @param name - имя фрейма
      */
     private void restoreFrame(JInternalFrame frame, String name) {
-        ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
+        Saver applicationSaver = ApplicationSaver.getInstance();
 
         ComponentSaver gameSave = applicationSaver.getState(name);
 
@@ -101,7 +102,7 @@ public class MainApplicationFrame extends JFrame
      * <p>Если у фрейма нет имени, то вылетит ошибка <code>SaversException</code></p>
      */
     private void saveFrames() {
-        ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
+        Saver applicationSaver = ApplicationSaver.getInstance();
 
         for (JInternalFrame frame : desktopPane.getAllFrames()) {
             ComponentSaver componentSaver = new ComponentSaver(frame.getName());
