@@ -1,16 +1,14 @@
-package org.iffomko.gui.mainApplicationFrame;
+package org.iffomko.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyVetoException;
 
 import javax.swing.*;
 
-import org.iffomko.gui.GameWindow;
-import org.iffomko.gui.LogWindow;
 import org.iffomko.log.Logger;
-import org.iffomko.savers.ApplicationSaver;
-import org.iffomko.savers.ComponentSaver;
+import org.iffomko.savers.Savable;
+import org.iffomko.savers.SaverException;
+import org.iffomko.savers.StateKeeper;
 
 /**
  * Приложение со всеми окнами
@@ -23,14 +21,14 @@ public class MainApplicationFrame extends JFrame
      * Конструктор, который создает контейнер с окнами: окно с игрой, окно с логами, генерирует меню. И настраивает их.
      */
     public MainApplicationFrame() {
-        ApplicationSaver.getInstance().restore();
+        StateKeeper stateKeeper = StateKeeper.getInstance();
+
+        stateKeeper.restore();
 
         String gameWindowName = "game";
         String logWindowName = "log";
 
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
-        int inset = 50;        
+        int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
             screenSize.width  - inset*2,
@@ -39,17 +37,22 @@ public class MainApplicationFrame extends JFrame
         setContentPane(desktopPane);
         
         LogWindow logWindow = createLogWindow();
-        logWindow.setName(logWindowName);
 
-        restoreFrame(logWindow, logWindowName);
+        try {
+            logWindow.restore(stateKeeper.getState(logWindow.getPrefix()));
+        } catch (SaverException e) {
+            e.printStackTrace();
+        }
 
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
-        gameWindow.setName(gameWindowName);
 
-        restoreFrame(gameWindow, gameWindowName);
+        try {
+            gameWindow.restore(stateKeeper.getState(gameWindow.getPrefix()));
+        } catch (SaverException e) {
+            e.printStackTrace();
+        }
 
         addWindow(gameWindow);
 
@@ -61,63 +64,6 @@ public class MainApplicationFrame extends JFrame
                 onWindowClosing(e);
             }
         });
-    }
-
-    /**
-     * <p>Восстанавливает настройки фрейма: такие как свернутость, расположение на экране и т. д.</p>
-     * @param frame - фрейм, у которого нужно сохранить настройки
-     * @param name - имя фрейма
-     */
-    private void restoreFrame(JInternalFrame frame, String name) {
-        ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
-
-        ComponentSaver gameSave = applicationSaver.getState(name);
-
-        if (!applicationSaver.isRestored()) {
-            return;
-        }
-
-        Point gameLocation = new Point();
-        gameLocation.setLocation(Double.parseDouble(gameSave.get("x")), Double.parseDouble(gameSave.get("y")));
-
-        frame.setLocation(gameLocation);
-
-        try {
-            frame.setIcon(Boolean.parseBoolean(gameSave.get("state")));
-        } catch (PropertyVetoException e) {
-            e.printStackTrace();
-        }
-
-        Dimension frameSize = new Dimension(
-                Integer.parseInt(gameSave.get("width")),
-                Integer.parseInt(gameSave.get("height"))
-        );
-
-        frame.setSize(frameSize);
-    }
-
-    /**
-     * <p>Сохраняет все фреймы внутри desktopPane</p>
-     * <p>Если у фрейма нет имени, то вылетит ошибка <code>SaversException</code></p>
-     */
-    private void saveFrames() {
-        ApplicationSaver applicationSaver = ApplicationSaver.getInstance();
-
-        for (JInternalFrame frame : desktopPane.getAllFrames()) {
-            ComponentSaver componentSaver = new ComponentSaver(frame.getName());
-
-            Point locationPoint = frame.getLocation();
-
-            componentSaver.put("x", String.valueOf(locationPoint.getX()));
-            componentSaver.put("y", String.valueOf(locationPoint.getY()));
-            componentSaver.put("state", String.valueOf(frame.isIcon()));
-            componentSaver.put("width", String.valueOf(frame.getWidth()));
-            componentSaver.put("height", String.valueOf(frame.getHeight()));
-
-            applicationSaver.addState(componentSaver);
-        }
-
-        applicationSaver.save();
     }
 
     /**
@@ -167,7 +113,19 @@ public class MainApplicationFrame extends JFrame
         );
 
         if (response == JOptionPane.YES_OPTION) {
-            saveFrames();
+            StateKeeper stateKeeper = StateKeeper.getInstance();
+
+            try {
+                for (JInternalFrame frame : desktopPane.getAllFrames()) {
+                    if (frame instanceof Savable) {
+                        stateKeeper.addState((Savable) frame);
+                    }
+                }
+            } catch (SaverException e) {
+                e.printStackTrace();
+            }
+
+            stateKeeper.save();
 
             event.getWindow().setVisible(false);
             Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(

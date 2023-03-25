@@ -1,6 +1,5 @@
-package org.iffomko.gui.mainApplicationFrame;
+package org.iffomko.gui;
 
-import org.iffomko.gui.mainApplicationFrame.MainApplicationFrame;
 import org.iffomko.log.Logger;
 
 import javax.swing.*;

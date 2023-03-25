@@ -1,37 +1,51 @@
 package org.iffomko.savers;
 
-public interface Saver {
+import java.io.*;
+import java.nio.file.Files;
+
+/**
+ * <p>Умеет сохранять объекты в бинарный файл и восстанавливать его из файла</p>
+ */
+public class Saver<T> {
     /**
-     * <p>Добавляет состояние какого-то <code>ComponentSaver</code> в наше состояние</p>
-     * <p><i>Иначе говоря, сливаем под-словарь <code>ComponentSaver</code> с нашим словарем</i></p>
-     * @param saver - объект <code>ComponentSaver</code>, который нужно слить с нашим словарем
+     * <p>Пишет объект в бинарный файл</p>
+     * @param file - бинарный файл, в который надо записать объект. Файл должен иметь корректный путь и существовать.
+     *               В противном случае вылетит ошибка, и программа закончит свою работу досрочно.
+     * @param object - объект, который надо записать в бинарный файл
      */
-    void addState(ComponentSaver saver);
+    public void writeObject(File file, T object) throws SaverException {
+        try {
+            try (OutputStream output = Files.newOutputStream(file.toPath())) {
+                try (ObjectOutputStream objectOutput = new ObjectOutputStream(output)) {
+                    objectOutput.writeObject(object);
+                    objectOutput.flush();
+                }
+            }
+        } catch (IOException e) {
+            throw new SaverException(e.getMessage());
+        }
+    }
 
     /**
-     * <p>Получить состояние какого-то под-словаря в нашем</p>
-     * @param prefix - префикс, по которому происходит фильтрация
-     * @return - готовый под-словарь
+     * <p>Считывает объект с бинарного файла и возвращает его</p>
+     * @param file - бинарный файл, с которого надо считать объект. Файл должен иметь корректный путь и существовать.
+     *               В противном случае вылетит ошибка, и программа закончит свою работу досрочно.
+     * @return - объект, который считали с бинарного файла
      */
-    ComponentSaver getState(String prefix);
+    public T readObject(File file) throws SaverException {
+        T object = null;
 
-    /**
-     * <p>Сохраняет свое состояние в какой-то бинарный файл в папке, которая находится в домашнем каталоге</p>
-     */
-    void save();
+        try {
+            try (InputStream input = Files.newInputStream(file.toPath())) {
 
-    /**
-     * <p>Восстанавливает свое состояние из бинарного файла, который находится в соответствующей папке домашнего каталога</p>
-     * <p>Если у вас уже есть какое-то состояние в <code>ApplicationSaver</code> или такого файла нет, то восстановление
-     * будет прервано</p>
-     * @return - возвращает результат работы. <code>true</code> - если восстановление состояния прошло успешно.
-     *                                        <code>false</code> - если восстановление состояния не удалось
-     */
-    boolean restore();
+                try (ObjectInputStream objectInput = new ObjectInputStream(input)) {
+                    object = (T) objectInput.readObject();
+                }
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            throw new SaverException(e.getMessage());
+        }
 
-    /**
-     * <p>Проверяет восстановлены ли данные</p>
-     * @return - выдает <code>true</code> если восстановлены, и <code>false</code> в противном случае
-     */
-    boolean isRestored();
+        return object;
+    }
 }
