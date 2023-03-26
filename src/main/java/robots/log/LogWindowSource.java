@@ -1,4 +1,4 @@
-package log;
+package robots.log;
 
 import java.util.ArrayList;
 import java.util.Collections;
