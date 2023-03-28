@@ -35,9 +35,9 @@ public class GameVisualizer extends JPanel
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
 
-    public GameVisualizer()
+    public GameVisualizer(Robot robot)
     {
-        robot = new Robot();
+        this.robot = robot;
 
         m_timer.schedule(new TimerTask()
         {

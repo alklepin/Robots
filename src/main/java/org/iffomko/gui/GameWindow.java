@@ -1,5 +1,6 @@
 package org.iffomko.gui;
 
+import org.iffomko.robot.Robot;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
@@ -9,30 +10,38 @@ import java.util.Map;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import javax.xml.stream.Location;
 
 /**
  * Окно с игрой
  */
 public class GameWindow extends JInternalFrame implements Savable
 {
-    private final GameVisualizer m_visualizer;
+    private final GameVisualizer gameVisualizer;
+    private final Robot robot;
+    private final ActualRobotPosition actualRobotPosition;
     private final String prefix;
     private Map<String, String> state;
 
     /**
      * Создает окно с игрой
      */
-    public GameWindow() 
+    public GameWindow()
     {
         super("Игровое поле", true, true, true, true);
 
-        m_visualizer = new GameVisualizer();
+        robot = new Robot();
+        gameVisualizer = new GameVisualizer(robot);
+        actualRobotPosition = new ActualRobotPosition(robot);
+
+        robot.addObserver(actualRobotPosition);
 
         setSize(new Dimension(400, 400));
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+
+        panel.add(actualRobotPosition, BorderLayout.NORTH);
+        panel.add(gameVisualizer, BorderLayout.CENTER);
+
         getContentPane().add(panel);
         pack();
 

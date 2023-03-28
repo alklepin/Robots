@@ -1,11 +1,19 @@
 package org.iffomko.robot;
 
-public class Robot {
+import java.util.Observable;
+import java.util.Observer;
+
+/**
+ * <p>Модель робота, которая умеет передвигать робота и возвращать его актуальные коордианты</p>
+ */
+public class Robot extends Observable {
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
     private volatile double x = 100;
     private volatile double y = 100;
     private volatile double direction = 0;
+
+    public static final String KEY_ROBOT_POSITION_CHANGED = "position is changed";
 
     /**
      * Высчитывает расстояние между двумя точками (x1, y1) и (x2, y2)
@@ -112,9 +120,14 @@ public class Robot {
         {
             newY = y + velocity * duration * Math.sin(direction);
         }
+
         x = newX;
         y = newY;
-        direction = asNormalizedRadians(direction + angularVelocity * duration);;
+        direction = asNormalizedRadians(direction + angularVelocity * duration);
+
+        setChanged();
+        notifyObservers(KEY_ROBOT_POSITION_CHANGED);
+        clearChanged();
     }
 
     /**
