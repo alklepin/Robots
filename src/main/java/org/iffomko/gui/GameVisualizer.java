@@ -1,6 +1,7 @@
 package org.iffomko.gui;
 
 import org.iffomko.robot.Robot;
+
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
@@ -9,52 +10,27 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.Observable;
+import java.util.Observer;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
 /**
  * Основная логика игры
  */
-public class GameVisualizer extends JPanel
+public class GameVisualizer extends JPanel implements Observer
 {
-    private final Timer m_timer = initTimer();
     private final Robot robot;
+    private final int duration;
+    private volatile int targetPositionX = 150;
+    private volatile int targetPositionY = 100;
 
-    /**
-     * Создается таймер, который называется генератор событий
-     * @return - таймер
-     */
-    private static Timer initTimer()
-    {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
-
-    private volatile int m_targetPositionX = 150;
-    private volatile int m_targetPositionY = 100;
-
-    public GameVisualizer(Robot robot)
+    public GameVisualizer(Robot robot, int duration)
     {
         this.robot = robot;
+        this.duration = duration;
 
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                onRedrawEvent();
-            }
-        }, 0, 50); // добавляет задачу в таймер каждый 50 миллисекунд перерисовывать игру
-        m_timer.schedule(new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                onModelUpdateEvent();
-            }
-        }, 0, 10);
         addMouseListener(new MouseAdapter()
         {
             @Override
@@ -64,6 +40,7 @@ public class GameVisualizer extends JPanel
                 repaint();
             }
         });
+
         setDoubleBuffered(true);
     }
 
@@ -73,8 +50,8 @@ public class GameVisualizer extends JPanel
      */
     protected void setTargetPosition(Point p)
     {
-        m_targetPositionX = p.x;
-        m_targetPositionY = p.y;
+        targetPositionX = p.x;
+        targetPositionY = p.y;
     }
 
     /**
@@ -90,7 +67,7 @@ public class GameVisualizer extends JPanel
      */
     protected void onModelUpdateEvent()
     {
-        robot.move(m_targetPositionX, m_targetPositionY, 10);
+        robot.move(targetPositionX, targetPositionY, duration);
     }
 
     /**
@@ -114,7 +91,7 @@ public class GameVisualizer extends JPanel
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
         drawRobot(g2d, round(robot.getX()), round(robot.getY()), robot.getDirection());
-        drawTarget(g2d, m_targetPositionX, m_targetPositionY);
+        drawTarget(g2d, targetPositionX, targetPositionY);
     }
 
     /**
@@ -182,5 +159,30 @@ public class GameVisualizer extends JPanel
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);
+    }
+
+    /**
+     * <p>Метод, который вызывается каждый раз для перерисовки, когда изменяется позиция робота</p>
+     */
+    private void onRobotPositionChanged() {
+        onRedrawEvent();
+    }
+
+    /**
+     * <p>Этот метод вызывается каждый раз, когда наблюдаемый объект изменяется</p>
+     * <p>
+     *     В программе этот метод вызывается тогда, когда наблюдаемый объект, который наследуется от <code>Observable</code>,
+     *     вызывает метод <code>notifyObservers</code>
+     * </p>
+     * @param o   - наблюдаемый объект, который уведомил об изменениях
+     * @param arg - аргумент, который был положен при вызове метода <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (robot.equals(o)) {
+            if (Robot.KEY_ROBOT_POSITION_CHANGED.equals(arg)) {
+                onRobotPositionChanged();
+            }
+        }
     }
 }

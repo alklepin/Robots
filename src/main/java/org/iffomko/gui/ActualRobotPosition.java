@@ -47,6 +47,10 @@ public class ActualRobotPosition extends JPanel implements Observer {
      */
     @Override
     public void update(Observable o, Object arg) {
+        if (o == null) {
+            return;
+        }
+
         if (robot.equals(o)) {
             if (Robot.KEY_ROBOT_POSITION_CHANGED.equals(arg)) {
                 onRobotPositionChanged();

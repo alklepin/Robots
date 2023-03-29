@@ -4,9 +4,10 @@ import org.iffomko.robot.Robot;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -22,6 +23,18 @@ public class GameWindow extends JInternalFrame implements Savable
     private final String prefix;
     private Map<String, String> state;
 
+    private final static Timer timer = initTimer();
+    private final static int durationRedraw = 10;
+
+    /**
+     * Создается таймер, который называется генератор событий
+     * @return - таймер
+     */
+    private static Timer initTimer() {
+        Timer timer = new Timer("event generator", true);
+        return timer;
+    }
+
     /**
      * Создает окно с игрой
      */
@@ -30,10 +43,18 @@ public class GameWindow extends JInternalFrame implements Savable
         super("Игровое поле", true, true, true, true);
 
         robot = new Robot();
-        gameVisualizer = new GameVisualizer(robot);
+        gameVisualizer = new GameVisualizer(robot, durationRedraw);
         actualRobotPosition = new ActualRobotPosition(robot);
 
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameVisualizer.onModelUpdateEvent();
+            }
+        }, 0, durationRedraw);
+
         robot.addObserver(actualRobotPosition);
+        robot.addObserver(gameVisualizer);
 
         setSize(new Dimension(400, 400));
 

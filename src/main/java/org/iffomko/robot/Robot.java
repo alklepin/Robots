@@ -100,22 +100,22 @@ public class Robot extends Observable {
 
         if (angleToTarget > direction) {
             angularVelocity = maxAngularVelocity;
-        } else if (angleToTarget < direction)
-        {
+        } else if (angleToTarget < direction) {
             angularVelocity = -maxAngularVelocity;
         }
 
         velocity = applyLimits(velocity, 0, maxVelocity); // нормализуем обычную скорость робота
+
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity); // Нормализуем угловую скорость робота, т. е. скорость при вращении
-        double newX = x + velocity *
-                (Math.sin(direction + angularVelocity * duration) - Math.sin(direction)) / angularVelocity;
-        if (!Double.isFinite(newX))
-        {
+
+        double newX = x + velocity * (Math.sin(direction + angularVelocity * duration) - Math.sin(direction)) / angularVelocity;
+
+        if (!Double.isFinite(newX)) {
             newX = x + velocity * duration * Math.cos(direction);
         }
-        double newY = y - velocity  *
-                (Math.cos(direction + angularVelocity * duration) -
-                        Math.cos(direction)) / angularVelocity;
+
+        double newY = y - velocity  * (Math.cos(direction + angularVelocity * duration) - Math.cos(direction)) / angularVelocity;
+
         if (!Double.isFinite(newY))
         {
             newY = y + velocity * duration * Math.sin(direction);
