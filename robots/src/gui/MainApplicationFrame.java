@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -47,7 +48,7 @@ public class MainApplicationFrame extends JFrame {
                 exitProgram();
             }
         });
-        ;
+
     }
 
     protected LogWindow createLogWindow() {
@@ -166,7 +167,7 @@ public class MainApplicationFrame extends JFrame {
 
     public void exitProgram() {
         if (JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to close this window?", "Close Window?",
+                "Вы уверены, что хотите выйти?", "Закрыть окно?",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
             System.exit(0);
