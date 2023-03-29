@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
 import java.util.Locale;
+import java.util.Optional;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -38,6 +39,8 @@ public class MainApplicationFrame extends JFrame {
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
+
+
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -166,10 +169,16 @@ public class MainApplicationFrame extends JFrame {
 
 
     public void exitProgram() {
-        if (JOptionPane.showConfirmDialog(this,
+        String[] options = new String[2];
+        options[0] = "Да";
+        options[1] = "Нет";
+        if (JOptionPane.showOptionDialog(this.getContentPane(),
                 "Вы уверены, что хотите выйти?", "Закрыть окно?",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION) {
+                0,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                options,
+                null) == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
     }
