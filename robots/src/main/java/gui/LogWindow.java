@@ -1,5 +1,10 @@
 package gui;
 
+
+import log.LogChangeListener;
+import log.LogEntry;
+import log.LogWindowSource;
+
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
@@ -7,16 +12,13 @@ import java.awt.TextArea;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import log.LogChangeListener;
-import log.LogEntry;
-import log.LogWindowSource;
 
 public class LogWindow extends JInternalFrame implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
-    public LogWindow(LogWindowSource logSource) 
+    public LogWindow(LogWindowSource logSource)
     {
         super("Протокол работы", true, true, true, true);
         m_logSource = logSource;
