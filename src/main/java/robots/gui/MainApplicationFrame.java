@@ -66,6 +66,8 @@ public class MainApplicationFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
                 saveConfiguration();
+                gameWindow.dispose();
+                logWindow.dispose();
                 System.exit(0);
             }
         });
@@ -77,11 +79,15 @@ public class MainApplicationFrame extends JFrame {
         json.put("gameWindowY", gameWindow.getY());
         json.put("gameWindowWidth", gameWindow.getWidth());
         json.put("gameWindowHeight", gameWindow.getHeight());
+        json.put("gameWindowisIcon", gameWindow.isIcon());
+
 
         json.put("logWindowX", logWindow.getX());
         json.put("logWindowY", logWindow.getY());
         json.put("logWindowWidth", logWindow.getWidth());
         json.put("logWindowHeight", logWindow.getHeight());
+        json.put("logWindowisIcon", logWindow.isIcon());
+
 
         // Save JSON to user home directory
         String userHomeDir = System.getProperty("user.home");
@@ -106,6 +112,20 @@ public class MainApplicationFrame extends JFrame {
         logWindow.setSize(((Long) config.get("logWindowWidth")).intValue(), ((Long) config.get("logWindowHeight")).intValue());
         gameWindow.setLocation(((Long) config.get("gameWindowX")).intValue(), ((Long) config.get("gameWindowY")).intValue());
         logWindow.setLocation(((Long) config.get("logWindowX")).intValue(), ((Long) config.get("logWindowY")).intValue());
+        if ((Boolean) config.get("gameWindowisIcon")) {
+            try {
+                gameWindow.setIcon(true);
+            } catch (java.beans.PropertyVetoException e) {
+                e.printStackTrace();
+            }
+        }
+        if ((Boolean) config.get("logWindowisIcon")) {
+            try {
+                logWindow.setIcon(true);
+            } catch (java.beans.PropertyVetoException e) {
+                e.printStackTrace();
+            }
+        }
 
     }
 
