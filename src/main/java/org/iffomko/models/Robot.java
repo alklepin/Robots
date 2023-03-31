@@ -1,4 +1,4 @@
-package org.iffomko.robot;
+package org.iffomko.models;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -43,6 +43,10 @@ public class Robot extends Observable {
         double diffX = toX - fromX;
         double diffY = toY - fromY;
 
+        if (diffY == 0) {
+            return 0;
+        }
+
         return asNormalizedRadians(Math.atan2(diffY, diffX));
     }
 
@@ -71,11 +75,11 @@ public class Robot extends Observable {
     {
         while (angle < 0)
         {
-            angle += 2*Math.PI;
+            angle += 2 * Math.PI;
         }
-        while (angle >= 2*Math.PI)
+        while (angle >= 2 * Math.PI)
         {
-            angle -= 2*Math.PI;
+            angle -= 2 * Math.PI;
         }
         return angle;
     }
@@ -88,7 +92,7 @@ public class Robot extends Observable {
      */
     public void move(int targetPositionX, int targetPositionY, int duration)
     {
-        double distance = distance(targetPositionX, targetPositionY, x, y); // расстояние между точкой назначения
+        double distance = distance(targetPositionX, targetPositionY, x, y);
 
         if (distance < 0.5) {
             return;
@@ -98,26 +102,26 @@ public class Robot extends Observable {
         double angleToTarget = angleTo(x, y, targetPositionX, targetPositionY);
         double angularVelocity = 0;
 
-        if (angleToTarget > direction) {
+        // ToDo: ошибка в определении угловой скорости, поэтому нужно придумать, как сделать адекватный вариант
+
+        double angle = asNormalizedRadians(angleToTarget - direction);
+
+        if (angle < Math.PI / 2) {
             angularVelocity = maxAngularVelocity;
-        } else if (angleToTarget < direction) {
+        } else if (angle > Math.PI / 2) {
             angularVelocity = -maxAngularVelocity;
         }
 
-        velocity = applyLimits(velocity, 0, maxVelocity); // нормализуем обычную скорость робота
+        velocity = applyLimits(velocity, 0, maxVelocity);
+        angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
 
-        angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity); // Нормализуем угловую скорость робота, т. е. скорость при вращении
-
-        double newX = x + velocity * (Math.sin(direction + angularVelocity * duration) - Math.sin(direction)) / angularVelocity;
+        double newX = x + velocity / angularVelocity * (Math.sin(direction + angularVelocity * duration) - Math.sin(direction));
+        double newY = y - velocity / angularVelocity * (Math.cos(direction + angularVelocity * duration) - Math.cos(direction));
 
         if (!Double.isFinite(newX)) {
             newX = x + velocity * duration * Math.cos(direction);
         }
-
-        double newY = y - velocity  * (Math.cos(direction + angularVelocity * duration) - Math.cos(direction)) / angularVelocity;
-
-        if (!Double.isFinite(newY))
-        {
+        if (!Double.isFinite(newY)) {
             newY = y + velocity * duration * Math.sin(direction);
         }
 

@@ -1,6 +1,6 @@
 package org.iffomko.gui;
 
-import org.iffomko.robot.Robot;
+import org.iffomko.models.Robot;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,7 +62,7 @@ public class ActualRobotPosition extends JPanel implements Observer {
      * <p>Метод, который обрабатывает событие изменения позиции робота</p>
      */
     private void onRobotPositionChanged() {
-        text = "x: " + robot.getX() + ", y: " + robot.getY();
+        text = "x: " + ((int)robot.getX()) + ", y: " + ((int)robot.getY() + ", direction: " + ((int) (robot.getDirection() * 180 / Math.PI)));
         textField.setText(text);
     }
 }

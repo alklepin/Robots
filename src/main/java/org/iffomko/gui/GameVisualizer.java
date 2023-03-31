@@ -1,18 +1,17 @@
 package org.iffomko.gui;
 
-import org.iffomko.robot.Robot;
+import org.iffomko.models.Robot;
+import org.iffomko.models.Target;
 
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
 
 import javax.swing.JPanel;
 
@@ -22,13 +21,13 @@ import javax.swing.JPanel;
 public class GameVisualizer extends JPanel implements Observer
 {
     private final Robot robot;
+    private final Target target;
     private final int duration;
-    private volatile int targetPositionX = 150;
-    private volatile int targetPositionY = 100;
 
-    public GameVisualizer(Robot robot, int duration)
+    public GameVisualizer(Robot robot, Target target, int duration)
     {
         this.robot = robot;
+        this.target = target;
         this.duration = duration;
 
         addMouseListener(new MouseAdapter()
@@ -36,22 +35,12 @@ public class GameVisualizer extends JPanel implements Observer
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                setTargetPosition(e.getPoint());
+                target.setTargetPosition(e.getPoint());
                 repaint();
             }
         });
 
         setDoubleBuffered(true);
-    }
-
-    /**
-     * Устанавливает позицию для элемента, которому стремится робот
-     * @param p - точка, к которой робот стремится
-     */
-    protected void setTargetPosition(Point p)
-    {
-        targetPositionX = p.x;
-        targetPositionY = p.y;
     }
 
     /**
@@ -67,7 +56,7 @@ public class GameVisualizer extends JPanel implements Observer
      */
     protected void onModelUpdateEvent()
     {
-        robot.move(targetPositionX, targetPositionY, duration);
+        robot.move(target.getX(), target.getY(), duration);
     }
 
     /**
@@ -91,7 +80,7 @@ public class GameVisualizer extends JPanel implements Observer
         super.paint(g);
         Graphics2D g2d = (Graphics2D)g;
         drawRobot(g2d, round(robot.getX()), round(robot.getY()), robot.getDirection());
-        drawTarget(g2d, targetPositionX, targetPositionY);
+        drawTarget(g2d, target.getX(), target.getY());
     }
 
     /**
@@ -169,6 +158,13 @@ public class GameVisualizer extends JPanel implements Observer
     }
 
     /**
+     * <p>Метод, который вызывается каждый раз для перерисовки, когда изменяется позиция робота</p>
+     */
+    private void onTargetPositionChanged() {
+        onRedrawEvent();
+    }
+
+    /**
      * <p>Этот метод вызывается каждый раз, когда наблюдаемый объект изменяется</p>
      * <p>
      *     В программе этот метод вызывается тогда, когда наблюдаемый объект, который наследуется от <code>Observable</code>,
@@ -182,6 +178,11 @@ public class GameVisualizer extends JPanel implements Observer
         if (robot.equals(o)) {
             if (Robot.KEY_ROBOT_POSITION_CHANGED.equals(arg)) {
                 onRobotPositionChanged();
+            }
+        }
+        if (target.equals(o)) {
+            if (Target.KEY_TARGET_POSITION_CHANGED.equals(arg)) {
+                onTargetPositionChanged();
             }
         }
     }

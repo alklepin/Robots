@@ -1,11 +1,10 @@
 package org.iffomko.gui;
 
-import org.iffomko.robot.Robot;
+import org.iffomko.models.Robot;
+import org.iffomko.models.Target;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.util.*;
 
@@ -19,6 +18,7 @@ public class GameWindow extends JInternalFrame implements Savable
 {
     private final GameVisualizer gameVisualizer;
     private final Robot robot;
+    private final Target target;
     private final ActualRobotPosition actualRobotPosition;
     private final String prefix;
     private Map<String, String> state;
@@ -43,7 +43,8 @@ public class GameWindow extends JInternalFrame implements Savable
         super("Игровое поле", true, true, true, true);
 
         robot = new Robot();
-        gameVisualizer = new GameVisualizer(robot, durationRedraw);
+        target = new Target();
+        gameVisualizer = new GameVisualizer(robot, target, durationRedraw);
         actualRobotPosition = new ActualRobotPosition(robot);
 
         timer.schedule(new TimerTask() {
@@ -55,6 +56,7 @@ public class GameWindow extends JInternalFrame implements Savable
 
         robot.addObserver(actualRobotPosition);
         robot.addObserver(gameVisualizer);
+        target.addObserver(gameVisualizer);
 
         setSize(new Dimension(400, 400));
 
