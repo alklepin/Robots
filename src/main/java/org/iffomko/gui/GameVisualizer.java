@@ -158,7 +158,7 @@ public class GameVisualizer extends JPanel implements Observer
     }
 
     /**
-     * <p>Метод, который вызывается каждый раз для перерисовки, когда изменяется позиция робота</p>
+     * <p>Метод, который вызывается каждый раз для перерисовки, когда изменяется позиция точки назначения</p>
      */
     private void onTargetPositionChanged() {
         onRedrawEvent();
