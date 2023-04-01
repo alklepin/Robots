@@ -10,6 +10,7 @@ public class RobotsProgram {
   public static void main(String[] args) {
     try {
       System.out.println("I have managed to start project!");
+      //устанавливаем тему
       UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
 //        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -21,6 +22,7 @@ public class RobotsProgram {
       MainApplicationFrame frame = new MainApplicationFrame();
       frame.pack();
       frame.setVisible(true);
+      //разворачивает окно на весь экран
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     });
   }
