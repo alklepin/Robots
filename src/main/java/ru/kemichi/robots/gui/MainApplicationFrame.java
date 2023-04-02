@@ -165,7 +165,7 @@ public class MainApplicationFrame extends JFrame {
         );
 
         if (confirmed == JOptionPane.YES_OPTION) {
-            System.exit(0);
+            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
         }
     }
 
