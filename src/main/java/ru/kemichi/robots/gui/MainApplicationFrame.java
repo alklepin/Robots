@@ -31,9 +31,7 @@ public class MainApplicationFrame extends JFrame {
         //of the screen.
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-                screenSize.width - inset * 2,
-                screenSize.height - inset * 2);
+        setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
 
@@ -64,101 +62,77 @@ public class MainApplicationFrame extends JFrame {
         frame.setVisible(true);
     }
 
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-//
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-//
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-//
-//        return menuBar;
-//    }
-
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
+        JMenu lookAndFeelMenu = generateMenu("Режим отображения",
+                KeyEvent.VK_V,
+                "Управление режимом отображения приложения"
+        );
+        JMenuItem system = generateMenuItem("Системная схема",
+                KeyEvent.VK_S,
+                "system");
+        JMenuItem universal = generateMenuItem("Системная схема",
+                KeyEvent.VK_U,
+                "universal");
+        lookAndFeelMenu.add(system);
+        lookAndFeelMenu.add(universal);
 
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
+        JMenu testMenu = generateMenu("Тесты", KeyEvent.VK_T, "Тестовые команды");
+        JMenuItem logTest = generateMenuItem("Сообщение в лог", KeyEvent.VK_L, "log");
+        testMenu.add(logTest);
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
-
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
-
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
-            testMenu.add(addLogMessageItem);
-        }
-
-        JMenu actionsMenu = new JMenu("Действия");
-        actionsMenu.setMnemonic(KeyEvent.VK_A);
-        menuBar.add(actionsMenu);
-
-        {
-            JMenuItem quit = new JMenuItem("Закрыть", KeyEvent.VK_Q);
-            quit.addActionListener(event -> exitConfirmation());
-            actionsMenu.add(quit);
-        }
+        JMenu actionsMenu = generateMenu("Действия", KeyEvent.VK_A, "Дополнительные действия");
+        JMenuItem exit = generateMenuItem("Закрыть", KeyEvent.VK_Q, "quit");
+        actionsMenu.add(exit);
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         menuBar.add(actionsMenu);
+
         return menuBar;
+    }
+
+    private JMenu generateMenu(String menuName, int menuHotkey, String menuDescription) {
+        JMenu jMenu = new JMenu(menuName);
+        jMenu.setMnemonic(menuHotkey);
+        jMenu.getAccessibleContext().setAccessibleDescription(menuDescription);
+        return jMenu;
+    }
+
+    private JMenuItem generateMenuItem(String menuItemName, int menuItemMnemonic, String description) {
+        JMenuItem jMenuItem = new JMenuItem(menuItemName);
+        jMenuItem.setMnemonic(menuItemMnemonic);
+        jMenuItem.addActionListener(
+                (event) -> {
+                    switch (description) {
+                        case "system" -> {
+                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                            this.invalidate();
+                        }
+                        case "universal" -> {
+                            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                            this.invalidate();
+                        }
+                        case "log" -> Logger.debug("Новая строка");
+                        case "quit" -> exitConfirmation();
+                    }
+                }
+        );
+        return jMenuItem;
     }
 
     private void exitConfirmation() {
         Object[] choices = {"Да", "Нет"};
         Object defaultChoice = choices[0];
-        int confirmed = JOptionPane.showOptionDialog(
-                null,
+        int confirmed = JOptionPane.showOptionDialog(null,
                 "Вы действительно хотите выйти?",
                 "Выход из программы",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 choices,
-                defaultChoice
-        );
+                defaultChoice);
 
         if (confirmed == JOptionPane.YES_OPTION) {
             dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
@@ -169,8 +143,8 @@ public class MainApplicationFrame extends JFrame {
         try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        } catch (ClassNotFoundException | InstantiationException
-                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
             // just ignore
         }
     }
