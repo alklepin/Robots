@@ -1,4 +1,4 @@
-package gui;
+package ru.kemichi.robots.gui;
 
 import java.awt.Frame;
 
@@ -8,6 +8,7 @@ import javax.swing.UIManager;
 public class RobotsProgram
 {
     public static void main(String[] args) {
+//      ResourceBundle bundle = ResourceBundle.getBundle("resources". new Locale("ru", "RU"));
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");

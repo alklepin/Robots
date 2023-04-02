@@ -1,4 +1,4 @@
-package gui;
+package ru.kemichi.robots.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -18,7 +18,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import log.Logger;
+import ru.kemichi.robots.log.Logger;
 
 /**
  * Что требуется сделать:

@@ -1,4 +1,4 @@
-package gui;
+package ru.kemichi.robots.gui;
 
 import java.awt.BorderLayout;
 

@@ -1,4 +1,4 @@
-package log;
+package ru.kemichi.robots.log;
 
 public class LogEntry
 {
