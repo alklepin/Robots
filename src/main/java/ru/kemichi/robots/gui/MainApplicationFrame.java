@@ -12,8 +12,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
-import javax.swing.*;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -128,9 +126,7 @@ public class MainApplicationFrame extends JFrame {
 
         {
             JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
+            addLogMessageItem.addActionListener((event) -> Logger.debug("Новая строка"));
             testMenu.add(addLogMessageItem);
         }
 
