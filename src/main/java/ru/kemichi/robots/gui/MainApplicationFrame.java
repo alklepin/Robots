@@ -13,6 +13,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowEvent;
+import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -25,10 +26,12 @@ import ru.kemichi.robots.log.Logger;
  */
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final ResourceBundle bundle;
 
-    public MainApplicationFrame() {
+    public MainApplicationFrame(ResourceBundle defaultBundle) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
+        bundle = defaultBundle;
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
@@ -39,7 +42,7 @@ public class MainApplicationFrame extends JFrame {
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        GameWindow gameWindow = new GameWindow(bundle);
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
@@ -48,12 +51,12 @@ public class MainApplicationFrame extends JFrame {
     }
 
     protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), bundle);
         logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug(bundle.getString("protocolOK"));
         return logWindow;
     }
 
@@ -65,26 +68,30 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu lookAndFeelMenu = generateMenu("Режим отображения",
+        JMenu lookAndFeelMenu = generateMenu(bundle.getString("lookAndFeelMenu"),
                 KeyEvent.VK_V,
-                "Управление режимом отображения приложения"
+                bundle.getString("lookAndFeelMenuDescription")
         );
-        JMenuItem system = generateMenuItem("Системная схема",
+        JMenuItem system = generateMenuItem(bundle.getString("systemItem"),
                 KeyEvent.VK_S,
                 "system");
-        JMenuItem universal = generateMenuItem("Системная схема",
+        JMenuItem universal = generateMenuItem(bundle.getString("universalItem"),
                 KeyEvent.VK_U,
                 "universal");
         lookAndFeelMenu.add(system);
         lookAndFeelMenu.add(universal);
 
-        JMenu testMenu = generateMenu("Тесты", KeyEvent.VK_T, "Тестовые команды");
-        JMenuItem logTest = generateMenuItem("Сообщение в лог", KeyEvent.VK_L, "log");
+        JMenu testMenu = generateMenu(bundle.getString("testMenu"),
+                KeyEvent.VK_T,
+                bundle.getString("testMenuDescription"));
+        JMenuItem logTest = generateMenuItem(bundle.getString("logItem"), KeyEvent.VK_L, "log");
         testMenu.add(logTest);
 
-        JMenu actionsMenu = generateMenu("Действия", KeyEvent.VK_A, "Дополнительные действия");
-        JMenuItem exit = generateMenuItem("Закрыть", KeyEvent.VK_Q, "quit");
-        actionsMenu.add(exit);
+        JMenu actionsMenu = generateMenu(bundle.getString("actionsMenu"),
+                KeyEvent.VK_A,
+                bundle.getString("actionsMenuDescription"));
+        JMenuItem quit = generateMenuItem(bundle.getString("quitItem"), KeyEvent.VK_Q, "quit");
+        actionsMenu.add(quit);
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
@@ -114,7 +121,7 @@ public class MainApplicationFrame extends JFrame {
                             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                             this.invalidate();
                         }
-                        case "log" -> Logger.debug("Новая строка");
+                        case "log" -> Logger.debug(bundle.getString("logDefaultMessage"));
                         case "quit" -> exitConfirmation();
                     }
                 }
@@ -123,11 +130,11 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void exitConfirmation() {
-        Object[] choices = {"Да", "Нет"};
+        Object[] choices = {bundle.getString("yes"), bundle.getString("no")};
         Object defaultChoice = choices[0];
         int confirmed = JOptionPane.showOptionDialog(null,
-                "Вы действительно хотите выйти?",
-                "Выход из программы",
+                bundle.getString("quitQuestion"),
+                bundle.getString("quitTitle"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,

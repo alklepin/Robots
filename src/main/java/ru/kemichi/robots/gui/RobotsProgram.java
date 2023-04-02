@@ -1,6 +1,7 @@
 package ru.kemichi.robots.gui;
 
 import java.awt.Frame;
+import java.util.ResourceBundle;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -8,7 +9,7 @@ import javax.swing.UIManager;
 public class RobotsProgram
 {
     public static void main(String[] args) {
-//      ResourceBundle bundle = ResourceBundle.getBundle("resources". new Locale("ru", "RU"));
+      ResourceBundle defaultBundle = ResourceBundle.getBundle("resources");
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -18,7 +19,7 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
+        MainApplicationFrame frame = new MainApplicationFrame(defaultBundle);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
