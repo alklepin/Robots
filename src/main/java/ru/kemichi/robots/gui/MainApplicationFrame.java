@@ -77,36 +77,26 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu lookAndFeelMenu = generateMenu(bundle.getString("lookAndFeelMenu"),
-                KeyEvent.VK_V,
-                bundle.getString("lookAndFeelMenuDescription")
-        );
-        JMenuItem system = generateMenuItem(bundle.getString("systemItem"),
-                KeyEvent.VK_S,
-                "system");
-        JMenuItem universal = generateMenuItem(bundle.getString("universalItem"),
-                KeyEvent.VK_U,
-                "universal");
-        lookAndFeelMenu.add(system);
-        lookAndFeelMenu.add(universal);
+        addMenu(menuBar,
+                generateMenu(bundle.getString("lookAndFeelMenu"), KeyEvent.VK_V, bundle.getString("lookAndFeelMenuDescription")),
+                generateMenuItem(bundle.getString("systemItem"), KeyEvent.VK_S, Item.system),
+                generateMenuItem(bundle.getString("universalItem"), KeyEvent.VK_U, Item.universal));
+        addMenu(menuBar,
+                generateMenu(bundle.getString("testMenu"), KeyEvent.VK_T, bundle.getString("testMenuDescription")),
+                generateMenuItem(bundle.getString("logItem"), KeyEvent.VK_L, Item.log));
 
-        JMenu testMenu = generateMenu(bundle.getString("testMenu"),
-                KeyEvent.VK_T,
-                bundle.getString("testMenuDescription"));
-        JMenuItem logTest = generateMenuItem(bundle.getString("logItem"), KeyEvent.VK_L, "log");
-        testMenu.add(logTest);
-
-        JMenu actionsMenu = generateMenu(bundle.getString("actionsMenu"),
-                KeyEvent.VK_A,
-                bundle.getString("actionsMenuDescription"));
-        JMenuItem quit = generateMenuItem(bundle.getString("quitItem"), KeyEvent.VK_Q, "quit");
-        actionsMenu.add(quit);
-
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
-        menuBar.add(actionsMenu);
+        addMenu(menuBar,
+                generateMenu(bundle.getString("actionsMenu"), KeyEvent.VK_A, bundle.getString("actionsMenuDescription")),
+                generateMenuItem(bundle.getString("quitItem"), KeyEvent.VK_Q, Item.quit));
 
         return menuBar;
+    }
+
+    public void addMenu(JMenuBar menuBar, JMenu menu, JMenuItem... items) {
+        for (JMenuItem item : items) {
+            menu.add(item);
+        }
+        menuBar.add(menu);
     }
 
     private JMenu generateMenu(String menuName, int menuHotkey, String menuDescription) {
@@ -116,22 +106,24 @@ public class MainApplicationFrame extends JFrame {
         return jMenu;
     }
 
-    private JMenuItem generateMenuItem(String menuItemName, int menuItemMnemonic, String description) {
+    private JMenuItem generateMenuItem(String menuItemName, int menuItemMnemonic, Item description) {
         JMenuItem jMenuItem = new JMenuItem(menuItemName);
         jMenuItem.setMnemonic(menuItemMnemonic);
-        jMenuItem.addActionListener(
-                (event) -> {
+        jMenuItem.addActionListener((event) -> {
                     switch (description) {
-                        case "system" -> {
-                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        case system -> {
+                            Logger.debug("System");
+//                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                             this.invalidate();
+                            Logger.debug("System2");
                         }
-                        case "universal" -> {
+                        case universal -> {
                             setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                             this.invalidate();
                         }
-                        case "log" -> Logger.debug(bundle.getString("logDefaultMessage"));
-                        case "quit" -> exitConfirmation();
+                        case log -> Logger.debug(bundle.getString("logDefaultMessage"));
+                        case quit -> exitConfirmation();
+                        default -> throw new IllegalStateException("Unexpected value: " + description);
                     }
                 }
         );
@@ -139,7 +131,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void exitConfirmation() {
-        Object[] choices = {bundle.getString("yes"), bundle.getString("no")};
+        Object[] choices = {bundle.getString("quit"), bundle.getString("cancel")};
         Object defaultChoice = choices[0];
         int confirmed = JOptionPane.showOptionDialog(null,
                 bundle.getString("quitQuestion"),
