@@ -1,6 +1,6 @@
 package org.iffomko.gui;
 
-import org.iffomko.savers.ComponentSaver;
+import org.iffomko.savers.Savable;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -10,6 +10,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -44,6 +45,8 @@ public class GameVisualizer extends JPanel
 
     public GameVisualizer()
     {
+
+
         m_timer.schedule(new TimerTask()
         {
             @Override
