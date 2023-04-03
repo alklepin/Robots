@@ -24,6 +24,14 @@ import ru.kemichi.robots.log.Logger;
  * 1. Метод создания меню перегружен функционалом и трудно читается.
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  */
+
+enum Item {
+    system,
+    universal,
+    log,
+    quit
+}
+
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
@@ -31,6 +39,7 @@ public class MainApplicationFrame extends JFrame {
     public MainApplicationFrame(ResourceBundle defaultBundle) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
+
         bundle = defaultBundle;
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
