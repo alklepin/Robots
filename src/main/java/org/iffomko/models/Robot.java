@@ -102,8 +102,6 @@ public class Robot extends Observable {
         double angleToTarget = angleTo(x, y, targetPositionX, targetPositionY);
         double angularVelocity = 0;
 
-        // ToDo: ошибка в определении угловой скорости, поэтому нужно придумать, как сделать адекватный вариант
-
         double angle = asNormalizedRadians(angleToTarget - direction);
 
         if (angle < Math.PI / 2) {
