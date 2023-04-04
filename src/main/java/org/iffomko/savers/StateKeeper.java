@@ -37,7 +37,11 @@ public class StateKeeper {
      */
     public static StateKeeper getInstance() {
         if (stateKeeper == null) {
-            stateKeeper = new StateKeeper();
+            synchronized (StateKeeper.class) {
+                if (stateKeeper == null) {
+                    stateKeeper = new StateKeeper();
+                }
+            }
         }
 
         return stateKeeper;

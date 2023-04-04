@@ -1,38 +1,70 @@
 package org.iffomko.gui;
 
+import org.iffomko.models.Robot;
+import org.iffomko.models.Target;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
 import java.beans.PropertyVetoException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import javax.xml.stream.Location;
 
 /**
  * Окно с игрой
  */
 public class GameWindow extends JInternalFrame implements Savable
 {
-    private final GameVisualizer m_visualizer;
+    private final GameVisualizer gameVisualizer;
+    private final Robot robot;
+    private final Target target;
+    private final ActualRobotPosition actualRobotPosition;
     private final String prefix;
     private Map<String, String> state;
+
+    private final static Timer timer = initTimer();
+    private final static int durationRedraw = 10;
+
+    /**
+     * Создается таймер, который называется генератор событий
+     * @return - таймер
+     */
+    private static Timer initTimer() {
+        Timer timer = new Timer("event generator", true);
+        return timer;
+    }
 
     /**
      * Создает окно с игрой
      */
-    public GameWindow() 
+    public GameWindow()
     {
         super("Игровое поле", true, true, true, true);
 
-        m_visualizer = new GameVisualizer();
+        robot = new Robot();
+        target = new Target();
+        gameVisualizer = new GameVisualizer(robot, target, durationRedraw);
+        actualRobotPosition = new ActualRobotPosition(robot);
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                gameVisualizer.onModelUpdateEvent();
+            }
+        }, 0, durationRedraw);
+
+        robot.addObserver(actualRobotPosition);
+        robot.addObserver(gameVisualizer);
+        target.addObserver(gameVisualizer);
 
         setSize(new Dimension(400, 400));
 
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+
+        panel.add(actualRobotPosition, BorderLayout.NORTH);
+        panel.add(gameVisualizer, BorderLayout.CENTER);
+
         getContentPane().add(panel);
         pack();
 

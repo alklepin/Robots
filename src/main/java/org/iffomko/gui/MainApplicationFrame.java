@@ -25,9 +25,6 @@ public class MainApplicationFrame extends JFrame
 
         stateKeeper.restore();
 
-        String gameWindowName = "game";
-        String logWindowName = "log";
-
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
