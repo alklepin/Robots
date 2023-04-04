@@ -3,8 +3,14 @@ package gui;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
-import java.util.Optional;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+
+import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -20,6 +26,8 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame {
 
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final GameWindow gameWindow;
+    private final LogWindow logWindow;
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -32,22 +40,23 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-
-        LogWindow logWindow = createLogWindow();
+        logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
+        applyConfig();
 
-
+        saveConfiguration();
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
 
             @Override
             public void windowClosing(WindowEvent e) {
+                saveConfiguration();
                 exitProgram();
             }
         });
@@ -174,13 +183,67 @@ public class MainApplicationFrame extends JFrame {
         options[1] = "Нет";
         if (JOptionPane.showOptionDialog(this.getContentPane(),
                 "Вы уверены, что хотите выйти?", "Закрыть окно?",
-                0,
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
                 options,
                 null) == JOptionPane.YES_OPTION) {
             System.exit(0);
         }
+    }
+
+    protected void saveConfiguration() {
+        JSONObject json = new JSONObject();
+        json.put("gameWindowX", gameWindow  .getX());
+        json.put("gameWindowY", gameWindow.getY());
+        json.put("gameWindowWidth", gameWindow.getWidth());
+        json.put("gameWindowHeight", gameWindow.getHeight());
+
+        json.put("logWindowX", logWindow.getX());
+        json.put("logWindowY", logWindow.getY());
+        json.put("logWindowWidth", logWindow.getWidth());
+        json.put("logWindowHeight", logWindow.getHeight());
+
+        // Save JSON to user home directory
+        String userHomeDir = System.getProperty("user.home");
+        File robotsDir = new File(userHomeDir + "/.Robots");
+        if (!robotsDir.exists()) {
+            robotsDir.mkdir();
+        }
+        File configFile = new File(userHomeDir + "/.Robots/config.json");
+        try (FileWriter fileWriter = new FileWriter(configFile.getAbsolutePath())) {
+            fileWriter.write(json.toString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected void applyConfig() {
+        JSONObject config = readFromConfig();
+        if (config == null) {
+            return;
+        }
+        gameWindow.setSize(((Long) config.get("gameWindowWidth")).intValue(), ((Long) config.get("gameWindowHeight")).intValue());
+        logWindow.setSize(((Long) config.get("logWindowWidth")).intValue(), ((Long) config.get("logWindowHeight")).intValue());
+        gameWindow.setLocation(((Long) config.get("gameWindowX")).intValue(), ((Long) config.get("gameWindowY")).intValue());
+        logWindow.setLocation(((Long) config.get("logWindowX")).intValue(), ((Long) config.get("logWindowY")).intValue());
+
+    }
+
+    protected JSONObject readFromConfig() {
+
+        File configFile = new File(System.getProperty("user.home") + "/.Robots/config.json");
+        JSONParser parser = new JSONParser();
+        if (configFile.exists()) {
+            try {
+                return (JSONObject) parser.parse(new    FileReader(configFile));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
     }
 
     private void setLookAndFeel(String className) {
