@@ -110,29 +110,43 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+        menuBar.add(createLookAndFeelMenu());
+        menuBar.add(createTestMenu());
+        menuBar.add(createExitMenu());
+        return menuBar;
+    }
+
+
+    private JMenu createLookAndFeelMenu() {
+    JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
+        lookAndFeelMenu.getAccessibleContext().
+
+    setAccessibleDescription(
                 "Управление режимом отображения приложения");
 
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
+    {
+        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+        systemLookAndFeel.addActionListener((event) -> {
+            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            this.invalidate();
+        });
+        lookAndFeelMenu.add(systemLookAndFeel);
+    }
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
+    {
+        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
+        crossplatformLookAndFeel.addActionListener((event) -> {
+            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            this.invalidate();
+        });
+        lookAndFeelMenu.add(crossplatformLookAndFeel);
+    }
+    return lookAndFeelMenu;
 
+}
+
+    private JMenu createTestMenu() {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
@@ -145,36 +159,35 @@ public class MainApplicationFrame extends JFrame {
             });
             testMenu.add(addLogMessageItem);
         }
+        return testMenu;
+    }
 
-        JMenu exitMenu = new JMenu("Выход");
+
+    private JMenu createExitMenu() {
+    JMenu exitMenu = new JMenu("Выход");
         exitMenu.setMnemonic(KeyEvent.VK_E);
         exitMenu.getAccessibleContext().setAccessibleDescription(
                 "Выход из приложения");
 
-        {
-            exitMenu.addMenuListener(new MenuListener() {
-                @Override
-                public void menuSelected(MenuEvent e) {
-                    exitProgram();
-                }
+    {
+        exitMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                exitProgram();
+            }
 
-                @Override
-                public void menuDeselected(MenuEvent e) {
+            @Override
+            public void menuDeselected(MenuEvent e) {
 
-                }
+            }
 
-                @Override
-                public void menuCanceled(MenuEvent e) {
+            @Override
+            public void menuCanceled(MenuEvent e) {
 
-                }
-            });
-        }
-
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
-        menuBar.add(exitMenu);
-        return menuBar;
+            }
+        });
     }
+    return exitMenu;}
 
 
     public void exitProgram() {
