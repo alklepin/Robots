@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.lang.invoke.LambdaConversionException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
@@ -26,8 +27,8 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame {
 
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final GameWindow gameWindow;
-    private final LogWindow logWindow;
+    private final GameWindow gameWindow = new GameWindow();
+    private final LogWindow logWindow = createLogWindow();
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -40,18 +41,14 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-        logWindow = createLogWindow();
-        addWindow(logWindow);
-
-        gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
-        addWindow(gameWindow);
+        addWindow(logWindow, 200, 200);
+        addWindow(gameWindow, 400, 400);
 
         applyConfig();
 
         saveConfiguration();
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
 
             @Override
@@ -73,7 +70,8 @@ public class MainApplicationFrame extends JFrame {
         return logWindow;
     }
 
-    protected void addWindow(JInternalFrame frame) {
+    protected void addWindow(JInternalFrame frame, int height, int width) {
+        frame.setSize(width, height);
         desktopPane.add(frame);
         frame.setVisible(true);
     }
@@ -113,38 +111,42 @@ public class MainApplicationFrame extends JFrame {
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
         menuBar.add(createExitMenu());
+
         return menuBar;
     }
 
 
     private JMenu createLookAndFeelMenu() {
-    JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().
 
-    setAccessibleDescription(
-                "Управление режимом отображения приложения");
+                setAccessibleDescription(
+                        "Управление режимом отображения приложения");
 
-    {
-        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            this.invalidate();
-        });
-        lookAndFeelMenu.add(systemLookAndFeel);
+
+        lookAndFeelMenu.add(
+                createJMenuItem("Системная схема",
+                        KeyEvent.VK_S,
+                        UIManager.getSystemLookAndFeelClassName()));
+
+
+        lookAndFeelMenu.add(createJMenuItem("Универсальная схема",
+                KeyEvent.VK_S,
+                UIManager.getCrossPlatformLookAndFeelClassName()));
+
+        return lookAndFeelMenu;
+
     }
 
-    {
-        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-        crossplatformLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+    private JMenuItem createJMenuItem(String name, int key, String action) {
+        JMenuItem item = new JMenuItem(name, key);
+        item.addActionListener((event) -> {
+            setLookAndFeel(action);
             this.invalidate();
         });
-        lookAndFeelMenu.add(crossplatformLookAndFeel);
+        return item;
     }
-    return lookAndFeelMenu;
-
-}
 
     private JMenu createTestMenu() {
         JMenu testMenu = new JMenu("Тесты");
@@ -164,30 +166,29 @@ public class MainApplicationFrame extends JFrame {
 
 
     private JMenu createExitMenu() {
-    JMenu exitMenu = new JMenu("Выход");
+        JMenu exitMenu = new JMenu("Выход");
         exitMenu.setMnemonic(KeyEvent.VK_E);
         exitMenu.getAccessibleContext().setAccessibleDescription(
                 "Выход из приложения");
 
-    {
-        exitMenu.addMenuListener(new MenuListener() {
-            @Override
-            public void menuSelected(MenuEvent e) {
-                exitProgram();
-            }
 
-            @Override
-            public void menuDeselected(MenuEvent e) {
+            exitMenu.addMenuListener(new MenuListener() {
+                @Override
+                public void menuSelected(MenuEvent e) {
+                    exitProgram();
+                }
 
-            }
+                @Override
+                public void menuDeselected(MenuEvent e) {
+                }
 
-            @Override
-            public void menuCanceled(MenuEvent e) {
+                @Override
+                public void menuCanceled(MenuEvent e) {
+                }
+            });
 
-            }
-        });
+        return exitMenu;
     }
-    return exitMenu;}
 
 
     public void exitProgram() {
@@ -207,7 +208,7 @@ public class MainApplicationFrame extends JFrame {
 
     protected void saveConfiguration() {
         JSONObject json = new JSONObject();
-        json.put("gameWindowX", gameWindow  .getX());
+        json.put("gameWindowX", gameWindow.getX());
         json.put("gameWindowY", gameWindow.getY());
         json.put("gameWindowWidth", gameWindow.getWidth());
         json.put("gameWindowHeight", gameWindow.getHeight());
@@ -249,7 +250,7 @@ public class MainApplicationFrame extends JFrame {
         JSONParser parser = new JSONParser();
         if (configFile.exists()) {
             try {
-                return (JSONObject) parser.parse(new    FileReader(configFile));
+                return (JSONObject) parser.parse(new FileReader(configFile));
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ParseException e) {
