@@ -5,14 +5,6 @@ import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.*;
-
-import org.json.simple.parser.JSONParser;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
-
-import java.io.FileWriter;
-import java.io.IOException;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -49,102 +41,32 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
+        Configurator configurator = new Configurator();
+        configurator.loadConfiguration();
 
         logWindow = createLogWindow();
         addWindow(logWindow);
+        configurator.loadWindowConfiguration(logWindow, "logWindow");
 
 
         gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
+        configurator.loadWindowConfiguration(gameWindow, "gameWindow");
 
-        applyConfig();
-
-        saveConfiguration();
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                saveConfiguration();
+                configurator.saveWindowConfiguration(gameWindow, "gameWindow");
+                configurator.saveWindowConfiguration(logWindow, "logWindow");
+                configurator.saveConfiguration();
                 gameWindow.dispose();
                 logWindow.dispose();
                 System.exit(0);
             }
         });
     }
-
-    protected void saveConfiguration() {
-        JSONObject json = new JSONObject();
-        json.put("gameWindowX", gameWindow.getX());
-        json.put("gameWindowY", gameWindow.getY());
-        json.put("gameWindowWidth", gameWindow.getWidth());
-        json.put("gameWindowHeight", gameWindow.getHeight());
-        json.put("gameWindowisIcon", gameWindow.isIcon());
-
-
-        json.put("logWindowX", logWindow.getX());
-        json.put("logWindowY", logWindow.getY());
-        json.put("logWindowWidth", logWindow.getWidth());
-        json.put("logWindowHeight", logWindow.getHeight());
-        json.put("logWindowisIcon", logWindow.isIcon());
-
-
-        // Save JSON to user home directory
-        String userHomeDir = System.getProperty("user.home");
-        File robotsDir = new File(userHomeDir + "/.Robots");
-        if (!robotsDir.exists()) {
-            robotsDir.mkdir();
-        }
-        File configFile = new File(userHomeDir + "/.Robots/config.json");
-        try (FileWriter fileWriter = new FileWriter(configFile.getAbsolutePath())) {
-            fileWriter.write(json.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected void applyConfig() {
-        JSONObject config = readFromConfig();
-        if (config == null) {
-            return;
-        }
-        gameWindow.setSize(((Long) config.get("gameWindowWidth")).intValue(), ((Long) config.get("gameWindowHeight")).intValue());
-        logWindow.setSize(((Long) config.get("logWindowWidth")).intValue(), ((Long) config.get("logWindowHeight")).intValue());
-        gameWindow.setLocation(((Long) config.get("gameWindowX")).intValue(), ((Long) config.get("gameWindowY")).intValue());
-        logWindow.setLocation(((Long) config.get("logWindowX")).intValue(), ((Long) config.get("logWindowY")).intValue());
-        if ((Boolean) config.get("gameWindowisIcon")) {
-            try {
-                gameWindow.setIcon(true);
-            } catch (java.beans.PropertyVetoException e) {
-                e.printStackTrace();
-            }
-        }
-        if ((Boolean) config.get("logWindowisIcon")) {
-            try {
-                logWindow.setIcon(true);
-            } catch (java.beans.PropertyVetoException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    protected JSONObject readFromConfig() {
-
-        File configFile = new File(System.getProperty("user.home") + "/.Robots/config.json");
-        JSONParser parser = new JSONParser();
-        if (configFile.exists()) {
-            try {
-                return (JSONObject) parser.parse(new FileReader(configFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
