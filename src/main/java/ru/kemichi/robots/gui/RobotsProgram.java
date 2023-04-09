@@ -9,7 +9,6 @@ import javax.swing.UIManager;
 public class RobotsProgram
 {
     public static void main(String[] args) {
-      ResourceBundle defaultBundle = ResourceBundle.getBundle("resources");
       try {
         UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 //        UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
@@ -19,7 +18,7 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame(defaultBundle);
+        MainApplicationFrame frame = new MainApplicationFrame(ResourceBundle.getBundle("resources"), 50);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
