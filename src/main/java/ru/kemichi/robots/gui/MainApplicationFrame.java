@@ -2,6 +2,7 @@ package ru.kemichi.robots.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JDesktopPane;
@@ -25,13 +26,6 @@ import ru.kemichi.robots.log.Logger;
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  */
 
-enum Item {
-    system,
-    universal,
-    log,
-    quit
-}
-
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
@@ -48,6 +42,10 @@ public class MainApplicationFrame extends JFrame {
 
         addWindow(createLogWindow());
 
+
+//        GameWindow gameWindow = new GameWindow(bundle);
+//        gameWindow.setSize(400, 400);
+//        addWindow(gameWindow);
         addWindow(new GameWindow(bundle, 400, 400));
 
         setJMenuBar(generateMenuBar());
@@ -72,22 +70,69 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        addMenu(menuBar,
-                generateMenu(bundle.getString("lookAndFeelMenu"), KeyEvent.VK_V, bundle.getString("lookAndFeelMenuDescription")),
-                generateMenuItem(bundle.getString("systemItem"), KeyEvent.VK_S, Item.system),
-                generateMenuItem(bundle.getString("universalItem"), KeyEvent.VK_U, Item.universal));
-        addMenu(menuBar,
-                generateMenu(bundle.getString("testMenu"), KeyEvent.VK_T, bundle.getString("testMenuDescription")),
-                generateMenuItem(bundle.getString("logItem"), KeyEvent.VK_L, Item.log));
-
-        addMenu(menuBar,
-                generateMenu(bundle.getString("actionsMenu"), KeyEvent.VK_A, bundle.getString("actionsMenuDescription")),
-                generateMenuItem(bundle.getString("quitItem"), KeyEvent.VK_Q, Item.quit));
+        addThemeMenu(menuBar);
+        addTestMenu(menuBar);
+        addActionsMenu(menuBar);
 
         return menuBar;
     }
 
-    public void addMenu(JMenuBar menuBar, JMenu menu, JMenuItem... items) {
+    private void addThemeMenu(JMenuBar menuBar) {
+        addMenu(
+                menuBar,
+                generateMenu(bundle.getString("lookAndFeelMenu"),
+                        KeyEvent.VK_V,
+                        bundle.getString("lookAndFeelMenuDescription")
+                ),
+                generateMenuItem(
+                        bundle.getString("systemItem"),
+                        KeyEvent.VK_S, (event) -> {
+                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                            this.invalidate();
+                        }),
+                generateMenuItem(
+                        bundle.getString("universalItem"),
+                        KeyEvent.VK_U,
+                        (event) -> {
+                            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                            this.invalidate();
+                        })
+        );
+    }
+
+    private void addTestMenu(JMenuBar menuBar) {
+        addMenu(
+                menuBar,
+                generateMenu(
+                        bundle.getString("testMenu"),
+                        KeyEvent.VK_T,
+                        bundle.getString("testMenuDescription")
+                ),
+                generateMenuItem(
+                        bundle.getString("logItem"),
+                        KeyEvent.VK_L,
+                        (event) -> Logger.debug(bundle.getString("logDefaultMessage"))
+                )
+        );
+    }
+
+    private void addActionsMenu (JMenuBar menuBar) {
+        addMenu(
+                menuBar,
+                generateMenu(
+                        bundle.getString("actionsMenu"),
+                        KeyEvent.VK_A,
+                        bundle.getString("actionsMenuDescription")
+                ),
+                generateMenuItem(
+                        bundle.getString("quitItem"),
+                        KeyEvent.VK_Q,
+                        (event) -> exitConfirmation()
+                )
+        );
+    }
+
+    private void addMenu(JMenuBar menuBar, JMenu menu, JMenuItem... items) {
         for (JMenuItem item : items) {
             menu.add(item);
         }
@@ -101,27 +146,10 @@ public class MainApplicationFrame extends JFrame {
         return jMenu;
     }
 
-    private JMenuItem generateMenuItem(String menuItemName, int menuItemMnemonic, Item description) {
+    private JMenuItem generateMenuItem(String menuItemName, int menuItemMnemonic, ActionListener actionListener) {
         JMenuItem jMenuItem = new JMenuItem(menuItemName);
         jMenuItem.setMnemonic(menuItemMnemonic);
-        jMenuItem.addActionListener((event) -> {
-                    switch (description) {
-                        case system -> {
-                            Logger.debug("System");
-//                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                            this.invalidate();
-                            Logger.debug("System2");
-                        }
-                        case universal -> {
-                            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                            this.invalidate();
-                        }
-                        case log -> Logger.debug(bundle.getString("logDefaultMessage"));
-                        case quit -> exitConfirmation();
-                        default -> throw new IllegalStateException("Unexpected value: " + description);
-                    }
-                }
-        );
+        jMenuItem.addActionListener(actionListener);
         return jMenuItem;
     }
 
