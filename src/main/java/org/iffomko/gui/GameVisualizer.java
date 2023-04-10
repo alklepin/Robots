@@ -30,16 +30,6 @@ public class GameVisualizer extends JPanel implements Observer
         this.target = target;
         this.duration = duration;
 
-        addMouseListener(new MouseAdapter()
-        {
-            @Override
-            public void mouseClicked(MouseEvent e)
-            {
-                target.setTargetPosition(e.getPoint());
-                repaint();
-            }
-        });
-
         setDoubleBuffered(true);
     }
 

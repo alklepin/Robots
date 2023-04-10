@@ -3,6 +3,10 @@ package org.iffomko.models;
 import java.awt.*;
 import java.util.Observable;
 
+
+/**
+ * <p>Модель цели, к которой стремится робот</p>
+ */
 public class Target extends Observable {
     private volatile int x = 150;
     private volatile int y = 100;

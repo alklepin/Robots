@@ -85,25 +85,6 @@ public class Robot extends Observable {
     }
 
     /**
-     * <p>Формирует и возвращает угловую скорость исходя из угла между роботом и точкой назначения</p>
-     * @param angleToTarget - угол между роботом и точкой назначения
-     * @return - угловая скорость робота
-     */
-    private double initAngularVelocity(double angleToTarget) {
-        double angularVelocity = maxVelocity;
-
-        double angle = asNormalizedRadians(angleToTarget - direction);
-
-        if (angle < Math.PI / 2 ) {
-            angularVelocity = maxAngularVelocity;
-        } else if (angle > Math.PI / 2) {
-            angularVelocity = -maxAngularVelocity;
-        }
-
-        return applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-    }
-
-    /**
      * Передвигает робота
      * @param targetPositionX - координата к конечной точки по оси OX
      * @param targetPositionY - координата к конечной точки по оси OY
@@ -119,21 +100,32 @@ public class Robot extends Observable {
 
         double velocity = maxVelocity;
         double angleToTarget = angleTo(x, y, targetPositionX, targetPositionY);
-        double angularVelocity = initAngularVelocity(angleToTarget);
+        double angularVelocity = 0;
 
-        double newX = x + velocity / angularVelocity * (Math.sin(direction + angularVelocity * duration) - Math.sin(direction));
-        double newY = y - velocity / angularVelocity * (Math.cos(direction + angularVelocity * duration) - Math.cos(direction));
+        if (angleToTarget > direction) {
+            angularVelocity = maxAngularVelocity;
+        }
+
+        if (angleToTarget < direction) {
+            angularVelocity = -maxAngularVelocity;
+        }
+
+        velocity = applyLimits(velocity, 0, maxVelocity);
+        angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
+        double newX = x + velocity / angularVelocity * (Math.sin(direction  + angularVelocity * duration) - Math.sin(direction));
 
         if (!Double.isFinite(newX)) {
             newX = x + velocity * duration * Math.cos(direction);
         }
+
+        double newY = y - velocity / angularVelocity * (Math.cos(direction  + angularVelocity * duration) - Math.cos(direction));
+
         if (!Double.isFinite(newY)) {
             newY = y + velocity * duration * Math.sin(direction);
         }
-
         x = newX;
         y = newY;
-        direction = asNormalizedRadians(direction + angularVelocity * duration);
+        direction = asNormalizedRadians(direction + angularVelocity * duration);;
 
         setChanged();
         notifyObservers(KEY_ROBOT_POSITION_CHANGED);

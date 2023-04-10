@@ -5,6 +5,8 @@ import org.iffomko.models.Target;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyVetoException;
 import java.util.*;
 
@@ -19,7 +21,7 @@ public class GameWindow extends JInternalFrame implements Savable
     private final GameVisualizer gameVisualizer;
     private final Robot robot;
     private final Target target;
-    private final ActualRobotPosition actualRobotPosition;
+    private final RobotPositionPanel robotPositionPanel;
     private final String prefix;
     private Map<String, String> state;
 
@@ -45,7 +47,7 @@ public class GameWindow extends JInternalFrame implements Savable
         robot = new Robot();
         target = new Target();
         gameVisualizer = new GameVisualizer(robot, target, durationRedraw);
-        actualRobotPosition = new ActualRobotPosition(robot);
+        robotPositionPanel = new RobotPositionPanel(robot);
 
         timer.schedule(new TimerTask() {
             @Override
@@ -54,7 +56,22 @@ public class GameWindow extends JInternalFrame implements Savable
             }
         }, 0, durationRedraw);
 
-        robot.addObserver(actualRobotPosition);
+        addMouseListener(new MouseAdapter()
+        {
+            @Override
+            public void mouseClicked(MouseEvent e)
+            {
+                target.setTargetPosition(new Point(
+                        e.getX() - (getWidth() - gameVisualizer.getWidth()) / 2,
+                        e.getY() + (getHeight() - gameVisualizer.getHeight() - robotPositionPanel.getHeight()) / 4
+                                - robotPositionPanel.getHeight()
+                                - (getHeight() - gameVisualizer.getHeight() - robotPositionPanel.getHeight()))
+                );
+                repaint();
+            }
+        });
+
+        robot.addObserver(robotPositionPanel);
         robot.addObserver(gameVisualizer);
         target.addObserver(gameVisualizer);
 
@@ -62,7 +79,7 @@ public class GameWindow extends JInternalFrame implements Savable
 
         JPanel panel = new JPanel(new BorderLayout());
 
-        panel.add(actualRobotPosition, BorderLayout.NORTH);
+        panel.add(robotPositionPanel, BorderLayout.NORTH);
         panel.add(gameVisualizer, BorderLayout.CENTER);
 
         getContentPane().add(panel);

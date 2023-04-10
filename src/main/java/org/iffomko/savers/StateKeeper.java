@@ -7,7 +7,7 @@ import java.util.*;
  * <p>Хранит в себе состояние всех настроек с префиксами и умеет сохранять свое состояние в файл</p>
  */
 public class StateKeeper {
-    private static StateKeeper stateKeeper = null;
+    private static StateKeeper instance = null;
     private final Map<String, String> state;
 
     /**
@@ -36,15 +36,15 @@ public class StateKeeper {
      * @return - ссылка на единственный объект класса StateKeeper в памяти
      */
     public static StateKeeper getInstance() {
-        if (stateKeeper == null) {
+        if (instance == null) {
             synchronized (StateKeeper.class) {
-                if (stateKeeper == null) {
-                    stateKeeper = new StateKeeper();
+                if (instance == null) {
+                    instance = new StateKeeper();
                 }
             }
         }
 
-        return stateKeeper;
+        return instance;
     }
 
     /**

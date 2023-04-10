@@ -10,7 +10,7 @@ import java.util.Observer;
 /**
  * <p>Окно, которое содержит в себе актуальные координаты робота</p>
  */
-public class ActualRobotPosition extends JPanel implements Observer {
+public class RobotPositionPanel extends JPanel implements Observer {
     private final JTextArea textField;
     private String text = "";
     private final Robot robot;
@@ -18,7 +18,7 @@ public class ActualRobotPosition extends JPanel implements Observer {
     /**
      * @param robot - модель робота, за которой мы наблюдаем
      */
-    public ActualRobotPosition(Robot robot) {
+    public RobotPositionPanel(Robot robot) {
         textField = new JTextArea();
         textField.setEditable(false);
         textField.setBackground(Color.getColor("#333"));
@@ -62,7 +62,9 @@ public class ActualRobotPosition extends JPanel implements Observer {
      * <p>Метод, который обрабатывает событие изменения позиции робота</p>
      */
     private void onRobotPositionChanged() {
-        text = "x: " + ((int)robot.getX()) + ", y: " + ((int)robot.getY() + ", direction: " + ((int) (robot.getDirection() * 180 / Math.PI)));
+        text = "x: " + ((int)robot.getX()) +
+                ", y: " + ((int)robot.getY() +
+                ", direction: " + ((int) (robot.getDirection() * 180 / Math.PI)));
         textField.setText(text);
     }
 }
