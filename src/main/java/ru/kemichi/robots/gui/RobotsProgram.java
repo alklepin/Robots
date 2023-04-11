@@ -1,6 +1,7 @@
-package gui;
+package ru.kemichi.robots.gui;
 
 import java.awt.Frame;
+import java.util.ResourceBundle;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -17,7 +18,7 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
+        MainApplicationFrame frame = new MainApplicationFrame(ResourceBundle.getBundle("resources"), 50);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
