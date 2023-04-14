@@ -38,32 +38,30 @@ public class MainApplicationFrame extends JFrame {
         setBounds(inset, inset,
                 screenSize.width - inset * 2,
                 screenSize.height - inset * 2);
-
         setContentPane(desktopPane);
 
         Configurator configurator = new Configurator();
-        configurator.loadConfiguration();
 
         logWindow = createLogWindow();
         addWindow(logWindow);
-        configurator.loadWindowConfiguration(logWindow, "logWindow");
-
+        logWindow.setConfigurationSavePath("logWindow/config.json");
+        configurator.addConfigurable(logWindow);
+        configurator.loadConfiguration(logWindow);
 
         gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
         addWindow(gameWindow);
-        configurator.loadWindowConfiguration(gameWindow, "gameWindow");
+        gameWindow.setConfigurationSavePath("gameWindow/config.json");
+        configurator.addConfigurable(gameWindow);
+        configurator.loadConfiguration(gameWindow);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                configurator.saveWindowConfiguration(gameWindow, "gameWindow");
-                configurator.saveWindowConfiguration(logWindow, "logWindow");
-                configurator.saveConfiguration();
-                gameWindow.dispose();
-                logWindow.dispose();
-                System.exit(0);
+            configurator.saveConfigurations();
+            gameWindow.dispose();
+            logWindow.dispose();
+            System.exit(0);
             }
         });
     }
