@@ -112,6 +112,7 @@ public class Robot extends Observable {
 
         velocity = applyLimits(velocity, 0, maxVelocity);
         angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
+
         double newX = x + velocity / angularVelocity * (Math.sin(direction  + angularVelocity * duration) - Math.sin(direction));
 
         if (!Double.isFinite(newX)) {
@@ -123,6 +124,7 @@ public class Robot extends Observable {
         if (!Double.isFinite(newY)) {
             newY = y + velocity * duration * Math.sin(direction);
         }
+
         x = newX;
         y = newY;
         direction = asNormalizedRadians(direction + angularVelocity * duration);;
