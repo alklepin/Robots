@@ -67,13 +67,13 @@ public class Notes<Type> implements Iterable<Type> {
          * @return - элемент коллекции
          */
         private LinkedElement<Type> findNext() {
-            LinkedElement<Type> next = this.next;
+            LinkedElement<Type> item = this.next;
 
-            while (next != null && !next.exists && next.next != null) {
-                next = next.next;
+            while (!item.exists && item.next != null) {
+                this.next = item = this.next.next;
             }
 
-            return next;
+            return item;
         }
 
         /**
