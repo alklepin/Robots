@@ -62,6 +62,13 @@ public class MainApplicationFrame extends JFrame {
         return logWindow;
     }
 
+    protected GameWindow createGamewindow() {
+        GameWindow gameWindow = new GameWindow(bundle, 1200, 800);
+        gameWindow.setLocation(300, 10);
+        gameWindow.pack();
+        return gameWindow;
+    }
+
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
