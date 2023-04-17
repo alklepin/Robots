@@ -36,13 +36,13 @@ public class Notes<Type> implements Iterable<Type> {
      * @param <Type> - типа значения для элемента в коллекции
      */
     private static class LinkedElement<Type> {
-        Type value;
-        boolean exists;
+        volatile Type value;
+        volatile boolean exists;
 
-        int index;
+        volatile int index;
 
-        LinkedElement<Type> prev;
-        LinkedElement<Type> next;
+        volatile LinkedElement<Type> prev;
+        volatile LinkedElement<Type> next;
     }
 
     /**
@@ -52,6 +52,8 @@ public class Notes<Type> implements Iterable<Type> {
     private static class NotesIterator<Type> implements Iterator<Type> {
         private LinkedElement<Type> next;
         private LinkedElement<Type> current;
+
+        private final Semaphore SEMAPHORE = new Semaphore(1, true);
 
         /**
          * <p>Создает и инициализирует объект итератор</p>
@@ -67,11 +69,20 @@ public class Notes<Type> implements Iterable<Type> {
          * @return - элемент коллекции
          */
         private LinkedElement<Type> findNext() {
+            try {
+                SEMAPHORE.acquire();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
             LinkedElement<Type> item = this.next;
 
             while (!item.exists && item.next != null) {
                 this.next = item = this.next.next;
             }
+
+            SEMAPHORE.release();
 
             return item;
         }
@@ -124,7 +135,7 @@ public class Notes<Type> implements Iterable<Type> {
     private int size = 10;
     private int count;
     private int start;
-    private static final Semaphore SEMAPHORE = new Semaphore(1, true);
+    private final Semaphore SEMAPHORE = new Semaphore(1, true);
 
     /**
      * <p>Создает и инициализирует экземпляр коллекции</p>
