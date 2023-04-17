@@ -33,7 +33,7 @@ public class Notes<Type> implements Iterable<Type> {
      *     существует ли этот элемент в коллекции ещё или его уже удалили, его индекс и указатель на следующий и
      *     предыдущий элемент в коллекции
      * </p>
-     * @param <Type> - типа значения для элемента в коллекции
+     * @param <Type> - тип значения для элемента в коллекции
      */
     private static class LinkedElement<Type> {
         volatile Type value;
