@@ -10,6 +10,7 @@ import robots.domain.InternalWindow;
 import robots.log.LogChangeListener;
 import robots.log.LogEntry;
 import robots.log.LogWindowSource;
+import robots.log.Logger;
 
 public class LogWindow extends InternalWindow implements LogChangeListener
 {
@@ -29,6 +30,16 @@ public class LogWindow extends InternalWindow implements LogChangeListener
         getContentPane().add(panel);
         pack();
         updateLogContent();
+    }
+
+    public void Load()
+    {
+        this.setLocation(10, 10);
+        this.setSize(300, 800);
+        setMinimumSize(this.getSize());
+        this.pack();
+        Logger.debug("Протокол работает");
+        this.setConfigurationSavePath("logWindow/config.json");
     }
 
     private void updateLogContent()

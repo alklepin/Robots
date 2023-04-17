@@ -8,7 +8,7 @@ import robots.domain.InternalWindow;
 public class GameWindow extends InternalWindow
 {
     private final GameVisualizer m_visualizer;
-    public GameWindow() 
+    public GameWindow()
     {
         super("Игровое поле", true, true, true, true);
         m_visualizer = new GameVisualizer();
@@ -17,5 +17,10 @@ public class GameWindow extends InternalWindow
         getContentPane().add(panel);
         pack();
         this.setSize(400, 400);
+    }
+
+    public void Load()
+    {
+        this.setConfigurationSavePath("gameWindow/config.json");
     }
 }

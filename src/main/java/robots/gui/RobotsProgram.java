@@ -1,5 +1,8 @@
 package robots.gui;
 
+import robots.domain.InternalWindow;
+import robots.log.Logger;
+
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
@@ -17,7 +20,11 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
+        MainApplicationFrame frame = new MainApplicationFrame(
+            new InternalWindow[] {
+                new LogWindow(Logger.getDefaultLogSource()),
+                new GameWindow()
+            });
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

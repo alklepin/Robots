@@ -5,9 +5,8 @@ import robots.interfaces.Configurable;
 
 import javax.swing.*;
 import java.beans.PropertyVetoException;
-import java.io.File;
 
-public class InternalWindow extends JInternalFrame implements Configurable {
+public abstract class InternalWindow extends JInternalFrame implements Configurable {
     private String savePath = "";
 
     public InternalWindow(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
@@ -16,10 +15,10 @@ public class InternalWindow extends JInternalFrame implements Configurable {
     public void setConfiguration(JSONObject configuration) {
         if (configuration != null) {
             this.setBounds(
-                    ((Long) configuration.getOrDefault("x", 50)).intValue(),
-                    ((Long) configuration.getOrDefault("y", 50)).intValue(),
-                    ((Long) configuration.getOrDefault("width", 400)).intValue(),
-                    ((Long) configuration.getOrDefault("height", 400)).intValue()
+                ((Long) configuration.getOrDefault("x", 50)).intValue(),
+                ((Long) configuration.getOrDefault("y", 50)).intValue(),
+                ((Long) configuration.getOrDefault("width", 400)).intValue(),
+                ((Long) configuration.getOrDefault("height", 400)).intValue()
             );
             if ((Boolean) configuration.getOrDefault("isIcon", false)) {
                 try {
@@ -48,4 +47,6 @@ public class InternalWindow extends JInternalFrame implements Configurable {
     public void setConfigurationSavePath(String savePath) {
         this.savePath = savePath;
     }
+
+    public void Load() {}
 }

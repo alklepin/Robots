@@ -16,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import robots.domain.InternalWindow;
 import robots.log.Logger;
 
 /**
@@ -26,54 +27,35 @@ import robots.log.Logger;
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
-    private final GameWindow gameWindow;
-
-    private final LogWindow logWindow;
-
-    public MainApplicationFrame() {
+    public MainApplicationFrame(InternalWindow[] windows) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-                screenSize.width - inset * 2,
-                screenSize.height - inset * 2);
-        setContentPane(desktopPane);
-
         Configurator configurator = new Configurator();
 
-        logWindow = createLogWindow();
-        addWindow(logWindow);
-        logWindow.setConfigurationSavePath("logWindow/config.json");
-        configurator.addConfigurable(logWindow);
-        configurator.loadConfiguration(logWindow);
+        for (InternalWindow window : windows) {
+            window.Load();
+            addWindow(window);
+            configurator.addConfigurable(window);
+            configurator.loadConfiguration(window);
+        }
 
-        gameWindow = new GameWindow();
-        addWindow(gameWindow);
-        gameWindow.setConfigurationSavePath("gameWindow/config.json");
-        configurator.addConfigurable(gameWindow);
-        configurator.loadConfiguration(gameWindow);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(
+            inset, inset,
+            screenSize.width - inset * 2,
+            screenSize.height - inset * 2
+        );
+        setContentPane(desktopPane);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-            configurator.saveConfigurations();
-            gameWindow.dispose();
-            logWindow.dispose();
-            System.exit(0);
+                configurator.saveConfigurations();
+                System.exit(0);
             }
         });
-    }
-
-    protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        Logger.debug("Протокол работает");
-        return logWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {
