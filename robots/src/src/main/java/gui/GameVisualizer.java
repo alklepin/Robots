@@ -22,19 +22,20 @@ public class GameVisualizer extends JPanel
         Timer timer = new Timer("events generator", true);
         return timer;
     }
-    
-    private volatile double m_robotPositionX = 100;
-    private volatile double m_robotPositionY = 100; 
+
     private volatile double m_robotDirection = 0; 
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
     
-    private static final double maxVelocity = 0.1; 
-    private static final double maxAngularVelocity = 0.001; 
+    public static final double maxVelocity = 0.1;
+    public static final double maxAngularVelocity = 0.001;
+
+    private RobotController controller;
     
-    public GameVisualizer() 
+    public GameVisualizer(RobotController controller)
     {
+        this.controller = controller;
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -91,28 +92,28 @@ public class GameVisualizer extends JPanel
     
     protected void onModelUpdateEvent()
     {
-        double distance = distance(m_targetPositionX, m_targetPositionY, 
-            m_robotPositionX, m_robotPositionY);
+        double distance = distance(m_targetPositionX, m_targetPositionY,
+                controller.getPositionX(), controller.getPositionY());
         if (distance < 0.5)
         {
             return;
         }
         double velocity = maxVelocity;
-        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(controller.getPositionX(), controller.getPositionY(), m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
-        if (angleToTarget > m_robotDirection)
+        if (angleToTarget > controller.getDirection() + 0.01)      // accounting for direction error
         {
             angularVelocity = maxAngularVelocity;
         }
-        if (angleToTarget < m_robotDirection)
+        if (angleToTarget < controller.getDirection() - 0.01)      // accounting for direction error
         {
             angularVelocity = -maxAngularVelocity;
         }
         
-        moveRobot(velocity, angularVelocity, 10);
+        controller.move(velocity, angularVelocity, 10);
     }
     
-    private static double applyLimits(double value, double min, double max)
+    public static double applyLimits(double value, double min, double max)
     {
         if (value < min)
             return min;
@@ -120,32 +121,8 @@ public class GameVisualizer extends JPanel
             return max;
         return value;
     }
-    
-    private void moveRobot(double velocity, double angularVelocity, double duration)
-    {
-        velocity = applyLimits(velocity, 0, maxVelocity);
-        angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = m_robotPositionX + velocity / angularVelocity * 
-            (Math.sin(m_robotDirection  + angularVelocity * duration) -
-                Math.sin(m_robotDirection));
-        if (!Double.isFinite(newX))
-        {
-            newX = m_robotPositionX + velocity * duration * Math.cos(m_robotDirection);
-        }
-        double newY = m_robotPositionY - velocity / angularVelocity * 
-            (Math.cos(m_robotDirection  + angularVelocity * duration) -
-                Math.cos(m_robotDirection));
-        if (!Double.isFinite(newY))
-        {
-            newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
-        }
-        m_robotPositionX = newX;
-        m_robotPositionY = newY;
-        double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); 
-        m_robotDirection = newDirection;
-    }
 
-    private static double asNormalizedRadians(double angle)
+    static double asNormalizedRadians(double angle)
     {
         while (angle < 0)
         {
@@ -158,7 +135,7 @@ public class GameVisualizer extends JPanel
         return angle;
     }
     
-    private static int round(double value)
+    public static int round(double value)
     {
         return (int)(value + 0.5);
     }
@@ -167,42 +144,26 @@ public class GameVisualizer extends JPanel
     public void paint(Graphics g)
     {
         super.paint(g);
-        Graphics2D g2d = (Graphics2D)g; 
-        drawRobot(g2d, round(m_robotPositionX), round(m_robotPositionY), m_robotDirection);
+        Graphics2D g2d = (Graphics2D)g;
+        controller.draw(g2d);
         drawTarget(g2d, m_targetPositionX, m_targetPositionY);
     }
     
-    private static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
+    static void fillOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
     {
         g.fillOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
     }
     
-    private static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
+    static void drawOval(Graphics g, int centerX, int centerY, int diam1, int diam2)
     {
         g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
     }
-    
-    private void drawRobot(Graphics2D g, int x, int y, double direction)
-    {
-        int robotCenterX = round(m_robotPositionX); 
-        int robotCenterY = round(m_robotPositionY);
-        AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
-        g.setTransform(t);
-        g.setColor(Color.MAGENTA);
-        fillOval(g, robotCenterX, robotCenterY, 30, 10);
-        g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX, robotCenterY, 30, 10);
-        g.setColor(Color.WHITE);
-        fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
-        g.setColor(Color.BLACK);
-        drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
-    }
-    
+
     private void drawTarget(Graphics2D g, int x, int y)
     {
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0); 
         g.setTransform(t);
-        g.setColor(Color.GREEN);
+        g.setColor(Color.RED);
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);

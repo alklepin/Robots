@@ -7,7 +7,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.invoke.LambdaConversionException;
 
 import org.json.simple.parser.JSONParser;
 import org.json.simple.JSONObject;
@@ -27,8 +26,13 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame {
 
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final GameWindow gameWindow = new GameWindow();
+    RobotModel robotModel = new RobotModel();
+    RobotView robotView = new RobotView();
+
+    RobotController controller = new RobotController(robotModel, robotView);
+    private final GameWindow gameWindow = new GameWindow(controller);
     private final LogWindow logWindow = createLogWindow();
+    private final CoordinatesWindow coordinatesWindow = new CoordinatesWindow();
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
@@ -40,14 +44,19 @@ public class MainApplicationFrame extends JFrame {
                 screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
+        setJMenuBar(generateMenuBar());
+
+
+        CoordinatesWindow coordWindow = new CoordinatesWindow();
+        addWindow(coordWindow, 300, 300);
+
+        robotModel.addObserver(coordWindow);
 
         addWindow(logWindow, 200, 200);
         addWindow(gameWindow, 400, 400);
-
         applyConfig();
 
         saveConfiguration();
-        setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new java.awt.event.WindowAdapter() {
 
@@ -172,20 +181,18 @@ public class MainApplicationFrame extends JFrame {
                 "Выход из приложения");
 
 
-            exitMenu.addMenuListener(new MenuListener() {
-                @Override
-                public void menuSelected(MenuEvent e) {
-                    exitProgram();
-                }
+        exitMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                exitProgram();
+            }
 
-                @Override
-                public void menuDeselected(MenuEvent e) {
-                }
+            @Override
+            public void menuDeselected(MenuEvent e) {}
 
-                @Override
-                public void menuCanceled(MenuEvent e) {
-                }
-            });
+            @Override
+            public void menuCanceled(MenuEvent e) {}
+        });
 
         return exitMenu;
     }
