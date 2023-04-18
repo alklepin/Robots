@@ -1,8 +1,9 @@
 package models;
 
 import java.awt.*;
+import java.util.Observable;
 
-public class RobotModel {
+public class RobotModel extends Observable {
 
 
     private volatile double m_PositionX = 100;
@@ -37,6 +38,8 @@ public class RobotModel {
         double velocity=calculateVelocity();
         double angular = calculateAngularVelocity();
         move(velocity,angular);
+        setChanged();
+        notifyObservers();
     }
 
     public double getM_PositionX() {
@@ -50,8 +53,6 @@ public class RobotModel {
     public double getM_Direction() {
         return m_Direction;
     }
-
-
     static double asNormalizedRadians(double angle)
     {
         while (angle < 0)

@@ -14,7 +14,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import Controllers.Controller;
 import log.Logger;
+import models.RobotModel;
 
 /**
  * Что требуется сделать:
@@ -36,12 +38,16 @@ public class MainApplicationFrame extends JFrame
             screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        
+
         
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
+        RobotModel model=new RobotModel(100,100,100,150,100);
+        Controller controller = new Controller(model);
+
+
+        GameWindow gameWindow = new GameWindow(model,controller);
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
 
