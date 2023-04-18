@@ -1,5 +1,7 @@
 package org.iffomko.log;
 
+import org.iffomko.notes.Notes;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -16,14 +18,14 @@ public class LogWindowSource
 {
     private int m_iQueueLength;
     
-    private ArrayList<LogEntry> m_messages;
+    private Notes<LogEntry> m_messages;
     private final ArrayList<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
     
     public LogWindowSource(int iQueueLength) 
     {
         m_iQueueLength = iQueueLength;
-        m_messages = new ArrayList<LogEntry>(iQueueLength);
+        m_messages = new Notes<>(iQueueLength);
         m_listeners = new ArrayList<LogChangeListener>();
     }
 
@@ -102,7 +104,7 @@ public class LogWindowSource
             return Collections.emptyList();
         }
         int indexTo = Math.min(startFrom + count, m_messages.size());
-        return m_messages.subList(startFrom, indexTo);
+        return m_messages.getSegment(startFrom, indexTo);
     }
 
     /**
