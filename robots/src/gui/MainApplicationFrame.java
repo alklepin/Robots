@@ -49,6 +49,10 @@ public class MainApplicationFrame extends JFrame
 
         GameWindow gameWindow = new GameWindow(model,controller);
         gameWindow.setSize(400,  400);
+
+        PositionShowWindow coordWindow=new PositionShowWindow(model);
+        coordWindow.setSize(200,100);
+        addWindow(coordWindow);
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
