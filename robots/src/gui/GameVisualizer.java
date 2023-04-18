@@ -23,15 +23,12 @@ public class GameVisualizer extends JPanel
         return timer;
     }
     
-    private volatile double m_robotPositionX = 100;
-    private volatile double m_robotPositionY = 100;
-    private volatile double m_robotDirection = 0;
+
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
     
-    private static final double maxVelocity = 0.1;
-    private static final double maxAngularVelocity = 0.001;
+
 
     private DefaultRobot m_robotDraw;
     private TargetDrawRepresentation m_target;
@@ -41,9 +38,12 @@ public class GameVisualizer extends JPanel
     
     public GameVisualizer() 
     {
-        m_robotDraw=new DefaultRobot(m_robotPositionX,m_robotPositionY,m_robotDirection);
+        double r_posX=100;
+        double r_posY=100;
+        double r_dir=100;
+        m_robotDraw=new DefaultRobot(r_posX,r_posY,r_dir);
         m_target=new TargetDrawRepresentation(m_targetPositionX,m_targetPositionY);
-        m_model=new RobotModel(100,100,100,150,100);
+        m_model=new RobotModel(r_posX,r_posY,r_dir,m_targetPositionX,m_targetPositionY);
         m_timer.schedule(new TimerTask()
         {
             @Override
