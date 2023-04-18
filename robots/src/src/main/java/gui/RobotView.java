@@ -14,7 +14,7 @@ public class RobotView
         int robotCenterY = round(robotModel.getPositionY());
         AffineTransform t = AffineTransform.getRotateInstance(robotModel.getDirection(), robotCenterX, robotCenterY);
         g.setTransform(t);
-        g.setColor(Color.MAGENTA);
+        g.setColor(Color.BLUE);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX, robotCenterY, 30, 10);

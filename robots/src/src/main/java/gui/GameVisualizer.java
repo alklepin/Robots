@@ -15,15 +15,11 @@ import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel
 {
-    private final Timer m_timer = initTimer();
-    
+
     private static Timer initTimer() 
     {
-        Timer timer = new Timer("events generator", true);
-        return timer;
+        return new Timer("events generator", true);
     }
-
-    private volatile double m_robotDirection = 0; 
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
@@ -31,11 +27,12 @@ public class GameVisualizer extends JPanel
     public static final double maxVelocity = 0.1;
     public static final double maxAngularVelocity = 0.001;
 
-    private RobotController controller;
+    private final RobotController controller;
     
     public GameVisualizer(RobotController controller)
     {
         this.controller = controller;
+        Timer m_timer = initTimer();
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -66,8 +63,8 @@ public class GameVisualizer extends JPanel
 
     protected void setTargetPosition(Point p)
     {
-        m_targetPositionX = p.x;
-        m_targetPositionY = p.y;
+        m_targetPositionX = p.x + p.x/2;
+        m_targetPositionY = p.y + p.y/2;
     }
     
     protected void onRedrawEvent()
@@ -98,7 +95,6 @@ public class GameVisualizer extends JPanel
         {
             return;
         }
-        double velocity = maxVelocity;
         double angleToTarget = angleTo(controller.getPositionX(), controller.getPositionY(), m_targetPositionX, m_targetPositionY);
         double angularVelocity = 0;
         if (angleToTarget > controller.getDirection() + 0.01)      // accounting for direction error
@@ -110,7 +106,7 @@ public class GameVisualizer extends JPanel
             angularVelocity = -maxAngularVelocity;
         }
         
-        controller.move(velocity, angularVelocity, 10);
+        controller.move(maxVelocity, angularVelocity, 10);
     }
     
     public static double applyLimits(double value, double min, double max)
@@ -163,7 +159,7 @@ public class GameVisualizer extends JPanel
     {
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0); 
         g.setTransform(t);
-        g.setColor(Color.RED);
+        g.setColor(Color.GREEN);
         fillOval(g, x, y, 5, 5);
         g.setColor(Color.BLACK);
         drawOval(g, x, y, 5, 5);

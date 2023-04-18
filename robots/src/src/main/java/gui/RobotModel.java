@@ -62,6 +62,6 @@ public class RobotModel extends Observable
         setDirection(newDirection);
 
         setChanged();
-        notifyObservers(new Pair<Double, Double>(newX, newY));
+        notifyObservers(new Pair<>(newX, newY));
     }
 }
