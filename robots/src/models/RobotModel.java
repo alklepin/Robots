@@ -102,6 +102,10 @@ public class RobotModel extends Observable {
         {
             angularVelocity = -maxAngularVelocity;
         }
+        if(Math.abs(angleToTarget-m_Direction)>Math.PI){
+            angularVelocity=-angularVelocity;
+
+        }
         return angularVelocity;
     }
     private boolean isTooClose(){
