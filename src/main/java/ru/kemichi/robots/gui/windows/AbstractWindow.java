@@ -3,8 +3,9 @@ package ru.kemichi.robots.gui.windows;
 import org.json.simple.JSONObject;
 
 import javax.swing.*;
+import java.beans.PropertyVetoException;
 
-abstract class AbstractWindow extends JInternalFrame {
+abstract class AbstractWindow extends JInternalFrame implements Configurable{
     private String configurationPath = "";
 
     public AbstractWindow(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
@@ -20,7 +21,7 @@ abstract class AbstractWindow extends JInternalFrame {
         return configurationPath;
     }
 
-    public JSONObject parseConfiguration() {
+    public JSONObject extractConfiguration() {
         JSONObject configuration = new JSONObject();
         configuration.put("x", this.getX());
         configuration.put("y", this.getY());
@@ -31,7 +32,21 @@ abstract class AbstractWindow extends JInternalFrame {
     }
 
     public void applyConfiguration(JSONObject configuration) {
-
+        if (configuration != null) {
+            this.setBounds(
+                    ((Long) configuration.getOrDefault("x", 50)).intValue(),
+                    ((Long) configuration.getOrDefault("y", 50)).intValue(),
+                    ((Long) configuration.getOrDefault("width", 400)).intValue(),
+                    ((Long) configuration.getOrDefault("height", 400)).intValue()
+            );
+            if ((Boolean) configuration.getOrDefault("isIcon", false)) {
+                try {
+                    this.setIcon(true);
+                } catch (PropertyVetoException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

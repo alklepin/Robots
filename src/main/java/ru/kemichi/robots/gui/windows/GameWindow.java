@@ -1,5 +1,6 @@
 package ru.kemichi.robots.gui.windows;
 
+import org.json.simple.JSONObject;
 import ru.kemichi.robots.gui.GameVisualizer;
 
 import java.awt.BorderLayout;
@@ -18,5 +19,10 @@ public class GameWindow extends AbstractWindow
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
+    }
+
+    @Override
+    public JSONObject extractConfiguration() {
+        return null;
     }
 }
