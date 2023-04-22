@@ -72,8 +72,6 @@ public class GameVisualizer extends JPanel implements Observer {
 
 
     protected void onModelUpdateEvent() {
-
-        m_controller.updateModel();
         m_robotDraw.update(m_model.getM_PositionX(), m_model.getM_PositionY(), m_model.getM_Direction());
 
     }
@@ -91,6 +89,7 @@ public class GameVisualizer extends JPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        m_robotDraw.update(m_model.getM_PositionX(), m_model.getM_PositionY(), m_model.getM_Direction());
+        EventQueue.invokeLater(this::onModelUpdateEvent);
     }
+
 }

@@ -12,7 +12,7 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
     private JLabel m_labelX;
     private JLabel m_labelY;
     public PositionShowWindow(RobotModel model){
-        super("Labels", true, true, true, true);
+        super("Robot coordinates", true, true, true, true);
         m_model=model;
         m_labelX=new JLabel("X : %f".formatted(m_model.getM_PositionX()));
         m_labelY=new JLabel("T : %f".formatted(m_model.getM_PositionY()));
@@ -26,6 +26,9 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
+        EventQueue.invokeLater(this::onTextUpdate);
+    }
+    void onTextUpdate(){
         m_labelX.setText("X : %f".formatted(m_model.getM_PositionX()));
         m_labelY.setText("Y : %f".formatted(m_model.getM_PositionY()));
     }
