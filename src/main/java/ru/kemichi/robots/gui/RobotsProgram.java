@@ -1,5 +1,10 @@
 package ru.kemichi.robots.gui;
 
+import ru.kemichi.robots.gui.windows.AbstractWindow;
+import ru.kemichi.robots.gui.windows.GameWindow;
+import ru.kemichi.robots.gui.windows.LogWindow;
+import ru.kemichi.robots.log.Logger;
+
 import java.awt.Frame;
 import java.util.ResourceBundle;
 
@@ -18,7 +23,12 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame(ResourceBundle.getBundle("resources"), 50);
+        ResourceBundle bundle = ResourceBundle.getBundle("resources");
+        MainApplicationFrame frame = new MainApplicationFrame(bundle, 50,
+                new AbstractWindow[] {
+                        new GameWindow(bundle),
+                        new LogWindow(Logger.getDefaultLogSource(), bundle)
+                });
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

@@ -13,53 +13,49 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import ru.kemichi.robots.gui.windows.GameWindow;
-import ru.kemichi.robots.gui.windows.LogWindow;
+import ru.kemichi.robots.gui.windows.AbstractWindow;
 import ru.kemichi.robots.log.Logger;
+import ru.kemichi.robots.utility.ConfigurationKeeper;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
 
-    public MainApplicationFrame(ResourceBundle defaultBundle, int inset) {
+    public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow[] windows) {
         bundle = defaultBundle;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
 
-        GameWindow gameWindow = createGameWindow();
-        LogWindow logWindow = createLogWindow();
+        ConfigurationKeeper configurationKeeper = new ConfigurationKeeper();
 
-        addWindow(gameWindow);
-        addWindow(logWindow);
+        for (AbstractWindow window : windows) {
+            window.defaultWindowSetup();
+            addWindow(window);
+            configurationKeeper.addNewConfigurableItem(window);
+            configurationKeeper.applyConfiguration(window);
+        }
+
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+                configurationKeeper.saveAllConfigurations();
+                exitConfirmation();
+            }
+        });
     }
 
-    protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), bundle);
-        logWindow.setLocation(10, 10);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        logWindow.setSize(300, 800);
-        Logger.debug(bundle.getString("protocolOK"));
-        return logWindow;
-    }
-
-    protected GameWindow createGameWindow() {
-        GameWindow gameWindow = new GameWindow(bundle);
-        gameWindow.setLocation(350, 10);
-        gameWindow.pack();
-        gameWindow.setSize(800, 800);
-        return gameWindow;
-    }
 
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
@@ -115,7 +111,7 @@ public class MainApplicationFrame extends JFrame {
         );
     }
 
-    private void addActionsMenu (JMenuBar menuBar) {
+    private void addActionsMenu(JMenuBar menuBar) {
         addMenu(
                 menuBar,
                 generateMenu(
@@ -165,7 +161,7 @@ public class MainApplicationFrame extends JFrame {
                 defaultChoice);
 
         if (confirmed == JOptionPane.YES_OPTION) {
-            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            System.exit(0);
         }
     }
 

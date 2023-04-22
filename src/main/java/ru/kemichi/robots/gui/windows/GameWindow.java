@@ -1,18 +1,14 @@
 package ru.kemichi.robots.gui.windows;
 
-import org.json.simple.JSONObject;
 import ru.kemichi.robots.gui.GameVisualizer;
 
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends AbstractWindow
-{
-    public GameWindow(ResourceBundle bundle)
-    {
+public class GameWindow extends AbstractWindow {
+    public GameWindow(ResourceBundle bundle) {
         super(bundle.getString("gameWindowHeader"), true, true, true, true);
         GameVisualizer m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
@@ -22,7 +18,11 @@ public class GameWindow extends AbstractWindow
     }
 
     @Override
-    public JSONObject extractConfiguration() {
-        return null;
+    public void defaultWindowSetup() {
+        this.setLocation(350, 10);
+        this.pack();
+        this.setSize(800, 800);
+        this.setConfigurationPath("gameWindow/config.json");
     }
+
 }

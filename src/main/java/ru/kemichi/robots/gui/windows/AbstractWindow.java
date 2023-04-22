@@ -5,12 +5,11 @@ import org.json.simple.JSONObject;
 import javax.swing.*;
 import java.beans.PropertyVetoException;
 
-abstract class AbstractWindow extends JInternalFrame implements Configurable{
+public abstract class AbstractWindow extends JInternalFrame implements Configurable{
     private String configurationPath = "";
 
     public AbstractWindow(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
         super(title, resizable, closable, maximizable, iconifiable);
-        this.configurationPath = "";
     }
 
     public void setConfigurationPath(String savePath) {
@@ -47,6 +46,10 @@ abstract class AbstractWindow extends JInternalFrame implements Configurable{
                 }
             }
         }
+    }
+
+    public void defaultWindowSetup() {
+
     }
 
 }

@@ -5,20 +5,22 @@ import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.util.ResourceBundle;
 
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-import org.json.simple.JSONObject;
 import ru.kemichi.robots.log.LogChangeListener;
 import ru.kemichi.robots.log.LogEntry;
 import ru.kemichi.robots.log.LogWindowSource;
+import ru.kemichi.robots.log.Logger;
 
 public class LogWindow extends AbstractWindow implements LogChangeListener {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
 
+    private ResourceBundle bundle;
+
     public LogWindow(LogWindowSource logSource, ResourceBundle bundle) {
         super(bundle.getString("logWindowHeader"), true, true, true, true);
+        this.bundle = bundle;
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea();
@@ -46,7 +48,12 @@ public class LogWindow extends AbstractWindow implements LogChangeListener {
     }
 
     @Override
-    public JSONObject extractConfiguration() {
-        return null;
+    public void defaultWindowSetup() {
+        this.setLocation(10, 10);
+        setMinimumSize(this.getSize());
+        this.pack();
+        this.setSize(300, 800);
+        Logger.debug(bundle.getString("protocolOK"));
+        this.setConfigurationPath("logWindow/config.json");
     }
 }
