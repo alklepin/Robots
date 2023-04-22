@@ -1,4 +1,4 @@
-package ru.kemichi.robots.gui;
+package ru.kemichi.robots.gui.windows;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;

@@ -1,4 +1,6 @@
-package ru.kemichi.robots.gui;
+package ru.kemichi.robots.gui.windows;
+
+import ru.kemichi.robots.gui.GameVisualizer;
 
 import java.awt.BorderLayout;
 import java.util.ResourceBundle;
@@ -8,15 +10,13 @@ import javax.swing.JPanel;
 
 public class GameWindow extends JInternalFrame
 {
-    private final GameVisualizer m_visualizer;
-    public GameWindow(ResourceBundle bundle, int width, int height)
+    public GameWindow(ResourceBundle bundle)
     {
         super(bundle.getString("gameWindowHeader"), true, true, true, true);
-        m_visualizer = new GameVisualizer();
+        GameVisualizer m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
-        super.setSize(width, height);
     }
 }
