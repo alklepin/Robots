@@ -12,7 +12,7 @@ import ru.kemichi.robots.log.LogChangeListener;
 import ru.kemichi.robots.log.LogEntry;
 import ru.kemichi.robots.log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends AbstractWindow implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;

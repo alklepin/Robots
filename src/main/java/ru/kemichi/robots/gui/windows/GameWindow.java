@@ -8,7 +8,7 @@ import java.util.ResourceBundle;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame
+public class GameWindow extends AbstractWindow
 {
     public GameWindow(ResourceBundle bundle)
     {
