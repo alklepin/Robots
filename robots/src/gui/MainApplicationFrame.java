@@ -28,7 +28,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
     
-    public MainApplicationFrame() {
+    public MainApplicationFrame(RobotModel model, Controller controller) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        
@@ -42,9 +42,6 @@ public class MainApplicationFrame extends JFrame
         
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
-
-        RobotModel model=new RobotModel(100,100,100,150,100);
-        Controller controller = new Controller(model);
 
 
         GameWindow gameWindow = new GameWindow(model,controller);

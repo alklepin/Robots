@@ -1,5 +1,8 @@
 package gui;
 
+import Controllers.Controller;
+import models.RobotModel;
+
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
@@ -17,7 +20,12 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
+
+        RobotModel model=new RobotModel(100,100,100,150,100);
+        Controller controller = new Controller(model);
+
+
+        MainApplicationFrame frame = new MainApplicationFrame(model, controller);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
