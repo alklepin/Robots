@@ -3,7 +3,9 @@ package org.iffomko.gui;
 import java.awt.*;
 import java.beans.PropertyVetoException;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
@@ -30,6 +32,13 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     public LogWindow(LogWindowSource logSource) 
     {
         super("Протокол работы", true, true, true, true);
+
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                "org.iffomko.gui.localizationProperties.logWindow.LogWindowResource",
+                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+        );
+
+        this.setTitle(resourceBundle.getString("logWindowTitle"));
 
         m_logSource = logSource;
         m_logSource.registerListener(this);

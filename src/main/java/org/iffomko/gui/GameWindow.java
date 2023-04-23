@@ -44,6 +44,13 @@ public class GameWindow extends JInternalFrame implements Savable
     {
         super("Игровое поле", true, true, true, true);
 
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                "org.iffomko.gui.localizationProperties.gameWindow.GameWindowResource",
+                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+        );
+
+        this.setTitle(resourceBundle.getString("gameWindowTitle"));
+
         robot = new Robot();
         target = new Target();
         gameVisualizer = new GameVisualizer(robot, target, durationRedraw);

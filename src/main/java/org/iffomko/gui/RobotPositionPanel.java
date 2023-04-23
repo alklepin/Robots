@@ -4,8 +4,11 @@ import org.iffomko.models.Robot;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.MessageFormat;
+import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.ResourceBundle;
 
 /**
  * <p>Окно, которое содержит в себе актуальные координаты робота</p>
@@ -62,9 +65,21 @@ public class RobotPositionPanel extends JPanel implements Observer {
      * <p>Метод, который обрабатывает событие изменения позиции робота</p>
      */
     private void onRobotPositionChanged() {
-        text = "x: " + ((int)robot.getX()) +
-                ", y: " + ((int)robot.getY() +
-                ", direction: " + ((int) (robot.getDirection() * 180 / Math.PI)));
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                "org.iffomko.gui.localizationProperties.robotPositionPanel.RobotPositionPanelResource",
+                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+        );
+
+        String pattern = "X: {0}, Y: {1}, {2}: {3}";
+        Object[] params = {
+                (int)robot.getX(),
+                (int)robot.getY(),
+                resourceBundle.getString("direction"),
+                ((int) (robot.getDirection() * 180 / Math.PI))
+        };
+
+        String text = MessageFormat.format(pattern, params);
+
         textField.setText(text);
     }
 }
