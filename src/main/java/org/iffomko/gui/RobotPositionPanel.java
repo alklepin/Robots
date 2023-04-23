@@ -1,10 +1,10 @@
 package org.iffomko.gui;
 
+import org.iffomko.messagedFormatCached.MessageFormatCached;
 import org.iffomko.models.Robot;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
@@ -78,7 +78,7 @@ public class RobotPositionPanel extends JPanel implements Observer {
                 ((int) (robot.getDirection() * 180 / Math.PI))
         };
 
-        String text = MessageFormat.format(pattern, params);
+        String text = MessageFormatCached.format(pattern, params);
 
         textField.setText(text);
     }
