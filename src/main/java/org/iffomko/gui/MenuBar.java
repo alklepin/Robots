@@ -68,7 +68,7 @@ public class MenuBar {
         testMenu.add(generateMenuItem(
                 resourceBundle.getString("messageInLog"),
                 KeyEvent.VK_S,
-                (event) -> resourceBundle.getString("newString")
+                (event) -> Logger.debug(resourceBundle.getString("newString"))
         ));
 
         JMenu closeMenu = generateMenu(

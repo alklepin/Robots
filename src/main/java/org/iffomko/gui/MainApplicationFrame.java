@@ -2,6 +2,8 @@ package org.iffomko.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.*;
 
@@ -93,15 +95,20 @@ public class MainApplicationFrame extends JFrame
      * @param event - информация о событии
      */
     private void onWindowClosing(WindowEvent event) {
+        ResourceBundle resourceBundle = ResourceBundle.getBundle(
+                "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource",
+                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+        );
+
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        UIManager.put("OptionPane.yesButtonText", "Да");
-        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.yesButtonText", resourceBundle.getString("yesButtonText"));
+        UIManager.put("OptionPane.noButtonText", resourceBundle.getString("noButtonText"));
 
         int response = JOptionPane.showOptionDialog(
                 event.getWindow(),
-                "Закрыть приложение?",
-                "Подтверждение",
+                resourceBundle.getString("closeApp"),
+                resourceBundle.getString("confirmation"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,

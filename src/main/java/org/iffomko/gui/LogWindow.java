@@ -23,7 +23,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
     private final String prefix;
-    private Map<String, String> state;
 
     /**
      * Создает окно с логами
@@ -52,7 +51,6 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
         updateLogContent();
 
         prefix = "log";
-        state = new HashMap<>();
     }
 
     /**
@@ -65,6 +63,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
         {
             content.append(entry.getMessage()).append("\n");
         }
+
         m_logContent.setText(content.toString());
         m_logContent.invalidate();
     }
@@ -85,6 +84,8 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
      */
     @Override
     public Map<String, String> save() {
+        Map<String, String> state = new HashMap<>();
+
         if (state.get("isIconified") == null) {
             state.put("isIconified", String.valueOf(isIcon()));
         } else {
@@ -135,13 +136,11 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
                 return;
             }
 
-            this.state = state;
-
-            int width = Integer.parseInt(this.state.get("width"));
-            int height = Integer.parseInt(this.state.get("height"));
-            double x = Double.parseDouble(this.state.get("x"));
-            double y = Double.parseDouble(this.state.get("y"));
-            boolean isIconified = Boolean.parseBoolean(this.state.get("isIconified"));
+            int width = Integer.parseInt(state.get("width"));
+            int height = Integer.parseInt(state.get("height"));
+            double x = Double.parseDouble(state.get("x"));
+            double y = Double.parseDouble(state.get("y"));
+            boolean isIconified = Boolean.parseBoolean(state.get("isIconified"));
 
             setSize(new Dimension(width, height));
 
