@@ -165,8 +165,6 @@ public class MainApplicationFrame extends JFrame
     }
     private void exit(){
         JOptionPane.showMessageDialog (null, "Подтвердите выход:", "Подтверждение выхода", JOptionPane.QUESTION_MESSAGE);
-//        UIManager.put("OptionPane.yesButtonText"   , "Да"    );
         System.exit(0);
-
     }
 }
