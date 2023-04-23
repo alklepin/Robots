@@ -2,7 +2,6 @@ package org.iffomko.notes;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.concurrent.Semaphore;
 
 /**
  * <p>Класс итератора для коллекции <code>Notes</code></p>
@@ -11,8 +10,7 @@ import java.util.concurrent.Semaphore;
 public class NotesIterator<Type> implements Iterator<Type> {
     private LinkedElement<Type> next;
     private LinkedElement<Type> current;
-
-    private final Semaphore SEMAPHORE = new Semaphore(1, true);
+    private final Object synchronizedObject = new Object();
 
     /**
      * <p>Создает и инициализирует объект итератор</p>
@@ -28,22 +26,15 @@ public class NotesIterator<Type> implements Iterator<Type> {
      * @return - элемент коллекции
      */
     private LinkedElement<Type> findNext() {
-        try {
-            SEMAPHORE.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        synchronized (synchronizedObject) {
+            LinkedElement<Type> item = this.next;
+
+            while (!item.exists && item.next != null) {
+                this.next = item = this.next.next;
+            }
+
+            return item;
         }
-
-
-        LinkedElement<Type> item = this.next;
-
-        while (!item.exists && item.next != null) {
-            this.next = item = this.next.next;
-        }
-
-        SEMAPHORE.release();
-
-        return item;
     }
 
     /**

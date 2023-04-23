@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.concurrent.Semaphore;
 import java.util.function.Consumer;
 
 /**
@@ -34,7 +32,7 @@ public class Notes<Type> implements Iterable<Type> {
     private int size = 10;
     private int count;
     private int start;
-    private final Semaphore SEMAPHORE = new Semaphore(1, true);
+    private final Object synchronizedObject = new Object();
 
     /**
      * <p>Создает и инициализирует экземпляр коллекции</p>
@@ -79,20 +77,14 @@ public class Notes<Type> implements Iterable<Type> {
             return false;
         }
 
-        try {
-            SEMAPHORE.acquire();
+        synchronized (synchronizedObject) {
+            try {
+                Type other = (Type) o;
 
-            Type other = (Type) o;
-
-            boolean isContains = items.containsKey(other);
-
-            SEMAPHORE.release();
-
-            return isContains;
-        } catch (ClassCastException e) {
-            // just ignore
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+                return items.containsKey(other);
+            } catch (ClassCastException e) {
+                // just ignore
+            }
         }
 
         return false;
@@ -105,41 +97,44 @@ public class Notes<Type> implements Iterable<Type> {
      * @return - <code>true</code>, если элемент был добавлен, или <code>false</code> - в противном случае
      */
     public boolean add(Type element) {
-        try {
-            SEMAPHORE.acquire();
+        synchronized (synchronizedObject) {
+            try {
+                if (size == count) {
+                    items.remove(head.value);
+                    byIndex.remove(head.index);
+                    head.exists = false;
+                    head.next.prev = null;
+                    head = head.next;
 
-            if (size == count) {
-                items.remove(head.value);
-                byIndex.remove(head.index);
-                head.exists = false;
-                head.next.prev = null;
-                head = head.next;
+                    start = head.index;
+                    count--;
+                }
 
-                start = head.index;
-                count--;
+                LinkedElement<Type> current = placeholder;
+                current.value = element;
+                current.exists = true;
+
+                byIndex.put(current.index, element);
+                items.put(element, current);
+
+                current.next = new LinkedElement<>();
+
+                placeholder = current.next;
+                placeholder.prev = current;
+                placeholder.exists = false;
+                placeholder.index = current.index + 1;
+
+                count++;
+
+                return true;
+            } catch (
+                    UnsupportedOperationException |
+                    ClassCastException |
+                    NullPointerException |
+                    IllegalArgumentException e
+            ) {
+                return false;
             }
-
-            LinkedElement<Type> current = placeholder;
-            current.value = element;
-            current.exists = true;
-
-            byIndex.put(current.index, element);
-            items.put(element, current);
-
-            current.next = new LinkedElement<>();
-
-            placeholder = current.next;
-            placeholder.prev = current;
-            placeholder.exists = false;
-            placeholder.index = current.index + 1;
-
-            count++;
-
-            SEMAPHORE.release();
-
-            return true;
-        } catch (Exception e) {
-            return false;
         }
     }
 
@@ -158,16 +153,10 @@ public class Notes<Type> implements Iterable<Type> {
 
         List<Type> segment = new ArrayList<>();
 
-        try {
-            SEMAPHORE.acquire();
-
+        synchronized (synchronizedObject) {
             for (int i = start + beginIndex; i <= start + endIndex; i++) {
                 segment.add(get(i));
             }
-
-            SEMAPHORE.release();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
         return segment;
@@ -181,21 +170,13 @@ public class Notes<Type> implements Iterable<Type> {
      * @return - значение последнего элемента
      */
     public Type peek() {
-        try {
-            SEMAPHORE.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        synchronized (synchronizedObject) {
+            if (head == placeholder) {
+                return null;
+            }
+
+            return placeholder.prev.value;
         }
-
-        if (head == placeholder) {
-            return null;
-        }
-
-        Type value = placeholder.prev.value;
-
-        SEMAPHORE.release();
-
-        return value;
     }
 
     /**
@@ -203,44 +184,36 @@ public class Notes<Type> implements Iterable<Type> {
      * @return - возвращает удаленный элемент или <code>null</code>, если элементов в коллекции не было
      */
     public Type pop() {
-        try {
-            SEMAPHORE.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        synchronized (synchronizedObject) {
+            if (head == placeholder) {
+                return null;
+            }
 
-        if (head == placeholder) {
-            return null;
-        }
+            LinkedElement<Type> lastElement = placeholder.prev;
 
-        LinkedElement<Type> lastElement = placeholder.prev;
+            Type returnValue = lastElement.value;
 
-        Type returnValue = lastElement.value;
+            items.remove(lastElement.value);
+            byIndex.remove(lastElement.index);
+            lastElement.exists = false;
 
-        items.remove(lastElement.value);
-        byIndex.remove(lastElement.index);
-        lastElement.exists = false;
+            if (count > 1) {
+                lastElement.prev.next = placeholder;
+                placeholder.prev = lastElement.prev;
+                lastElement.prev = null;
 
-        if (count > 1) {
-            lastElement.prev.next = placeholder;
-            placeholder.prev = lastElement.prev;
-            lastElement.prev = null;
+                count--;
+
+                return returnValue;
+            }
 
             count--;
 
-            SEMAPHORE.release();
+            head = placeholder;
+            head.prev = null;
 
             return returnValue;
         }
-
-        count--;
-
-        head = placeholder;
-        head.prev = null;
-
-        SEMAPHORE.release();
-
-        return returnValue;
     }
 
     /**
@@ -250,21 +223,15 @@ public class Notes<Type> implements Iterable<Type> {
      * @return - значение элемента
      */
     public Type get(int index) {
-        try {
-            SEMAPHORE.acquire();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        synchronized (synchronizedObject) {
+            Type value = byIndex.get(start + index);
+
+            if (value == null) {
+                throw new IndexOutOfBoundsException();
+            }
+
+            return value;
         }
-
-        Type value = byIndex.get(start + index);
-
-        SEMAPHORE.release();
-
-        if (value == null) {
-            throw new IndexOutOfBoundsException();
-        }
-
-        return value;
     }
 
     /**

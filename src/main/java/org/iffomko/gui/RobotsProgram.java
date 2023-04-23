@@ -1,7 +1,5 @@
 package org.iffomko.gui;
 
-import org.iffomko.notes.Notes;
-
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
