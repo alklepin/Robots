@@ -4,6 +4,7 @@ import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import localization.RuLanguage;
 
 public class RobotsProgram
 {
@@ -17,7 +18,7 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-        MainApplicationFrame frame = new MainApplicationFrame();
+        MainApplicationFrame frame = new MainApplicationFrame(new RuLanguage());
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
