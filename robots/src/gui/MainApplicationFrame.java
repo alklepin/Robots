@@ -4,15 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -131,12 +123,30 @@ public class MainApplicationFrame extends JFrame
         return testMenu;
     }
 
+    private JMenu generateActionsBar(){
+        JMenu actionsMenu = new JMenu("Действия");
+        actionsMenu.setMnemonic(KeyEvent.VK_V);
+        actionsMenu.getAccessibleContext().setAccessibleDescription("Действия над приложением");
+
+        {
+            JMenuItem addLogMessageItem = new JMenuItem("Закрыть", KeyEvent.VK_S);
+            addLogMessageItem.addActionListener((event) -> {
+                Logger.debug("Закрытие");
+                this.exit();
+            });
+            actionsMenu.add(addLogMessageItem);
+        }
+        return actionsMenu;
+    }
+
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
 
         menuBar.add(generateLookAndFeelMenu());
         menuBar.add(generateTestBar());
+        menuBar.add(generateActionsBar());
+
         return menuBar;
     }
     
@@ -152,5 +162,11 @@ public class MainApplicationFrame extends JFrame
         {
             // just ignore
         }
+    }
+    private void exit(){
+        JOptionPane.showMessageDialog (null, "Подтвердите выход:", "Подтверждение выхода", JOptionPane.QUESTION_MESSAGE);
+//        UIManager.put("OptionPane.yesButtonText"   , "Да"    );
+        System.exit(0);
+
     }
 }
