@@ -27,18 +27,13 @@ import robots.log.Logger;
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
-    public MainApplicationFrame(InternalWindow[] windows) {
+    public MainApplicationFrame(InternalWindow... windows) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;
         Configurator configurator = new Configurator();
 
-        for (InternalWindow window : windows) {
-            window.Load();
-            addWindow(window);
-            configurator.addConfigurable(window);
-            configurator.loadConfiguration(window);
-        }
+        loadWindows(configurator, windows);
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(
@@ -56,6 +51,15 @@ public class MainApplicationFrame extends JFrame {
                 System.exit(0);
             }
         });
+    }
+
+    private void loadWindows(Configurator configurator, InternalWindow[] windows) {
+        for (InternalWindow window : windows) {
+            window.Load();
+            addWindow(window);
+            configurator.addConfigurable(window);
+            configurator.loadConfiguration(window);
+        }
     }
 
     protected void addWindow(JInternalFrame frame) {

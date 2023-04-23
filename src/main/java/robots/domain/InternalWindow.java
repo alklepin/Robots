@@ -7,8 +7,6 @@ import javax.swing.*;
 import java.beans.PropertyVetoException;
 
 public abstract class InternalWindow extends JInternalFrame implements Configurable {
-    private String savePath = "";
-
     public InternalWindow(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
         super(title, resizable, closable, maximizable, iconifiable);
     }
@@ -38,10 +36,6 @@ public abstract class InternalWindow extends JInternalFrame implements Configura
         windowConfig.put("height", this.getHeight());
         windowConfig.put("isIcon", this.isIcon());
         return windowConfig;
-    }
-
-    public String getSavePath() {
-        return savePath;
     }
 
     public void setConfigurationSavePath(String savePath) {
