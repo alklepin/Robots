@@ -3,56 +3,55 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
 import log.Logger;
 
 
-public class MainApplicationFrame extends JFrame
-{
+public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
-        int inset = 50;        
+        int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
+                screenSize.width - inset * 2,
+                screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
-        
-        
+
+
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        gameWindow.setSize(400, 400);
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
-    
-    protected LogWindow createLogWindow()
-    {
+
+    protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10,10);
+        logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
-    
-    protected void addWindow(JInternalFrame frame)
-    {
+
+    protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
-    
+
 //    protected JMenuBar createMenuBar() {
 //        JMenuBar menuBar = new JMenuBar();
 // 
@@ -82,7 +81,7 @@ public class MainApplicationFrame extends JFrame
 //        return menuBar;
 //    }
 
-    private JMenu generateLookAndFeelMenu(){
+    private JMenu generateLookAndFeelMenu() {
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
         lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
@@ -107,7 +106,8 @@ public class MainApplicationFrame extends JFrame
         }
         return lookAndFeelMenu;
     }
-    private JMenu generateTestBar(){
+
+    private JMenu generateTestBar() {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(
@@ -123,7 +123,7 @@ public class MainApplicationFrame extends JFrame
         return testMenu;
     }
 
-    private JMenu generateActionsBar(){
+    private JMenu generateActionsBar() {
         JMenu actionsMenu = new JMenu("Действия");
         actionsMenu.setMnemonic(KeyEvent.VK_V);
         actionsMenu.getAccessibleContext().setAccessibleDescription("Действия над приложением");
@@ -131,16 +131,16 @@ public class MainApplicationFrame extends JFrame
         {
             JMenuItem addLogMessageItem = new JMenuItem("Закрыть", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Закрытие");
-                this.exit();
+                if (ConfirmWindow.confirmExit(actionsMenu) == JOptionPane.YES_OPTION) {
+                    System.exit(0);
+                }
             });
             actionsMenu.add(addLogMessageItem);
         }
         return actionsMenu;
     }
 
-    private JMenuBar generateMenuBar()
-    {
+    private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
         menuBar.add(generateLookAndFeelMenu());
@@ -149,22 +149,16 @@ public class MainApplicationFrame extends JFrame
 
         return menuBar;
     }
-    
-    private void setLookAndFeel(String className)
-    {
-        try
-        {
+
+    private void setLookAndFeel(String className) {
+        try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        }
-        catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException | UnsupportedLookAndFeelException e)
-        {
+        } catch (ClassNotFoundException | InstantiationException
+                 | IllegalAccessException | UnsupportedLookAndFeelException e) {
             // just ignore
         }
     }
-    private void exit(){
-        JOptionPane.showMessageDialog (null, "Подтвердите выход:", "Подтверждение выхода", JOptionPane.QUESTION_MESSAGE);
-        System.exit(0);
-    }
+
 }
+
