@@ -3,8 +3,7 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.*;
 
@@ -32,6 +31,18 @@ public class MainApplicationFrame extends JFrame {
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400, 400);
         addWindow(gameWindow);
+
+        File gameFile = new File(".", gameWindow.getName() + ".bin");
+        File logFile = new File(".", logWindow.getName() + ".bin");
+        if (gameFile.exists() && logFile.exists()) {
+            boolean toRestore = ConfirmWindow.confirmRestore(this) == 0;
+            if (toRestore) {
+                WindowData gameInfo = Saver.deserialize(gameFile);
+                Saver.restoreWindow(gameWindow, gameInfo);
+                WindowData logInfo = Saver.deserialize(logFile);
+                Saver.restoreWindow(logWindow, logInfo);
+            }
+        }
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -132,6 +143,7 @@ public class MainApplicationFrame extends JFrame {
             JMenuItem addLogMessageItem = new JMenuItem("Закрыть", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
                 if (ConfirmWindow.confirmExit(actionsMenu) == JOptionPane.YES_OPTION) {
+                    saveWindows(desktopPane);
                     System.exit(0);
                 }
             });
@@ -157,6 +169,15 @@ public class MainApplicationFrame extends JFrame {
         } catch (ClassNotFoundException | InstantiationException
                  | IllegalAccessException | UnsupportedLookAndFeelException e) {
             // just ignore
+        }
+    }
+
+    private void saveWindows(JDesktopPane desktopPane){
+        for (JInternalFrame window: desktopPane.getAllFrames()) {
+            WindowData windowData = new WindowData(window.getName(),
+                    window.getWidth(), window.getHeight(), window.getX(),
+                    window.getY(), window.isMaximum(), window.isIcon());
+            Saver.serialize(windowData, window.getName() + ".bin");
         }
     }
 
