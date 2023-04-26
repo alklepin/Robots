@@ -45,7 +45,7 @@ public class MainApplicationFrame extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                saveAllConfigurations();
+//                saveAllConfigurations();
                 exitConfirmation();
             }
         });
@@ -58,7 +58,6 @@ public class MainApplicationFrame extends JFrame {
             configurableItems.add(window);
         }
     }
-
 
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
@@ -126,6 +125,10 @@ public class MainApplicationFrame extends JFrame {
                         bundle.getString("quitItem"),
                         KeyEvent.VK_Q,
                         (event) -> exitConfirmation()
+                ),
+                generateMenuItem(bundle.getString("configItem"),
+                        KeyEvent.VK_C,
+                        (event) -> saveAllConfigurations()
                 )
         );
     }
@@ -152,18 +155,22 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void exitConfirmation() {
-        Object[] choices = {bundle.getString("quit"), bundle.getString("cancel")};
+        Object[] choices = {bundle.getString("quitWithSaving"), bundle.getString("quitWithoutSaving"), bundle.getString("cancel")};
         Object defaultChoice = choices[0];
         int confirmed = JOptionPane.showOptionDialog(null,
                 bundle.getString("quitQuestion"),
                 bundle.getString("quitTitle"),
-                JOptionPane.YES_NO_OPTION,
+                JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 choices,
                 defaultChoice);
 
         if (confirmed == JOptionPane.YES_OPTION) {
+            saveAllConfigurations();
+            System.exit(0);
+        }
+        else if (confirmed == JOptionPane.NO_OPTION) {
             System.exit(0);
         }
     }
