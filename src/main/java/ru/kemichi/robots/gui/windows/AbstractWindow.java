@@ -30,7 +30,7 @@ public abstract class AbstractWindow extends JInternalFrame implements Configura
         return configuration;
     }
 
-    public void applyConfiguration(JSONObject configuration) {
+    private void applyConfiguration(JSONObject configuration) {
         if (configuration != null) {
             this.setBounds(
                     ((Long) configuration.getOrDefault("x", 50)).intValue(),

@@ -15,11 +15,17 @@ import ru.kemichi.robots.log.Logger;
 public class LogWindow extends AbstractWindow implements LogChangeListener {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
-
     private ResourceBundle bundle;
 
     public LogWindow(LogWindowSource logSource, ResourceBundle bundle) {
-        super(bundle.getString("logWindowHeader"), true, true, true, true);
+        super(
+                "logWindow/config.json",
+                bundle.getString("logWindowHeader"),
+                true,
+                true,
+                true,
+                true
+        );
         this.bundle = bundle;
         m_logSource = logSource;
         m_logSource.registerListener(this);
@@ -54,6 +60,5 @@ public class LogWindow extends AbstractWindow implements LogChangeListener {
         this.pack();
         this.setSize(300, 800);
         Logger.debug(bundle.getString("protocolOK"));
-        this.setConfigurationPath("logWindow/config.json");
     }
 }
