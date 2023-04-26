@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 
 public class GameWindow extends AbstractWindow {
     public GameWindow(ResourceBundle bundle) {
-        super(bundle.getString("gameWindowHeader"), true, true, true, true);
+        super("gameWindow/config.json", bundle.getString("gameWindowHeader"), true, true, true, true);
         GameVisualizer m_visualizer = new GameVisualizer();
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_visualizer, BorderLayout.CENTER);
@@ -22,7 +22,6 @@ public class GameWindow extends AbstractWindow {
         this.setLocation(350, 10);
         this.pack();
         this.setSize(800, 800);
-        this.setConfigurationPath("gameWindow/config.json");
     }
 
 }

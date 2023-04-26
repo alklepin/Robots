@@ -15,17 +15,20 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import ru.kemichi.robots.gui.windows.AbstractWindow;
+import ru.kemichi.robots.gui.windows.Configurable;
 import ru.kemichi.robots.log.Logger;
-import ru.kemichi.robots.utility.ConfigurationKeeper;
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
+
+    private final ArrayList<Configurable> configurableItems = new ArrayList<>();
 
     public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow[] windows) {
         bundle = defaultBundle;
@@ -34,14 +37,9 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-        ConfigurationKeeper configurationKeeper = new ConfigurationKeeper();
 
-        for (AbstractWindow window : windows) {
-            window.defaultWindowSetup();
-            addWindow(window);
-            configurationKeeper.addNewConfigurableItem(window);
-            configurationKeeper.applyConfiguration(window);
-        }
+        loadWindows(windows);
+        applyAllConfigurations();
 
 
         setJMenuBar(generateMenuBar());
@@ -50,10 +48,18 @@ public class MainApplicationFrame extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-                configurationKeeper.saveAllConfigurations();
+                saveAllConfigurations();
                 exitConfirmation();
             }
         });
+    }
+
+    private void loadWindows(AbstractWindow[] windows) {
+        for (AbstractWindow window : windows) {
+            window.defaultWindowSetup();
+            addWindow(window);
+            configurableItems.add(window);
+        }
     }
 
 
@@ -172,6 +178,18 @@ public class MainApplicationFrame extends JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
             // just ignore
+        }
+    }
+
+    public void saveAllConfigurations() {
+        for (Configurable configurable : configurableItems) {
+            configurable.save();
+        }
+    }
+
+    public void applyAllConfigurations() {
+        for (Configurable configurable : configurableItems) {
+            configurable.load();
         }
     }
 }

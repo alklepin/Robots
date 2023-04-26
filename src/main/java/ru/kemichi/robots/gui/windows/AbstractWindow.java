@@ -1,26 +1,26 @@
 package ru.kemichi.robots.gui.windows;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Paths;
 
-public abstract class AbstractWindow extends JInternalFrame implements Configurable{
-    private String configurationPath = "";
+public abstract class AbstractWindow extends JInternalFrame implements Configurable {
+    private final String configurationPath;
 
-    public AbstractWindow(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
+    public AbstractWindow(String savePath, String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
         super(title, resizable, closable, maximizable, iconifiable);
+        configurationPath = savePath;
     }
 
-    public void setConfigurationPath(String savePath) {
-        this.configurationPath = savePath;
-    }
-
-    public String getConfigurationPath() {
-        return configurationPath;
-    }
-
-    public JSONObject extractConfiguration() {
+    private JSONObject extractConfiguration() {
         JSONObject configuration = new JSONObject();
         configuration.put("x", this.getX());
         configuration.put("y", this.getY());
@@ -50,6 +50,43 @@ public abstract class AbstractWindow extends JInternalFrame implements Configura
 
     public void defaultWindowSetup() {
 
+    }
+
+    public void save() {
+        File configPath = Paths.get(System.getProperty("user.home"), ".Robots", configurationPath).toFile();
+        try {
+            configPath.getParentFile().mkdirs();
+            configPath.createNewFile();
+            FileWriter writer = new FileWriter(configPath);
+            JSONObject a = extractConfiguration();
+            writer.write(a.toJSONString());
+            writer.flush();
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private JSONObject readConfiguration(String filename) {
+        JSONParser parser = new JSONParser();
+        File config = Paths.get(System.getProperty("user.home"), ".Robots", filename).toFile();
+        if (config.exists()) {
+            try {
+                return (JSONObject) parser.parse(new FileReader(config));
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
+
+    public void load() {
+        JSONObject config = readConfiguration(configurationPath);
+        if (config != null) {
+            applyConfiguration(config);
+        }
     }
 
 }
