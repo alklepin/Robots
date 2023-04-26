@@ -19,7 +19,7 @@ public class LogWindow extends AbstractWindow implements LogChangeListener {
 
     public LogWindow(LogWindowSource logSource, ResourceBundle bundle) {
         super(
-                "logWindow/config.json",
+                null,
                 bundle.getString("logWindowHeader"),
                 true,
                 true,
@@ -60,5 +60,15 @@ public class LogWindow extends AbstractWindow implements LogChangeListener {
         this.pack();
         this.setSize(300, 800);
         Logger.debug(bundle.getString("protocolOK"));
+    }
+
+    @Override
+    public void load() {
+
+    }
+
+    @Override
+    public void save() {
+
     }
 }
