@@ -27,7 +27,6 @@ import ru.kemichi.robots.log.Logger;
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
-
     private final ArrayList<Configurable> configurableItems = new ArrayList<>();
 
     public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow[] windows) {
@@ -37,10 +36,8 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-
         loadWindows(windows);
         applyAllConfigurations();
-
 
         setJMenuBar(generateMenuBar());
 
