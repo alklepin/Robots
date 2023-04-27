@@ -1,11 +1,10 @@
 package log;
 
+import static gui.Constants.LoggerConstants.LOGGER_IQUEUE_LENGTH;
+
 public final class Logger
 {
-    private static final LogWindowSource defaultLogSource;
-    static {
-        defaultLogSource = new LogWindowSource(100);
-    }
+    private static final LogWindowSource defaultLogSource = new LogWindowSource(LOGGER_IQUEUE_LENGTH);
     
     private Logger()
     {

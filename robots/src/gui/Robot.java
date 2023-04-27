@@ -2,37 +2,37 @@ package gui;
 
 public class Robot {
 
-    private volatile double XCoordinate;
-    private volatile double YCoordinate;
-    private volatile double Direction;
+    private volatile double xCoordinate;
+    private volatile double yCoordinate;
+    private volatile double direction;
 
-    public void setXCoordinate(double XCoordinate) {
-        this.XCoordinate = XCoordinate;
+    public void setXCoordinate(double xCoordinate) {
+        this.xCoordinate = xCoordinate;
     }
 
-    public void setYCoordinate(double YCoordinate) {
-        this.YCoordinate = YCoordinate;
+    public void setYCoordinate(double yCoordinate) {
+        this.yCoordinate = yCoordinate;
     }
 
     public void setDirection(double direction) {
-        Direction = direction;
+        this.direction = direction;
     }
 
     public double getXCoordinate() {
-        return XCoordinate;
+        return xCoordinate;
     }
 
     public double getYCoordinate() {
-        return YCoordinate;
+        return yCoordinate;
     }
 
     public double getDirection() {
-        return Direction;
+        return direction;
     }
 
-    public Robot(double XCoordinate, double YCoordinate, double direction) {
-        this.XCoordinate = XCoordinate;
-        this.YCoordinate = YCoordinate;
-        Direction = direction;
+    public Robot(double xCoordinate, double yCoordinate, double direction) {
+        this.xCoordinate = xCoordinate;
+        this.yCoordinate = yCoordinate;
+        this.direction = direction;
     }
 }

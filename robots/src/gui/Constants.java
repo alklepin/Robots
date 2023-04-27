@@ -44,4 +44,32 @@ public interface Constants {
 
         public static final String GAME_WINDOW_TITLE = "Игровое поле";
     }
+
+    class GameVisualizerConstants {
+
+        public static final double ROBOT_VELOCITY = 0.1;
+        public static final double MAX_ANGULAR_VELOCITY = 0.001;
+        public static final double ROBOT_STOP_DISTANCE = 0.5;
+        public static final String TIMER_NAME = "events generator";
+        public static final int TIMER_DELAY = 0;
+        public static final int TIMER_REDRAW_PERIOD = 50;
+        public static final int TIMER_UPDATE_PERIOD = 10;
+        public static final int ROBOT_INITIAL_X_COORDINATE = 100;
+        public static final int ROBOT_INITIAL_Y_COORDINATE = 100;
+        public static final int ROBOT_INITIAL_DIRECTION = 0;
+        public static final int ROBOT_BODY_FIRST_DIAMETER = 30;
+        public static final int ROBOT_BODY_SECOND_DIAMETER = 10;
+        public static final int ROBOT_HEAD_X_OFFSET = 10;
+        public static final int ROBOT_HEAD_DIAMETER = 5;
+        public static final int TARGET_DIAMETER = 5;
+        public static final int TARGET_THETA = 0;
+        public static final int TARGET_ANCHORX = 0;
+        public static final int TARGET_ANCHORY = 0;
+        public static final int TARGET_INITIAL_X_COORDINATE = 150;
+        public static final int TARGET_INITIAL_Y_COORDINATE = 100;
+    }
+
+    class LoggerConstants {
+        public static final int LOGGER_IQUEUE_LENGTH = 100;
+    }
 }
