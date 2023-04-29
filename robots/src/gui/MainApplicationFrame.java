@@ -3,7 +3,10 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.WindowEvent;
 
+import javax.swing.*;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -13,6 +16,9 @@ import javax.swing.JMenuItem;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.MenuEvent;
+import javax.swing.JInternalFrame;	
+import javax.swing.event.MenuListener;
 
 import log.Logger;
 
@@ -132,13 +138,52 @@ public class MainApplicationFrame extends JFrame
             addLogMessageItem.addActionListener((event) -> {
                 Logger.debug("Новая строка");
             });
-            testMenu.add(addLogMessageItem);
+                      testMenu.add(addLogMessageItem);
         }
-
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
-        return menuBar;
+        return testMenu;
     }
+
+
+    private JMenu createExitMenu() {
+        JMenu exitMenu = new JMenu("Выход");
+        exitMenu.setMnemonic(KeyEvent.VK_E);
+        exitMenu.getAccessibleContext().setAccessibleDescription(
+                "Выход из приложения");
+
+
+        exitMenu.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
+                exitProgram();
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+            }
+        });
+
+        return exitMenu;
+    }
+
+
+    public void exitProgram() {
+        int reply = JOptionPane.showConfirmDialog(null,
+                "Вы уверены что хотите выйти?", "Robots ", JOptionPane.YES_NO_OPTION);
+        int yesNoOption = JOptionPane.YES_NO_OPTION;
+
+        if (reply == JOptionPane.YES_OPTION) {
+
+            System.exit(0);
+
+        }
+    }
+    //локализация переменных
+    {UIManager.put("OptionPane.yesButtonText","Да");
+        UIManager.put("OptionPane.noButtonText","Нет");}
     
     private void setLookAndFeel(String className)
     {
