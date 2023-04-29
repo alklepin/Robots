@@ -53,7 +53,16 @@ public class MainApplicationFrame extends JFrame
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+                addWindowListener(new java.awt.event.WindowAdapter() {
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitProgram();
+            }
+        });
+            
     }
+    
     
     protected LogWindow createLogWindow()
     {
@@ -104,6 +113,13 @@ public class MainApplicationFrame extends JFrame
     private JMenuBar generateMenuBar()
     {
         JMenuBar menuBar = new JMenuBar();
+        
+        menuBar.add(createLookAndFeelMenu());
+        menuBar.add(createTestMenu());
+        menuBar.add(createExitMenu());
+        menuBar.add(exitMenu);
+        return menuBar;	  
+        }
         
         JMenu lookAndFeelMenu = new JMenu("Режим отображения");
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
