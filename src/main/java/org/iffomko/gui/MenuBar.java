@@ -2,7 +2,7 @@ package org.iffomko.gui;
 
 import org.iffomko.gui.localization.Localization;
 import org.iffomko.log.Logger;
-import org.iffomko.messagedFormatCached.MessageFormatCached;
+import org.iffomko.messagedFormatCached.MessageFormatting;
 
 import javax.swing.*;
 import java.awt.*;
@@ -26,17 +26,16 @@ public class MenuBar extends JMenuBar implements Observer {
      */
     private void setupLocalization() {
         String packet = "org.iffomko.gui.localizationProperties.menuBar.MenuBarResource";
-
-        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(packet);
+        MessageFormatting messageFormatting = MessageFormatting.getInstance();
 
         for (int i = 0; i < INSTANCE.getMenuCount(); i++) {
             JMenu menu = INSTANCE.getMenu(i);
 
             switch (menu.getAccessibleContext().getAccessibleName()) {
                 case "displayMode": {
-                    menu.setText(MessageFormatCached.format(resourceBundle.getString("displayMode")));
+                    menu.setText(messageFormatting.format("displayMode", packet));
                     menu.getAccessibleContext().setAccessibleDescription(
-                            MessageFormatCached.format(resourceBundle.getString("displayTypeDescription"))
+                            messageFormatting.format("displayTypeDescription", packet)
                     );
 
                     for (int j = 0; j < menu.getItemCount(); j++) {
@@ -44,18 +43,18 @@ public class MenuBar extends JMenuBar implements Observer {
                         String menuItemName = menuItem.getAccessibleContext().getAccessibleName();
 
                         if (menuItemName.equals("systemScheme")) {
-                            menuItem.setText(MessageFormatCached.format(resourceBundle.getString("systemScheme")));
+                            menuItem.setText(messageFormatting.format("systemScheme", packet));
                         } else if (menuItemName.equals("universalScheme")) {
-                            menuItem.setText(MessageFormatCached.format(resourceBundle.getString("universalScheme")));
+                            menuItem.setText(messageFormatting.format("universalScheme", packet));
                         }
                     }
 
                     break;
                 }
                 case "tests": {
-                    menu.setText(MessageFormatCached.format(resourceBundle.getString("tests")));
-                    menu.getAccessibleContext().setAccessibleDescription(MessageFormatCached.format(
-                            resourceBundle.getString("testsDescription")
+                    menu.setText(messageFormatting.format("tests", packet));
+                    menu.getAccessibleContext().setAccessibleDescription(messageFormatting.format(
+                            "testsDescription", packet
                     ));
 
                     for (int j = 0; j < menu.getItemCount(); j++) {
@@ -63,16 +62,16 @@ public class MenuBar extends JMenuBar implements Observer {
                         String menuItemName = menuItem.getAccessibleContext().getAccessibleName();
 
                         if (menuItemName.equals("messageInLog")) {
-                            menuItem.setText(MessageFormatCached.format(resourceBundle.getString("messageInLog")));
+                            menuItem.setText(messageFormatting.format("messageInLog", packet));
                         }
                     }
 
                     break;
                 }
                 case "close": {
-                    menu.setText(MessageFormatCached.format(resourceBundle.getString("close")));
-                    menu.getAccessibleContext().setAccessibleDescription(MessageFormatCached.format(
-                            resourceBundle.getString("closeDescription")
+                    menu.setText(messageFormatting.format("close", packet));
+                    menu.getAccessibleContext().setAccessibleDescription(messageFormatting.format(
+                            "closeDescription", packet
                     ));
 
                     for (int j = 0; j < menu.getItemCount(); j++) {
@@ -80,7 +79,7 @@ public class MenuBar extends JMenuBar implements Observer {
                         String menuItemName = menuItem.getAccessibleContext().getAccessibleName();
 
                         if (menuItemName.equals("exit")) {
-                            menuItem.setText(MessageFormatCached.format(resourceBundle.getString("exit")));
+                            menuItem.setText(messageFormatting.format("exit", packet));
                         }
                     }
 
@@ -88,9 +87,9 @@ public class MenuBar extends JMenuBar implements Observer {
                 }
 
                 case "changeLanguageTitle": {
-                    menu.setText(MessageFormatCached.format(resourceBundle.getString("changeLanguageTitle")));
-                    menu.getAccessibleContext().setAccessibleDescription(MessageFormatCached.format(
-                            resourceBundle.getString("changeLanguageDescription")
+                    menu.setText(messageFormatting.format("changeLanguageTitle", packet));
+                    menu.getAccessibleContext().setAccessibleDescription(messageFormatting.format(
+                            "changeLanguageDescription", packet
                     ));
                     break;
                 }
@@ -123,20 +122,19 @@ public class MenuBar extends JMenuBar implements Observer {
      */
     private static MenuBar generateMenuBar(MainApplicationFrame frame) {
         String packet = "org.iffomko.gui.localizationProperties.menuBar.MenuBarResource";
-
-        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(packet);
+        MessageFormatting messageFormatting = MessageFormatting.getInstance();
 
         MenuBar menuBar = new MenuBar();
 
         JMenu lookAndFeelMenu = generateMenu(
-                MessageFormatCached.format(resourceBundle.getString("displayMode")),
+                messageFormatting.format("displayMode", packet),
                 "displayMode",
                 KeyEvent.VK_V,
-                MessageFormatCached.format(resourceBundle.getString("displayTypeDescription"))
+                messageFormatting.format("displayTypeDescription", packet)
         );
 
         lookAndFeelMenu.add(generateMenuItem(
-                MessageFormatCached.format(resourceBundle.getString("systemScheme")),
+                messageFormatting.format("systemScheme", packet),
                 "systemScheme",
                 KeyEvent.VK_S, (event) -> {
                     frame.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -144,7 +142,7 @@ public class MenuBar extends JMenuBar implements Observer {
                 }
         ));
         lookAndFeelMenu.add(generateMenuItem(
-                MessageFormatCached.format(resourceBundle.getString("universalScheme")),
+                messageFormatting.format("universalScheme", packet),
                 "universalScheme",
                 KeyEvent.VK_S, (event) -> {
                     frame.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
@@ -153,28 +151,28 @@ public class MenuBar extends JMenuBar implements Observer {
         ));
 
         JMenu testMenu = generateMenu(
-                MessageFormatCached.format(resourceBundle.getString("tests")),
+                messageFormatting.format("tests", packet),
                 "tests",
                 KeyEvent.VK_T,
-                MessageFormatCached.format(resourceBundle.getString("testsDescription"))
+                messageFormatting.format("testsDescription", packet)
         );
 
         testMenu.add(generateMenuItem(
-                MessageFormatCached.format(resourceBundle.getString("messageInLog")),
+                messageFormatting.format("messageInLog", packet),
                 "messageInLog",
                 KeyEvent.VK_S,
                 (event) -> Logger.debug("New string")
         ));
 
         JMenu closeMenu = generateMenu(
-                MessageFormatCached.format(resourceBundle.getString("close")),
+                messageFormatting.format("close", packet),
                 "close",
                 KeyEvent.VK_X,
-                MessageFormatCached.format(resourceBundle.getString("closeDescription"))
+                messageFormatting.format("closeDescription", packet)
         );
 
         closeMenu.add(generateMenuItem(
-                MessageFormatCached.format(resourceBundle.getString("exit")),
+                messageFormatting.format("exit", packet),
                 "exit",
                 KeyEvent.VK_X,
                 (event) -> {
@@ -185,10 +183,10 @@ public class MenuBar extends JMenuBar implements Observer {
         ));
 
         JMenu changeLanguage = generateMenu(
-                MessageFormatCached.format(resourceBundle.getString("changeLanguageTitle")),
+                messageFormatting.format("changeLanguageTitle", packet),
                 "changeLanguageTitle",
                 KeyEvent.VK_B,
-                MessageFormatCached.format(resourceBundle.getString("changeLanguageDescription"))
+                messageFormatting.format("changeLanguageDescription", packet)
         );
 
         changeLanguage.add(generateMenuItem("Русский", "Русский", KeyEvent.VK_B, (event) -> {

@@ -1,7 +1,7 @@
 package org.iffomko.gui;
 
 import org.iffomko.gui.localization.Localization;
-import org.iffomko.messagedFormatCached.MessageFormatCached;
+import org.iffomko.messagedFormatCached.MessageFormatting;
 import org.iffomko.models.Robot;
 import org.iffomko.models.Target;
 import org.iffomko.savers.Savable;
@@ -43,9 +43,7 @@ public class GameWindow extends JInternalFrame implements Savable, Observer
      */
     private void setupLocalization() {
         String packet = "org.iffomko.gui.localizationProperties.gameWindow.GameWindowResource";
-        this.setTitle(MessageFormatCached.format(
-                Localization.getInstance().getResourceBundle(packet).getString("gameWindowTitle")
-        ));
+        this.setTitle(MessageFormatting.getInstance().format("gameWindowTitle", packet));
     }
 
     /**

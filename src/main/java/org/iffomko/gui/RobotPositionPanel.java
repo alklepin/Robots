@@ -1,7 +1,7 @@
 package org.iffomko.gui;
 
 import org.iffomko.gui.localization.Localization;
-import org.iffomko.messagedFormatCached.MessageFormatCached;
+import org.iffomko.messagedFormatCached.MessageFormatting;
 import org.iffomko.models.Robot;
 
 import javax.swing.*;
@@ -34,7 +34,7 @@ public class RobotPositionPanel extends JPanel implements Observer {
                 ((int) (robot.getDirection() * 180 / Math.PI))
         };
 
-        String text = MessageFormatCached.format(pattern, params);
+        String text = MessageFormatting.getInstance().format(pattern, params);
 
         textField.setText(text);
     }
@@ -90,20 +90,6 @@ public class RobotPositionPanel extends JPanel implements Observer {
      * <p>Метод, который обрабатывает событие изменения позиции робота</p>
      */
     private void onRobotPositionChanged() {
-        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(
-                "org.iffomko.gui.localizationProperties.robotPositionPanel.RobotPositionPanelResource"
-        );
-
-        String pattern = "X: {0}, Y: {1}, {2}: {3}";
-        Object[] params = {
-                (int)robot.getX(),
-                (int)robot.getY(),
-                resourceBundle.getString("direction"),
-                ((int) (robot.getDirection() * 180 / Math.PI))
-        };
-
-        String text = MessageFormatCached.format(pattern, params);
-
-        textField.setText(text);
+        setupLocalization();
     }
 }

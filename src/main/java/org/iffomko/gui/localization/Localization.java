@@ -1,5 +1,7 @@
 package org.iffomko.gui.localization;
 
+import org.iffomko.messagedFormatCached.MessageFormatting;
+
 import java.util.Locale;
 import java.util.Observable;
 import java.util.ResourceBundle;
@@ -15,6 +17,8 @@ public class Localization extends Observable {
     private static final Object synchronizationObject = new Object();
     public static final String KEY_LOCAL_CHANGED = "Локаль изменилась";
 
+    private Localization() {}
+
     /**
      * Изменяет локаль для локализации приложения и уведомляет о смене локали всех подписчиков
      * @param locale новая локаль
@@ -22,6 +26,7 @@ public class Localization extends Observable {
     public void setLocale(Locale locale) {
         if (locale != null) {
             this.locale = locale;
+            MessageFormatting.getInstance().clearCache();
 
             setChanged();
             notifyObservers(KEY_LOCAL_CHANGED);

@@ -8,7 +8,7 @@ import javax.swing.*;
 
 import org.iffomko.gui.localization.Localization;
 import org.iffomko.log.Logger;
-import org.iffomko.messagedFormatCached.MessageFormatCached;
+import org.iffomko.messagedFormatCached.MessageFormatting;
 import org.iffomko.savers.Savable;
 import org.iffomko.savers.SaverException;
 import org.iffomko.savers.StateKeeper;
@@ -104,23 +104,23 @@ public class MainApplicationFrame extends JFrame
      */
     private void onWindowClosing(WindowEvent event) {
         String packet = "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource";
-        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(packet);
+        MessageFormatting messageFormatting = MessageFormatting.getInstance();
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         UIManager.put(
                 "OptionPane.yesButtonText",
-                MessageFormatCached.format(resourceBundle.getString("yesButtonText"))
+                messageFormatting.format("yesButtonText", packet)
         );
         UIManager.put(
                 "OptionPane.noButtonText",
-                MessageFormatCached.format(resourceBundle.getString("noButtonText"))
+                messageFormatting.format("noButtonText", packet)
         );
 
         int response = JOptionPane.showOptionDialog(
                 event.getWindow(),
-                MessageFormatCached.format(resourceBundle.getString("closeApp")),
-                MessageFormatCached.format(resourceBundle.getString("confirmation")),
+                messageFormatting.format("closeApp", packet),
+                messageFormatting.format("confirmation", packet),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,

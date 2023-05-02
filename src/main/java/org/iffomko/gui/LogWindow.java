@@ -11,7 +11,7 @@ import org.iffomko.gui.localization.Localization;
 import org.iffomko.log.LogChangeListener;
 import org.iffomko.log.LogEntry;
 import org.iffomko.log.LogWindowSource;
-import org.iffomko.messagedFormatCached.MessageFormatCached;
+import org.iffomko.messagedFormatCached.MessageFormatting;
 import org.iffomko.savers.Savable;
 
 /**
@@ -28,9 +28,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
      */
     private void setupLocalization() {
         String packet = "org.iffomko.gui.localizationProperties.logWindow.LogWindowResource";
-        this.setTitle(MessageFormatCached.format(
-                Localization.getInstance().getResourceBundle(packet).getString("logWindowTitle")
-        ));
+        this.setTitle(MessageFormatting.getInstance().format("logWindowTitle", packet));
     }
 
     /**
