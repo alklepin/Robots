@@ -24,10 +24,11 @@ public class MenuBarResource_ru_RU extends ListResourceBundle {
                 {"tests", "Тесты"},
                 {"testsDescription", "Тестовые команды"},
                 {"messageInLog", "Сообщение в лог"},
-                {"newString", "Новая строка"},
                 {"close", "Закрыть"},
                 {"closeDescription", "Закрывает приложение"},
-                {"exit", "Выход"}
+                {"exit", "Выход"},
+                {"changeLanguageTitle", "Поменять язык интерфейса"},
+                {"changeLanguageDescription", "Меняет язык интерфейса"}
         };
     }
 }

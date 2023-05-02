@@ -37,4 +37,16 @@ public class MessageFormatCached {
             return result;
         }
     }
+
+    /**
+     * <p>
+     *     Смотрит в кеше был ли уже похожий запрос. Если был, то возвращает строчку из кеша, иначе
+     *     формирует новую строчку по паттерну с помощью класс <code>MessageFormat</code>
+     * </p>
+     * @param pattern паттерн, с помощью которого нужно сформировать строчку
+     * @return строка созданная по паттерну
+     */
+    public static String format(String pattern) {
+        return format(pattern, new Object[0]);
+    }
 }

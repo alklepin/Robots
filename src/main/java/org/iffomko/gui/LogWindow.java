@@ -2,27 +2,36 @@ package org.iffomko.gui;
 
 import java.awt.*;
 import java.beans.PropertyVetoException;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
+import org.iffomko.gui.localization.Localization;
 import org.iffomko.log.LogChangeListener;
 import org.iffomko.log.LogEntry;
 import org.iffomko.log.LogWindowSource;
+import org.iffomko.messagedFormatCached.MessageFormatCached;
 import org.iffomko.savers.Savable;
 
 /**
  * Окно с содержанием логов
  */
-public class LogWindow extends JInternalFrame implements LogChangeListener, Savable
+public class LogWindow extends JInternalFrame implements LogChangeListener, Savable, Observer
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
     private final String prefix;
+
+    /**
+     * Локализирует нужные поля этой компоненты
+     */
+    private void setupLocalization() {
+        String packet = "org.iffomko.gui.localizationProperties.logWindow.LogWindowResource";
+        this.setTitle(MessageFormatCached.format(
+                Localization.getInstance().getResourceBundle(packet).getString("logWindowTitle")
+        ));
+    }
 
     /**
      * Создает окно с логами
@@ -32,12 +41,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     {
         super("Протокол работы", true, true, true, true);
 
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.iffomko.gui.localizationProperties.logWindow.LogWindowResource",
-                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
-        );
-
-        this.setTitle(resourceBundle.getString("logWindowTitle"));
+        setupLocalization();
 
         m_logSource = logSource;
         m_logSource.registerListener(this);
@@ -162,5 +166,21 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, Sava
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    /**
+     * <p>Этот метод вызывается каждый раз, когда наблюдаемый объект изменяется</p>
+     * <p>
+     *     В программе этот метод вызывается тогда, когда наблюдаемый объект, который наследуется от <code>Observable</code>,
+     *     вызывает метод <code>notifyObservers</code>
+     * </p>
+     * @param o   - наблюдаемый объект, который уведомил об изменениях
+     * @param arg - аргумент, который был положен при вызове метода <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof Localization && arg.equals(Localization.KEY_LOCAL_CHANGED)) {
+            setupLocalization();
+        }
     }
 }

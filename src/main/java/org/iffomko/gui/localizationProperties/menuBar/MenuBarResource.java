@@ -24,10 +24,11 @@ public class MenuBarResource extends ListResourceBundle {
                 {"tests", "Testi"},
                 {"testsDescription", "Testovie comandi"},
                 {"messageInLog", "Soobshenie v log"},
-                {"newString", "Novaya stroka"},
                 {"close", "Zakrit"},
                 {"closeDescription", "Zaktrivaet prilozhenie"},
-                {"exit", "Vihod"}
+                {"exit", "Vihod"},
+                {"changeLanguageTitle", "Pomenat' yazik interfeysa"},
+                {"changeLanguageDescription", "Menayet yazik interfeysa"}
         };
     }
 }

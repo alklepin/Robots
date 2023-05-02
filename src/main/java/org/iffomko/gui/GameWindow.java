@@ -1,5 +1,7 @@
 package org.iffomko.gui;
 
+import org.iffomko.gui.localization.Localization;
+import org.iffomko.messagedFormatCached.MessageFormatCached;
 import org.iffomko.models.Robot;
 import org.iffomko.models.Target;
 import org.iffomko.savers.Savable;
@@ -16,7 +18,7 @@ import javax.swing.JPanel;
 /**
  * Окно с игрой
  */
-public class GameWindow extends JInternalFrame implements Savable
+public class GameWindow extends JInternalFrame implements Savable, Observer
 {
     private final GameVisualizer gameVisualizer;
     private final Robot robot;
@@ -37,18 +39,23 @@ public class GameWindow extends JInternalFrame implements Savable
     }
 
     /**
+     * Локализирует нужные поля этой компоненты
+     */
+    private void setupLocalization() {
+        String packet = "org.iffomko.gui.localizationProperties.gameWindow.GameWindowResource";
+        this.setTitle(MessageFormatCached.format(
+                Localization.getInstance().getResourceBundle(packet).getString("gameWindowTitle")
+        ));
+    }
+
+    /**
      * Создает окно с игрой
      */
     public GameWindow()
     {
         super("Игровое поле", true, true, true, true);
 
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.iffomko.gui.localizationProperties.gameWindow.GameWindowResource",
-                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
-        );
-
-        this.setTitle(resourceBundle.getString("gameWindowTitle"));
+        setupLocalization();
 
         robot = new Robot();
         target = new Target();
@@ -80,6 +87,7 @@ public class GameWindow extends JInternalFrame implements Savable
         robot.addObserver(robotPositionPanel);
         robot.addObserver(gameVisualizer);
         target.addObserver(gameVisualizer);
+        Localization.getInstance().addObserver(robotPositionPanel);
 
         setSize(new Dimension(400, 400));
 
@@ -175,5 +183,21 @@ public class GameWindow extends JInternalFrame implements Savable
     @Override
     public String getPrefix() {
         return prefix;
+    }
+
+    /**
+     * <p>Этот метод вызывается каждый раз, когда наблюдаемый объект изменяется</p>
+     * <p>
+     *     В программе этот метод вызывается тогда, когда наблюдаемый объект, который наследуется от <code>Observable</code>,
+     *     вызывает метод <code>notifyObservers</code>
+     * </p>
+     * @param o   - наблюдаемый объект, который уведомил об изменениях
+     * @param arg - аргумент, который был положен при вызове метода <code>notifyObservers</code>
+     */
+    @Override
+    public void update(Observable o, Object arg) {
+        if (o instanceof Localization && arg.equals(Localization.KEY_LOCAL_CHANGED)) {
+            setupLocalization();
+        }
     }
 }

@@ -24,10 +24,11 @@ public class MenuBarResource_en_US extends ListResourceBundle {
                 {"tests", "Tests"},
                 {"testsDescription", "Test commands"},
                 {"messageInLog", "Message to the log"},
-                {"newString", "New line"},
                 {"close", "Close"},
                 {"closeDescription", "Closes the application"},
-                {"exit", "Exit"}
+                {"exit", "Exit"},
+                {"changeLanguageTitle", "Change UI language"},
+                {"changeLanguageDescription", "Changing UI language"}
         };
     }
 }

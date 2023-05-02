@@ -1,11 +1,11 @@
 package org.iffomko.gui;
 
+import org.iffomko.gui.localization.Localization;
 import org.iffomko.messagedFormatCached.MessageFormatCached;
 import org.iffomko.models.Robot;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Locale;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.ResourceBundle;
@@ -17,6 +17,27 @@ public class RobotPositionPanel extends JPanel implements Observer {
     private final JTextArea textField;
     private String text = "";
     private final Robot robot;
+
+    /**
+     * Локализирует нужные поля этой компоненты
+     */
+    private void setupLocalization() {
+        String packet = "org.iffomko.gui.localizationProperties.robotPositionPanel.RobotPositionPanelResource";
+
+        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(packet);
+
+        String pattern = "X: {0}, Y: {1}, {2}: {3}";
+        Object[] params = {
+                (int)robot.getX(),
+                (int)robot.getY(),
+                resourceBundle.getString("direction"),
+                ((int) (robot.getDirection() * 180 / Math.PI))
+        };
+
+        String text = MessageFormatCached.format(pattern, params);
+
+        textField.setText(text);
+    }
 
     /**
      * @param robot - модель робота, за которой мы наблюдаем
@@ -59,15 +80,18 @@ public class RobotPositionPanel extends JPanel implements Observer {
                 onRobotPositionChanged();
             }
         }
+
+        if (o instanceof Localization && arg.equals(Localization.KEY_LOCAL_CHANGED)) {
+            setupLocalization();
+        }
     }
 
     /**
      * <p>Метод, который обрабатывает событие изменения позиции робота</p>
      */
     private void onRobotPositionChanged() {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.iffomko.gui.localizationProperties.robotPositionPanel.RobotPositionPanelResource",
-                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(
+                "org.iffomko.gui.localizationProperties.robotPositionPanel.RobotPositionPanelResource"
         );
 
         String pattern = "X: {0}, Y: {1}, {2}: {3}";

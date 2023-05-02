@@ -2,12 +2,13 @@ package org.iffomko.gui;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.*;
 
+import org.iffomko.gui.localization.Localization;
 import org.iffomko.log.Logger;
+import org.iffomko.messagedFormatCached.MessageFormatCached;
 import org.iffomko.savers.Savable;
 import org.iffomko.savers.SaverException;
 import org.iffomko.savers.StateKeeper;
@@ -24,6 +25,7 @@ public class MainApplicationFrame extends JFrame
      */
     public MainApplicationFrame() {
         StateKeeper stateKeeper = StateKeeper.getInstance();
+        Localization localization = Localization.getInstance();
 
         stateKeeper.restore();
 
@@ -55,7 +57,9 @@ public class MainApplicationFrame extends JFrame
 
         addWindow(gameWindow);
 
-        setJMenuBar(MenuBar.getMenu(this));
+        MenuBar menuBar = MenuBar.getInstance(this);
+
+        setJMenuBar(menuBar);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -63,6 +67,10 @@ public class MainApplicationFrame extends JFrame
                 onWindowClosing(e);
             }
         });
+
+        localization.addObserver(logWindow);
+        localization.addObserver(menuBar);
+        localization.addObserver(gameWindow);
     }
 
     /**
@@ -95,20 +103,24 @@ public class MainApplicationFrame extends JFrame
      * @param event - информация о событии
      */
     private void onWindowClosing(WindowEvent event) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource",
-                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
-        );
+        String packet = "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource";
+        ResourceBundle resourceBundle = Localization.getInstance().getResourceBundle(packet);
 
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
-        UIManager.put("OptionPane.yesButtonText", resourceBundle.getString("yesButtonText"));
-        UIManager.put("OptionPane.noButtonText", resourceBundle.getString("noButtonText"));
+        UIManager.put(
+                "OptionPane.yesButtonText",
+                MessageFormatCached.format(resourceBundle.getString("yesButtonText"))
+        );
+        UIManager.put(
+                "OptionPane.noButtonText",
+                MessageFormatCached.format(resourceBundle.getString("noButtonText"))
+        );
 
         int response = JOptionPane.showOptionDialog(
                 event.getWindow(),
-                resourceBundle.getString("closeApp"),
-                resourceBundle.getString("confirmation"),
+                MessageFormatCached.format(resourceBundle.getString("closeApp")),
+                MessageFormatCached.format(resourceBundle.getString("confirmation")),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
