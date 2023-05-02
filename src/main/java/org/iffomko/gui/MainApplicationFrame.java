@@ -2,10 +2,12 @@ package org.iffomko.gui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 
 import org.iffomko.log.Logger;
 import org.iffomko.savers.Savable;
@@ -18,6 +20,52 @@ import org.iffomko.savers.StateKeeper;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane(); // окно с ещё окнами внутри
+    private final static ResourceBundle resourceBundle = ResourceBundle.getBundle(
+            "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource",
+            new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
+    );
+
+    /**
+     * <p>Обработчик события при нажатии на кнопку, которая позволяет выбрать .jar файл с настройками робота</p>
+     */
+    private static void onLoadRobot() {
+        UIManager.put("FileChooser.cancelButtonText", resourceBundle.getString("FileChooser.cancelButtonText"));
+        UIManager.put("FileChooser.fileNameLabelText", resourceBundle.getString("FileChooser.fileNameLabelText"));
+        UIManager.put("FileChooser.filesOfTypeLabelText", resourceBundle.getString("FileChooser.filesOfTypeLabelText"));
+        UIManager.put("FileChooser.lookInLabelText", resourceBundle.getString("FileChooser.lookInLabelText"));
+        UIManager.put("FileChooser.folderNameLabelText", resourceBundle.getString("FileChooser.folderNameLabelText"));
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle(resourceBundle.getString("selectRobotJarTitle"));
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        fileChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                if (f.isDirectory()) {
+                    return true;
+                }
+
+                return f.getName().endsWith(".jar");
+            }
+
+            @Override
+            public String getDescription() {
+                return resourceBundle.getString("selectRobotJarDescription");
+            }
+        });
+
+        int result = fileChooser.showDialog(this.get, resourceBundle.getString("selectRobotJarApproveBtn"));
+
+        if (
+                result == JFileChooser.APPROVE_OPTION &&
+                        fileChooser.getSelectedFile().getPath().toLowerCase().endsWith(".jar")
+        ) {
+            String robotPath = fileChooser.getSelectedFile().getPath();
+            System.out.println("Все супер! Мы выбрали робота!\n" + robotPath);
+
+            // ToDo: тут надо запустить загрузчик робота
+        }
+    }
 
     /**
      * Конструктор, который создает контейнер с окнами: окно с игрой, окно с логами, генерирует меню. И настраивает их.
@@ -55,7 +103,15 @@ public class MainApplicationFrame extends JFrame
 
         addWindow(gameWindow);
 
-        setJMenuBar(MenuBar.getMenu(this));
+        JMenuBar menuBar = MenuBar.getMenu(this);
+        menuBar.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.out.println("Получил событие");
+            }
+        });
+
+        setJMenuBar(menuBar);
 
         addWindowListener(new WindowAdapter() {
             @Override
@@ -95,11 +151,6 @@ public class MainApplicationFrame extends JFrame
      * @param event - информация о событии
      */
     private void onWindowClosing(WindowEvent event) {
-        ResourceBundle resourceBundle = ResourceBundle.getBundle(
-                "org.iffomko.gui.localizationProperties.mainApplicationFrame.MainApplicationFrameResource",
-                new Locale(System.getProperty("user.language"), System.getProperty("user.country"))
-        );
-
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
         UIManager.put("OptionPane.yesButtonText", resourceBundle.getString("yesButtonText"));
