@@ -27,7 +27,18 @@ public class MenuBarResource_en_US extends ListResourceBundle {
                 {"newString", "New line"},
                 {"close", "Close"},
                 {"closeDescription", "Closes the application"},
-                {"exit", "Exit"}
+                {"exit", "Exit"},
+                {"loadRobot", "Load robot"},
+                {"loadRobotDescription", "Allow select path for robot class"},
+                {"loadRobotItem", "Select path"},
+                {"selectRobotJarTitle", "Selecting robot"},
+                {"selectRobotJarDescription", "Only .jar files"},
+                {"selectRobotJarApproveBtn", "Select robot"},
+                {"FileChooser.cancelButtonText", "Cancel"},
+                {"FileChooser.fileNameLabelText", "File name"},
+                {"FileChooser.filesOfTypeLabelText", "Files types"},
+                {"FileChooser.lookInLabelText", "Directory"},
+                {"FileChooser.folderNameLabelText", "Path for directory"}
         };
     }
 }

@@ -27,7 +27,18 @@ public class MenuBarResource_ru_RU extends ListResourceBundle {
                 {"newString", "Новая строка"},
                 {"close", "Закрыть"},
                 {"closeDescription", "Закрывает приложение"},
-                {"exit", "Выход"}
+                {"exit", "Выход"},
+                {"loadRobot", "Загрузить робота"},
+                {"loadRobotDescription", "Позволяет указать путь до робота"},
+                {"loadRobotItem", "Выбрать путь"},
+                {"selectRobotJarTitle", "Выбор робота"},
+                {"selectRobotJarDescription", "Только .jar файлы"},
+                {"selectRobotJarApproveBtn", "Выбрать робота"},
+                {"FileChooser.cancelButtonText", "Отмена"},
+                {"FileChooser.fileNameLabelText", "Имя файла"},
+                {"FileChooser.filesOfTypeLabelText", "Типы файлов"},
+                {"FileChooser.lookInLabelText", "Директория"},
+                {"FileChooser.folderNameLabelText", "Путь директории"}
         };
     }
 }

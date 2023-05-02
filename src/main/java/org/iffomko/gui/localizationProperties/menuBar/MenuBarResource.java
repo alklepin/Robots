@@ -27,7 +27,17 @@ public class MenuBarResource extends ListResourceBundle {
                 {"newString", "Novaya stroka"},
                 {"close", "Zakrit"},
                 {"closeDescription", "Zaktrivaet prilozhenie"},
-                {"exit", "Vihod"}
+                {"exit", "Vihod"},
+                {"loadRobot", "Zagruzit robota"},
+                {"loadRobotDescription", "Pozvolayet zagruzit robota"},
+                {"selectRobotJarTitle", "Vibor robota"},
+                {"selectRobotJarDescription", "Tol'ko .jar fayli"},
+                {"selectRobotJarApproveBtn", "Vibrat' robota"},
+                {"FileChooser.cancelButtonText", "Otmena"},
+                {"FileChooser.fileNameLabelText", "Imya fayla"},
+                {"FileChooser.filesOfTypeLabelText", "Tipi faylov"},
+                {"FileChooser.lookInLabelText", "Directoria"},
+                {"FileChooser.folderNameLabelText", "Put do directorii"}
         };
     }
 }
