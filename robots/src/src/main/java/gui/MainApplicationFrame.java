@@ -3,14 +3,10 @@ package gui;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 
-import org.json.simple.parser.JSONParser;
+import logic.IObjectState;
+import logic.LocalConfig;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.ParseException;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -22,13 +18,13 @@ public class MainApplicationFrame extends JFrame {
 
     private final JDesktopPane desktopPane = new JDesktopPane();
     RobotModel robotModel = new RobotModel();
-    RobotView robotView = new RobotView();
-
-    RobotController controller = new RobotController(robotModel, robotView);
+    RobotController controller = new RobotController(robotModel, new RobotView());
     private final GameWindow gameWindow = new GameWindow(controller);
     private final LogWindow logWindow = createLogWindow();
 
     CoordinatesWindow coordWindow = new CoordinatesWindow();
+
+    private final IObjectState configManager = new LocalConfig();
 
     public MainApplicationFrame() {
         int inset = 50;
@@ -126,13 +122,12 @@ public class MainApplicationFrame extends JFrame {
         testMenu.getAccessibleContext().setAccessibleDescription(
                 "Тестовые команды");
 
-        {
             JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
                 Logger.debug("Новая строка");
             });
             testMenu.add(addLogMessageItem);
-        }
+
         return testMenu;
     }
 
@@ -178,37 +173,21 @@ public class MainApplicationFrame extends JFrame {
 
     protected void saveConfiguration() {
         JSONObject json = new JSONObject();
-        json.put("gameWindowX", gameWindow.getX());
-        json.put("gameWindowY", gameWindow.getY());
-        json.put("gameWindowWidth", gameWindow.getWidth());
-        json.put("gameWindowHeight", gameWindow.getHeight());
+        saveConfigurationOfElement("gameWindow", json, gameWindow);
+        saveConfigurationOfElement("logWindow", json, logWindow);
+        saveConfigurationOfElement("CoordinatesWindow", json, coordWindow);
+        configManager.save(json);
+    }
 
-        json.put("logWindowX", logWindow.getX());
-        json.put("logWindowY", logWindow.getY());
-        json.put("logWindowWidth", logWindow.getWidth());
-        json.put("logWindowHeight", logWindow.getHeight());
-
-        json.put("CoordinatesWindowX", coordWindow.getX());
-        json.put("CoordinatesWindowY", coordWindow.getY());
-        json.put("CoordinatesWindowWidth", coordWindow.getWidth());
-        json.put("CoordinatesWindowHeight", coordWindow.getHeight());
-
-        // Save JSON to user home directory
-        String userHomeDir = System.getProperty("user.home");
-        File robotsDir = new File(userHomeDir + "/.Robots");
-        if (!robotsDir.exists()) {
-            robotsDir.mkdir();
-        }
-        File configFile = new File(userHomeDir + "/.Robots/config.json");
-        try (FileWriter fileWriter = new FileWriter(configFile.getAbsolutePath())) {
-            fileWriter.write(json.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    protected void saveConfigurationOfElement(String name, JSONObject json, JInternalFrame window) {
+        json.put(name+ "X", window.getX());
+        json.put(name+ "Y", window.getY());
+        json.put(name + "Width", window.getWidth());
+        json.put(name+ "Height", window.getHeight());
     }
 
     protected void applyConfig() {
-        JSONObject config = readFromConfig();
+        JSONObject config = configManager.load();
         if (config == null) {
             return;
         }
@@ -218,22 +197,6 @@ public class MainApplicationFrame extends JFrame {
         gameWindow.setLocation(((Long) config.get("gameWindowX")).intValue(), ((Long) config.get("gameWindowY")).intValue());
         logWindow.setLocation(((Long) config.get("logWindowX")).intValue(), ((Long) config.get("logWindowY")).intValue());
         coordWindow.setLocation(((Long) config.get("CoordinatesWindowX")).intValue(), ((Long) config.get("CoordinatesWindowY")).intValue());
-    }
-
-    protected JSONObject readFromConfig() {
-
-        File configFile = new File(System.getProperty("user.home") + "/.Robots/config.json");
-        JSONParser parser = new JSONParser();
-        if (configFile.exists()) {
-            try {
-                return (JSONObject) parser.parse(new FileReader(configFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
     }
 
     private void setLookAndFeel(String className) {
