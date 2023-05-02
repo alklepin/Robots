@@ -1,4 +1,4 @@
-package org.iffomko.models;
+package org.iffomko.gui.models;
 
 import java.awt.*;
 import java.util.Observable;

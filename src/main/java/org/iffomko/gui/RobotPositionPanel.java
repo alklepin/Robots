@@ -1,7 +1,7 @@
 package org.iffomko.gui;
 
 import org.iffomko.messagedFormatCached.MessageFormatCached;
-import org.iffomko.models.Robot;
+import org.iffomko.gui.models.Robot;
 
 import javax.swing.*;
 import java.awt.*;

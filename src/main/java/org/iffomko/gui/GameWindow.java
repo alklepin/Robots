@@ -1,7 +1,7 @@
 package org.iffomko.gui;
 
-import org.iffomko.models.Robot;
-import org.iffomko.models.Target;
+import org.iffomko.gui.models.Robot;
+import org.iffomko.gui.models.Target;
 import org.iffomko.savers.Savable;
 
 import java.awt.*;
