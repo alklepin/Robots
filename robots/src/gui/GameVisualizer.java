@@ -5,6 +5,7 @@ import controllers.ModelUpdateController;
 import gui.drawModels.DefaultRobot;
 import gui.drawModels.TargetDrawRepresentation;
 import models.RobotModel;
+import models.TargetModel;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
@@ -29,12 +30,13 @@ public class GameVisualizer extends JPanel implements Observer {
     private RobotModel m_model;
 
 
-    public GameVisualizer(ModelPositionController modelController, RobotModel model, int targetX, int targetY) {
-        m_targetPositionX=targetX;
-        m_targetPositionY=targetY;
+
+
+    public GameVisualizer(ModelPositionController modelController, RobotModel model, TargetModel target) {
+
         m_model=model;
         m_robotDraw = new DefaultRobot(m_model.getM_PositionX(), m_model.getM_PositionY(),m_model.getM_Direction());
-        m_target = new TargetDrawRepresentation(targetX, targetY);
+        m_target = new TargetDrawRepresentation(target);
         m_controller = modelController;
 
         addMouseListener(new MouseAdapter() {
@@ -50,7 +52,7 @@ public class GameVisualizer extends JPanel implements Observer {
     protected void setTargetPosition(Point p) {
         m_targetPositionX = p.x;
         m_targetPositionY = p.y;
-        m_target.update(p.x, p.y);
+
         m_controller.setTargetPos(p);
     }
 

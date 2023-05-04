@@ -16,8 +16,10 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
+import gui.drawModels.TargetDrawRepresentation;
 import log.Logger;
 import models.RobotModel;
+import models.TargetModel;
 
 /**
  * Что требуется сделать:
@@ -29,7 +31,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
     
-    public MainApplicationFrame(RobotModel model, ModelPositionController controller) {
+    public MainApplicationFrame(RobotModel model, ModelPositionController controller, TargetModel target) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        
@@ -45,7 +47,7 @@ public class MainApplicationFrame extends JFrame
         addWindow(logWindow);
 
 
-        GameWindow gameWindow = new GameWindow(model,controller);
+        GameWindow gameWindow = new GameWindow(model,controller,target);
         gameWindow.setSize(400,  400);
 
         PositionShowWindow coordWindow=new PositionShowWindow(model);

@@ -2,6 +2,7 @@ package gui;
 
 import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
+import gui.drawModels.TargetDrawRepresentation;
 import models.RobotModel;
 import models.TargetModel;
 
@@ -29,7 +30,7 @@ public class RobotsProgram
         ModelUpdateController updateController = new ModelUpdateController(model);
         ModelPositionController movementController=new ModelPositionController(target);
 
-        MainApplicationFrame frame = new MainApplicationFrame(model, movementController);
+        MainApplicationFrame frame = new MainApplicationFrame(model, movementController, target);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);
