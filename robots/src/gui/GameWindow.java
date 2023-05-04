@@ -1,5 +1,6 @@
 package gui;
 
+import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import models.RobotModel;
 
@@ -11,7 +12,7 @@ import javax.swing.JPanel;
 public class GameWindow extends JInternalFrame
 {
     private final GameVisualizer m_visualizer;
-    public GameWindow(RobotModel model, ModelUpdateController controller)
+    public GameWindow(RobotModel model, ModelPositionController controller)
     {
         super("Игровое поле", true, true, true, true);
 

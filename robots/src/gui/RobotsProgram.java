@@ -1,5 +1,6 @@
 package gui;
 
+import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import models.RobotModel;
 
@@ -22,10 +23,10 @@ public class RobotsProgram
       SwingUtilities.invokeLater(() -> {
 
         RobotModel model=new RobotModel(100,100,100,150,100);
-        ModelUpdateController controller = new ModelUpdateController(model);
+        ModelUpdateController updateController = new ModelUpdateController(model);
+        ModelPositionController movementController=new ModelPositionController(model);
 
-
-        MainApplicationFrame frame = new MainApplicationFrame(model, controller);
+        MainApplicationFrame frame = new MainApplicationFrame(model, movementController);
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

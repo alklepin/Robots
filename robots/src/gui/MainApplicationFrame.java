@@ -14,6 +14,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import log.Logger;
 import models.RobotModel;
@@ -28,7 +29,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
     
-    public MainApplicationFrame(RobotModel model, ModelUpdateController controller) {
+    public MainApplicationFrame(RobotModel model, ModelPositionController controller) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;        

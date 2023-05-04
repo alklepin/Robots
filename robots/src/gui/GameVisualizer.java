@@ -1,5 +1,6 @@
 package gui;
 
+import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import gui.drawModels.DefaultRobot;
 import gui.drawModels.TargetDrawRepresentation;
@@ -31,11 +32,11 @@ public class GameVisualizer extends JPanel implements Observer {
     private DefaultRobot m_robotDraw;
     private TargetDrawRepresentation m_target;
 
-    private ModelUpdateController m_controller;
+    private ModelPositionController m_controller;
     private RobotModel m_model;
 
 
-    public GameVisualizer(ModelUpdateController modelController, RobotModel model, int targetX, int targetY) {
+    public GameVisualizer(ModelPositionController modelController, RobotModel model, int targetX, int targetY) {
         m_targetPositionX=targetX;
         m_targetPositionY=targetY;
         m_model=model;

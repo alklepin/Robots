@@ -23,9 +23,7 @@ public class ModelUpdateController {
             }
         }, 0, 10);
     }
-    public void setTargetPos(Point p){
-        m_model.setTargetPosition(p);
-    }
+
     public void updateModel(){
         m_model.updatePos();
     }
