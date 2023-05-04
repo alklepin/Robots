@@ -1,5 +1,6 @@
 package gui.drawModels;
-
+import static utils.DrawUtils.*;
+import static utils.MathUtils.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
@@ -19,18 +20,18 @@ public class DefaultRobot implements Drawable{
 
     @Override
     public void draw(Graphics2D g) {
-        int robotCenterX = Drawable.round(m_posX);
-        int robotCenterY = Drawable.round(m_posY);
+        int robotCenterX = round(m_posX);
+        int robotCenterY = round(m_posY);
         AffineTransform t = AffineTransform.getRotateInstance(m_dir, robotCenterX, robotCenterY);
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
-        Drawable.fillOval(g, robotCenterX, robotCenterY, 30, 10);
+        fillOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.BLACK);
-        Drawable.drawOval(g, robotCenterX, robotCenterY, 30, 10);
+        drawOval(g, robotCenterX, robotCenterY, 30, 10);
         g.setColor(Color.WHITE);
-        Drawable.fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+        fillOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
         g.setColor(Color.BLACK);
-        Drawable.drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
+        drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
     }
 
 

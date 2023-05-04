@@ -2,6 +2,7 @@ package gui.drawModels;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import static utils.DrawUtils.*;
 
 public class TargetDrawRepresentation implements Drawable{
 
@@ -22,8 +23,8 @@ public class TargetDrawRepresentation implements Drawable{
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);
-        Drawable.fillOval(g, m_x, m_y, 5, 5);
+        fillOval(g, m_x, m_y, 5, 5);
         g.setColor(Color.BLACK);
-        Drawable.drawOval(g, m_x, m_y, 5, 5);
+        drawOval(g, m_x, m_y, 5, 5);
     }
 }
