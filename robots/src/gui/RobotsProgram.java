@@ -3,9 +3,12 @@ package gui;
 import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import models.RobotModel;
+import models.TargetModel;
 
 import java.awt.Frame;
+import java.lang.annotation.Target;
 
+import javax.sound.sampled.TargetDataLine;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -21,10 +24,10 @@ public class RobotsProgram
         e.printStackTrace();
       }
       SwingUtilities.invokeLater(() -> {
-
-        RobotModel model=new RobotModel(100,100,100,150,100);
+        TargetModel target=new TargetModel(150,100);
+        RobotModel model=new RobotModel(100,100,100,target);
         ModelUpdateController updateController = new ModelUpdateController(model);
-        ModelPositionController movementController=new ModelPositionController(model);
+        ModelPositionController movementController=new ModelPositionController(target);
 
         MainApplicationFrame frame = new MainApplicationFrame(model, movementController);
         frame.pack();

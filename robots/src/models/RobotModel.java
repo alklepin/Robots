@@ -8,29 +8,25 @@ public class RobotModel extends Observable {
 
     private volatile double m_PositionX = 100;
     private volatile double m_PositionY = 100;
+    private TargetModel m_Target;
+
     private volatile double m_Direction = 0;
 
-    private volatile int m_targetPositionX = 150;
-    private volatile int m_targetPositionY = 100;
+
     private double turn_duration=10;
 
     private static final double maxVelocity = 0.1;
     private static final double maxAngularVelocity = 0.001;
 
 
-    public RobotModel(double m_PositionX, double m_PositionY, double m_Direction,int targetPosX,int targetPosY) {
+    public RobotModel(double m_PositionX, double m_PositionY, double m_Direction,TargetModel target) {
         this.m_PositionX = m_PositionX;
         this.m_PositionY = m_PositionY;
         this.m_Direction = m_Direction;
-        this.m_targetPositionX=targetPosX;
-        this.m_targetPositionY=targetPosY;
+        m_Target=target;
     }
 
-    public void setTargetPosition(Point p)
-    {
-        m_targetPositionX = p.x;
-        m_targetPositionY = p.y;
-    }
+
     public void updatePos(){
         if(isTooClose()){
             return;
@@ -92,7 +88,7 @@ public class RobotModel extends Observable {
         return maxVelocity;
     }
     private double calculateAngularVelocity(){
-        double angleToTarget = angleTo(m_PositionX, m_PositionY, m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(m_PositionX, m_PositionY, m_Target.getPosX(), m_Target.getPosY());
         double angularVelocity = 0;
         if (angleToTarget > m_Direction)
         {
@@ -109,7 +105,7 @@ public class RobotModel extends Observable {
         return angularVelocity;
     }
     private boolean isTooClose(){
-        double distance = distance(m_targetPositionX, m_targetPositionY,
+        double distance = distance(m_Target.getPosX(), m_Target.getPosY(),
                 m_PositionX, m_PositionY);
         return distance<0.5;
     }

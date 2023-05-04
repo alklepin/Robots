@@ -1,17 +1,18 @@
 package controllers;
 
 import models.RobotModel;
+import models.TargetModel;
 
 import java.awt.*;
 
 public class ModelPositionController {
-    private RobotModel m_model;
+    private TargetModel m_model;
 
 
-    public ModelPositionController(RobotModel model){
+    public ModelPositionController(TargetModel model){
         m_model=model;
     }
     public void setTargetPos(Point p){
-        m_model.setTargetPosition(p);
+        m_model.setPos(p.x,p.y);
     }
 }
