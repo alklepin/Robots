@@ -1,4 +1,4 @@
-package Controllers;
+package controllers;
 
 import models.RobotModel;
 
@@ -6,7 +6,7 @@ import java.awt.*;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class Controller {
+public class ModelUpdateController {
 
     private final Timer m_timer = initTimer();
     private RobotModel m_model;
@@ -14,7 +14,7 @@ public class Controller {
         Timer timer = new Timer("events generator", true);
         return timer;
     }
-    public Controller(RobotModel model){
+    public ModelUpdateController(RobotModel model){
         m_model=model;
         m_timer.schedule(new TimerTask() {
             @Override

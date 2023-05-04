@@ -1,6 +1,6 @@
 package gui;
 
-import Controllers.Controller;
+import controllers.ModelUpdateController;
 import models.RobotModel;
 
 import java.awt.Frame;
@@ -22,7 +22,7 @@ public class RobotsProgram
       SwingUtilities.invokeLater(() -> {
 
         RobotModel model=new RobotModel(100,100,100,150,100);
-        Controller controller = new Controller(model);
+        ModelUpdateController controller = new ModelUpdateController(model);
 
 
         MainApplicationFrame frame = new MainApplicationFrame(model, controller);

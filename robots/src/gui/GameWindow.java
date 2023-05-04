@@ -1,6 +1,6 @@
 package gui;
 
-import Controllers.Controller;
+import controllers.ModelUpdateController;
 import models.RobotModel;
 
 import java.awt.BorderLayout;
@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 public class GameWindow extends JInternalFrame
 {
     private final GameVisualizer m_visualizer;
-    public GameWindow(RobotModel model,Controller controller)
+    public GameWindow(RobotModel model, ModelUpdateController controller)
     {
         super("Игровое поле", true, true, true, true);
 
