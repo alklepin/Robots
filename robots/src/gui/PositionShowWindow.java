@@ -1,5 +1,6 @@
 package gui;
 
+import models.CoordPair;
 import models.RobotModel;
 
 import javax.swing.*;
@@ -14,8 +15,9 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
     public PositionShowWindow(RobotModel model){
         super("Robot coordinates", true, true, true, true);
         m_model=model;
-        m_labelX=new JLabel("X : %f".formatted(m_model.getM_PositionX()));
-        m_labelY=new JLabel("T : %f".formatted(m_model.getM_PositionY()));
+        CoordPair coord= m_model.getPos();
+        m_labelX=new JLabel("X : %f".formatted(coord.x));
+        m_labelY=new JLabel("T : %f".formatted(coord.y));
         m_model.addObserver(this);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_labelX, BorderLayout.CENTER);
@@ -29,7 +31,8 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
         EventQueue.invokeLater(this::onTextUpdate);
     }
     void onTextUpdate(){
-        m_labelX.setText("X : %f".formatted(m_model.getM_PositionX()));
-        m_labelY.setText("Y : %f".formatted(m_model.getM_PositionY()));
+        CoordPair coord= m_model.getPos();
+        m_labelX.setText("X : %f".formatted(coord.x));
+        m_labelY.setText("Y : %f".formatted(coord.y));
     }
 }

@@ -1,5 +1,6 @@
 package gui.drawModels;
 
+import models.CoordPair;
 import models.TargetModel;
 
 import java.awt.*;
@@ -21,12 +22,13 @@ public class TargetDrawRepresentation implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
+        CoordPair targetCoord=m_model.getPos();
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);
-        fillOval(g, round(m_model.getPosX()) ,round(m_model.getPosY()) , 5, 5);
+        fillOval(g, round(targetCoord.x) ,round(targetCoord.y) , 5, 5);
         g.setColor(Color.BLACK);
-        drawOval(g, round(m_model.getPosX()) ,round(m_model.getPosY()),  5, 5);
+        drawOval(g, round(targetCoord.x) ,round(targetCoord.y),  5, 5);
     }
 
 

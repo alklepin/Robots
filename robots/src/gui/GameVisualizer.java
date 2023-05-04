@@ -4,6 +4,7 @@ import controllers.ModelPositionController;
 import controllers.ModelUpdateController;
 import gui.drawModels.DefaultRobot;
 import gui.drawModels.TargetDrawRepresentation;
+import models.CoordPair;
 import models.RobotModel;
 import models.TargetModel;
 
@@ -35,7 +36,8 @@ public class GameVisualizer extends JPanel implements Observer {
     public GameVisualizer(ModelPositionController modelController, RobotModel model, TargetModel target) {
 
         m_model=model;
-        m_robotDraw = new DefaultRobot(m_model.getM_PositionX(), m_model.getM_PositionY(),m_model.getM_Direction());
+        CoordPair modelCoord=model.getPos();
+        m_robotDraw = new DefaultRobot(modelCoord.x, modelCoord.y, modelCoord.z);
         m_target = new TargetDrawRepresentation(target);
         m_controller = modelController;
 
@@ -62,7 +64,8 @@ public class GameVisualizer extends JPanel implements Observer {
 
 
     protected void onModelUpdateEvent() {
-        m_robotDraw.update(m_model.getM_PositionX(), m_model.getM_PositionY(), m_model.getM_Direction());
+        CoordPair coord=m_model.getPos();
+        m_robotDraw.update(coord.x, coord.y, coord.z);
         onRedrawEvent();
     }
 

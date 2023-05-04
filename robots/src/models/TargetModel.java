@@ -8,12 +8,14 @@ public class TargetModel {
         setPos(posX, posY);
     }
 
-    public double getPosX() {
-        return m_PositionX;
-    }
 
-    public double getPosY() {
-        return m_PositionY;
+    public CoordPair getPos(){
+        CoordPair ans=new CoordPair(0,0);
+        synchronized (this){
+            ans.x=m_PositionX;
+            ans.y=m_PositionY;
+        }
+        return ans;
     }
 
     public void setPos(double posX, double posY) {

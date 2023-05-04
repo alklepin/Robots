@@ -38,17 +38,18 @@ public class RobotModel extends Observable {
         notifyObservers();
     }
 
-    public double getM_PositionX() {
-        return m_PositionX;
+
+
+    public CoordPair getPos(){
+        CoordPair ans=new CoordPair(0,0);
+        synchronized (this){
+            ans.x=m_PositionX;
+            ans.y=m_PositionY;
+            ans.z=m_Direction;
+        }
+        return ans;
     }
 
-    public double getM_PositionY() {
-        return m_PositionY;
-    }
-
-    public double getM_Direction() {
-        return m_Direction;
-    }
     static double asNormalizedRadians(double angle)
     {
         while (angle < 0)
@@ -88,7 +89,8 @@ public class RobotModel extends Observable {
         return maxVelocity;
     }
     private double calculateAngularVelocity(){
-        double angleToTarget = angleTo(m_PositionX, m_PositionY, m_Target.getPosX(), m_Target.getPosY());
+        CoordPair targetCoord= m_Target.getPos();
+        double angleToTarget = angleTo(m_PositionX, m_PositionY, targetCoord.x, targetCoord.y);
         double angularVelocity = 0;
         if (angleToTarget > m_Direction)
         {
@@ -105,7 +107,8 @@ public class RobotModel extends Observable {
         return angularVelocity;
     }
     private boolean isTooClose(){
-        double distance = distance(m_Target.getPosX(), m_Target.getPosY(),
+        CoordPair targetCoord= m_Target.getPos();
+        double distance = distance(targetCoord.x, targetCoord.y,
                 m_PositionX, m_PositionY);
         return distance<0.5;
     }
