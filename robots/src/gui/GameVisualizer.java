@@ -17,13 +17,6 @@ import java.util.TimerTask;
 import javax.swing.JPanel;
 
 public class GameVisualizer extends JPanel implements Observer {
-    private final Timer m_timer = initTimer();
-
-    private static Timer initTimer() {
-        Timer timer = new Timer("events generator", true);
-        return timer;
-    }
-
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
@@ -43,12 +36,7 @@ public class GameVisualizer extends JPanel implements Observer {
         m_robotDraw = new DefaultRobot(m_model.getM_PositionX(), m_model.getM_PositionY(),m_model.getM_Direction());
         m_target = new TargetDrawRepresentation(targetX, targetY);
         m_controller = modelController;
-        m_timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                onRedrawEvent();
-            }
-        }, 0, 50);
+
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -73,7 +61,7 @@ public class GameVisualizer extends JPanel implements Observer {
 
     protected void onModelUpdateEvent() {
         m_robotDraw.update(m_model.getM_PositionX(), m_model.getM_PositionY(), m_model.getM_Direction());
-
+        onRedrawEvent();
     }
 
 
