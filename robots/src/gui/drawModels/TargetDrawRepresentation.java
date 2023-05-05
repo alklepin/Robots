@@ -1,12 +1,10 @@
 package gui.drawModels;
 
-import models.CoordPair;
+import models.Vector;
 import models.TargetModel;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.util.Observable;
-import java.util.Observer;
 
 import static utils.DrawUtils.*;
 import static utils.MathUtils.*;
@@ -22,7 +20,7 @@ public class TargetDrawRepresentation implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-        CoordPair targetCoord=m_model.getPos();
+        Vector targetCoord=m_model.getPos();
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);

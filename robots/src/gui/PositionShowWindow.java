@@ -1,6 +1,6 @@
 package gui;
 
-import models.CoordPair;
+import models.Vector;
 import models.RobotModel;
 
 import javax.swing.*;
@@ -15,7 +15,7 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
     public PositionShowWindow(RobotModel model){
         super("Robot coordinates", true, true, true, true);
         m_model=model;
-        CoordPair coord= m_model.getPos();
+        Vector coord= m_model.getPos();
         m_labelX=new JLabel("X : %f".formatted(coord.x));
         m_labelY=new JLabel("T : %f".formatted(coord.y));
         m_model.addObserver(this);
@@ -31,7 +31,7 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
         EventQueue.invokeLater(this::onTextUpdate);
     }
     void onTextUpdate(){
-        CoordPair coord= m_model.getPos();
+        Vector coord= m_model.getPos();
         m_labelX.setText("X : %f".formatted(coord.x));
         m_labelY.setText("Y : %f".formatted(coord.y));
     }

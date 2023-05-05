@@ -1,10 +1,9 @@
 package gui;
 
 import controllers.ModelPositionController;
-import controllers.ModelUpdateController;
 import gui.drawModels.DefaultRobot;
 import gui.drawModels.TargetDrawRepresentation;
-import models.CoordPair;
+import models.Vector;
 import models.RobotModel;
 import models.TargetModel;
 
@@ -13,8 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import javax.swing.JPanel;
 
@@ -36,7 +33,7 @@ public class GameVisualizer extends JPanel implements Observer {
     public GameVisualizer(ModelPositionController modelController, RobotModel model, TargetModel target) {
 
         m_model=model;
-        CoordPair modelCoord=model.getPos();
+        Vector modelCoord=model.getPos();
         m_robotDraw = new DefaultRobot(modelCoord.x, modelCoord.y, modelCoord.z);
         m_target = new TargetDrawRepresentation(target);
         m_controller = modelController;
@@ -64,7 +61,7 @@ public class GameVisualizer extends JPanel implements Observer {
 
 
     protected void onModelUpdateEvent() {
-        CoordPair coord=m_model.getPos();
+        Vector coord=m_model.getPos();
         m_robotDraw.update(coord.x, coord.y, coord.z);
         onRedrawEvent();
     }

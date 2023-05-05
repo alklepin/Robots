@@ -40,8 +40,8 @@ public class RobotModel extends Observable {
 
 
 
-    public CoordPair getPos(){
-        CoordPair ans=new CoordPair(0,0);
+    public Vector getPos(){
+        Vector ans=new Vector(0,0);
         synchronized (this){
             ans.x=m_PositionX;
             ans.y=m_PositionY;
@@ -55,7 +55,7 @@ public class RobotModel extends Observable {
         return maxVelocity;
     }
     private double calculateAngularVelocity(){
-        CoordPair targetCoord= m_Target.getPos();
+        Vector targetCoord= m_Target.getPos();
         double angleToTarget = angleTo(m_PositionX, m_PositionY, targetCoord.x, targetCoord.y);
         double angularVelocity = 0;
         if (angleToTarget > m_Direction)
@@ -73,7 +73,7 @@ public class RobotModel extends Observable {
         return angularVelocity;
     }
     private boolean isTooClose(){
-        CoordPair targetCoord= m_Target.getPos();
+        Vector targetCoord= m_Target.getPos();
         double distance = distance(targetCoord.x, targetCoord.y,
                 m_PositionX, m_PositionY);
         return distance<0.5;
