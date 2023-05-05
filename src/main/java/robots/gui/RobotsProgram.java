@@ -1,6 +1,6 @@
 package robots.gui;
 
-import robots.domain.InternalWindow;
+import robots.domain.InternalWindowJsonConfigurable;
 import robots.log.Logger;
 
 import java.awt.Frame;
@@ -21,10 +21,9 @@ public class RobotsProgram
       }
       SwingUtilities.invokeLater(() -> {
         MainApplicationFrame frame = new MainApplicationFrame(
-            new InternalWindow[] {
                 new LogWindow(Logger.getDefaultLogSource()),
                 new GameWindow()
-            });
+        );
         frame.pack();
         frame.setVisible(true);
         frame.setExtendedState(Frame.MAXIMIZED_BOTH);

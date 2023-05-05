@@ -3,10 +3,11 @@ package robots.gui;
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 
-import robots.domain.InternalWindow;
+import robots.domain.InternalWindowJsonConfigurable;
 
-public class GameWindow extends InternalWindow
+public class GameWindow extends InternalWindowJsonConfigurable
 {
+    private String saveConfigPath = "gameWindow/config.json";
     private final GameVisualizer m_visualizer;
     public GameWindow()
     {
@@ -19,8 +20,11 @@ public class GameWindow extends InternalWindow
         this.setSize(400, 400);
     }
 
-    public void Load()
+    public String getSavePath()
     {
-        this.setConfigurationSavePath("gameWindow/config.json");
+        return this.saveConfigPath;
     }
+
+    public void load() {};
+
 }

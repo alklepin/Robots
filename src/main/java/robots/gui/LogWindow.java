@@ -6,13 +6,13 @@ import java.awt.TextArea;
 
 import javax.swing.JPanel;
 
-import robots.domain.InternalWindow;
+import robots.domain.InternalWindowJsonConfigurable;
 import robots.log.LogChangeListener;
 import robots.log.LogEntry;
 import robots.log.LogWindowSource;
 import robots.log.Logger;
 
-public class LogWindow extends InternalWindow implements LogChangeListener
+public class LogWindow extends InternalWindowJsonConfigurable implements LogChangeListener
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -32,14 +32,17 @@ public class LogWindow extends InternalWindow implements LogChangeListener
         updateLogContent();
     }
 
-    public void Load()
+    public void load()
     {
         this.setLocation(10, 10);
         this.setSize(300, 800);
         setMinimumSize(this.getSize());
         this.pack();
         Logger.debug("Протокол работает");
-        this.setConfigurationSavePath("logWindow/config.json");
+    }
+
+    public String getSavePath() {
+        return "logWindow/config.json";
     }
 
     private void updateLogContent()

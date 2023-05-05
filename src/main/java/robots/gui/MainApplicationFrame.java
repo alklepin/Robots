@@ -55,7 +55,7 @@ public class MainApplicationFrame extends JFrame {
 
     private void loadWindows(Configurator configurator, InternalWindow[] windows) {
         for (InternalWindow window : windows) {
-            window.Load();
+            window.load();
             addWindow(window);
             configurator.addConfigurable(window);
             configurator.loadConfiguration(window);

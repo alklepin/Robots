@@ -3,6 +3,8 @@ package robots.gui;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import robots.domain.InternalWindow;
+import robots.domain.InternalWindowJsonConfigurable;
 import robots.interfaces.Configurable;
 
 import java.io.File;
@@ -23,43 +25,11 @@ public class Configurator {
 
     public void saveConfigurations() {
         for (Configurable configurable : configurables) {
-            saveConfiguration(configurable, configurable.getSavePath());
+            configurable.saveConfiguration();
         }
     }
 
-    private JSONObject readConfiguration(String savePath) {
-        File configFile = Paths.get(System.getProperty("user.home"), ".Robots", savePath).toFile();
-        JSONParser parser = new JSONParser();
-        if (configFile.exists()) {
-            try {
-                return (JSONObject) parser.parse(new FileReader(configFile));
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        return null;
-    }
-
-    public void loadConfiguration(Configurable configurable) {
-        JSONObject config = readConfiguration(configurable.getSavePath());
-        if (config != null) {
-            configurable.setConfiguration(config);
-        }
-    }
-
-    private void saveConfiguration(Configurable configurable, String savePath) {
-        File configPath = Paths.get(System.getProperty("user.home"), ".Robots", savePath).toFile();
-        try {
-            configPath.getParentFile().mkdirs();
-            configPath.createNewFile();
-            FileWriter writer = new FileWriter(configPath);
-            writer.write(configurable.getConfiguration().toJSONString());
-            writer.flush();
-            writer.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void loadConfiguration(InternalWindow window) {
+        window.loadConfiguration();
     }
 }
