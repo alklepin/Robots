@@ -34,16 +34,15 @@ public class MainApplicationFrame extends JFrame {
 
         File gameFile = new File(".", gameWindow.getName() + ".bin");
         File logFile = new File(".", logWindow.getName() + ".bin");
-        if (gameFile.exists() && logFile.exists()) {
-            boolean toRestore = ConfirmWindow.confirmRestore(this) == 0;
-            if (toRestore) {
-                WindowData gameInfo = Saver.deserialize(gameFile);
-                Saver.restoreWindow(gameWindow, gameInfo);
-                WindowData logInfo = Saver.deserialize(logFile);
-                Saver.restoreWindow(logWindow, logInfo);
-            }
-        }
+        if (ConfirmWindow.confirmRestore(this) == 0){
 
+                if (gameFile.exists()) {
+                    gameWindow.load(gameWindow.getName() + ".bin");
+                }
+                if (logFile.exists()) {
+                    logWindow.load(gameWindow.getName() + ".bin");
+                }
+        }
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
@@ -144,7 +143,7 @@ public class MainApplicationFrame extends JFrame {
 
         actionsMenu.add(generateMenuItem("Закрыть", KeyEvent.VK_U, (event) -> {
             if (ConfirmWindow.confirmExit(actionsMenu) == JOptionPane.YES_OPTION) {
-                saveWindows(desktopPane);
+                saveWindows();
                 System.exit(0);
             }
         }));
@@ -171,12 +170,18 @@ public class MainApplicationFrame extends JFrame {
         }
     }
 
-    private void saveWindows(JDesktopPane desktopPane){
+    private void saveWindows(){
+
         for (JInternalFrame window: desktopPane.getAllFrames()) {
-            WindowData windowData = new WindowData(window.getName(),
-                    window.getWidth(), window.getHeight(), window.getX(),
-                    window.getY(), window.isMaximum(), window.isIcon());
-            Saver.serialize(windowData, window.getName() + ".bin");
+            if (window instanceof GameWindow gameWindow) {
+                gameWindow.save(  gameWindow.getName() + ".bin");
+            }
+            else if (window instanceof LogWindow logWindow) {
+                logWindow.save( logWindow.getName() + ".bin");
+            }
+            else {
+                System.out.println("Окно нераспознанного класса!");
+            }
         }
     }
 
