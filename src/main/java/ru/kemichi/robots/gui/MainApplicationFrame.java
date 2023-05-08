@@ -13,53 +13,50 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import ru.kemichi.robots.gui.windows.AbstractWindow;
+import ru.kemichi.robots.gui.windows.Configurable;
 import ru.kemichi.robots.log.Logger;
-
-/**
- * Что требуется сделать:
- * 1. Метод создания меню перегружен функционалом и трудно читается.
- * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
- */
 
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final ResourceBundle bundle;
+    private final ArrayList<Configurable> configurableItems = new ArrayList<>();
 
-    public MainApplicationFrame(ResourceBundle defaultBundle, int inset) {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
-
+    public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow[] windows) {
         bundle = defaultBundle;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
         setContentPane(desktopPane);
 
-        addWindow(createLogWindow());
-
-
-//        GameWindow gameWindow = new GameWindow(bundle);
-//        gameWindow.setSize(400, 400);
-//        addWindow(gameWindow);
-        addWindow(new GameWindow(bundle, 400, 400));
+        loadWindows(windows);
+        applyAllConfigurations();
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent evt) {
+//                saveAllConfigurations();
+                exitConfirmation();
+            }
+        });
     }
 
-    protected LogWindow createLogWindow() {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), bundle);
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        Logger.debug(bundle.getString("protocolOK"));
-        return logWindow;
+    private void loadWindows(AbstractWindow[] windows) {
+        for (AbstractWindow window : windows) {
+            window.defaultWindowSetup();
+            addWindow(window);
+            configurableItems.add(window);
+        }
     }
 
     protected void addWindow(JInternalFrame frame) {
@@ -116,7 +113,7 @@ public class MainApplicationFrame extends JFrame {
         );
     }
 
-    private void addActionsMenu (JMenuBar menuBar) {
+    private void addActionsMenu(JMenuBar menuBar) {
         addMenu(
                 menuBar,
                 generateMenu(
@@ -128,6 +125,10 @@ public class MainApplicationFrame extends JFrame {
                         bundle.getString("quitItem"),
                         KeyEvent.VK_Q,
                         (event) -> exitConfirmation()
+                ),
+                generateMenuItem(bundle.getString("configItem"),
+                        KeyEvent.VK_C,
+                        (event) -> saveAllConfigurations()
                 )
         );
     }
@@ -154,19 +155,23 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void exitConfirmation() {
-        Object[] choices = {bundle.getString("quit"), bundle.getString("cancel")};
+        Object[] choices = {bundle.getString("quitWithSaving"), bundle.getString("quitWithoutSaving"), bundle.getString("cancel")};
         Object defaultChoice = choices[0];
         int confirmed = JOptionPane.showOptionDialog(null,
                 bundle.getString("quitQuestion"),
                 bundle.getString("quitTitle"),
-                JOptionPane.YES_NO_OPTION,
+                JOptionPane.YES_NO_CANCEL_OPTION,
                 JOptionPane.QUESTION_MESSAGE,
                 null,
                 choices,
                 defaultChoice);
 
         if (confirmed == JOptionPane.YES_OPTION) {
-            dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+            saveAllConfigurations();
+            System.exit(0);
+        }
+        else if (confirmed == JOptionPane.NO_OPTION) {
+            System.exit(0);
         }
     }
 
@@ -177,6 +182,18 @@ public class MainApplicationFrame extends JFrame {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
             // just ignore
+        }
+    }
+
+    public void saveAllConfigurations() {
+        for (Configurable configurable : configurableItems) {
+            configurable.save();
+        }
+    }
+
+    public void applyAllConfigurations() {
+        for (Configurable configurable : configurableItems) {
+            configurable.load();
         }
     }
 }
