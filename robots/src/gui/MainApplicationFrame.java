@@ -3,6 +3,7 @@ package gui;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.beans.Expression;
 
 import javax.swing.*;
 
@@ -30,23 +31,19 @@ public class MainApplicationFrame extends JFrame {
         GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
-        if (confirmRestore() == 0){
-                if (gameWindow.ifFileExists()) {
-                    gameWindow.load();
-                }
-                if (logWindow.ifFileExists()) {
-                    logWindow.load();
-                }
+        if (confirmRestore()){
+            gameWindow.load();
+            logWindow.load();
         }
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
-    private int confirmRestore() {
+    private Boolean confirmRestore() {
         return JOptionPane.showOptionDialog(this, "Восстановить?",
                 "Восстановить сохранённое состояние приложения?", JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE, null,
-                new Object[]{"Да", "Нет"}, "Да");
+                new Object[]{"Да", "Нет"}, "Да") == 0;
     }
 
     private static int confirmExit(Component component){
@@ -179,17 +176,8 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void saveWindows(){
-
         for (JInternalFrame window: desktopPane.getAllFrames()) {
-            if (window instanceof GameWindow gameWindow) {
-                gameWindow.save();
-            }
-            else if (window instanceof LogWindow logWindow) {
-                logWindow.save();
-            }
-            else {
-                System.out.println("Окно нераспознанного класса!");
-            }
+            ((IObjectState) window).save();
         }
     }
 

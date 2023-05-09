@@ -1,6 +1,6 @@
 package gui;
 
 public interface IObjectState {
-    private void save(){}
-    private void load(){}
+    public default void save(){}
+    public default void load(){}
 }

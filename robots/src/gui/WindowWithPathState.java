@@ -10,11 +10,14 @@ public abstract class WindowWithPathState extends JInternalFrame implements IObj
         fileNameToSave = fileName;
     }
 
-    public Boolean ifFileExists(){
+    private Boolean ifFileExists(){
         return fileNameToSave != null;
     }
 
-    protected void save(){
+    public void save(){
+        if (!ifFileExists()) {
+            return;
+        }
         try (OutputStream os = new FileOutputStream(fileNameToSave);
              ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os))) {
             oos.writeObject(getName());
@@ -27,7 +30,10 @@ public abstract class WindowWithPathState extends JInternalFrame implements IObj
             ex.printStackTrace();
         }
     }
-    protected void load(){
+    public void load(){
+        if (!ifFileExists()) {
+            return;
+        }
         try {
             InputStream is = new FileInputStream(fileNameToSave);
             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(is));
