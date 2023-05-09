@@ -1,10 +1,8 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 import javax.swing.*;
 
@@ -32,19 +30,29 @@ public class MainApplicationFrame extends JFrame {
         GameWindow gameWindow = createGameWindow();
         addWindow(gameWindow);
 
-        File gameFile = new File(".", gameWindow.getName() + ".bin");
-        File logFile = new File(".", logWindow.getName() + ".bin");
-        if (ConfirmWindow.confirmRestore(this) == 0){
-
-                if (gameFile.exists()) {
-                    gameWindow.load(gameWindow.getName() + ".bin");
+        if (confirmRestore() == 0){
+                if (gameWindow.ifFileExists()) {
+                    gameWindow.load();
                 }
-                if (logFile.exists()) {
-                    logWindow.load(gameWindow.getName() + ".bin");
+                if (logWindow.ifFileExists()) {
+                    logWindow.load();
                 }
         }
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+    private int confirmRestore() {
+        return JOptionPane.showOptionDialog(this, "Восстановить?",
+                "Восстановить сохранённое состояние приложения?", JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE, null,
+                new Object[]{"Да", "Нет"}, "Да");
+    }
+
+    private static int confirmExit(Component component){
+        return JOptionPane.showOptionDialog(component, "Хотите выйти?", "Выход",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE,
+                null, new Object[]{"Да", "Нет"}, "Да");
     }
 
     protected LogWindow createLogWindow() {
@@ -142,7 +150,7 @@ public class MainApplicationFrame extends JFrame {
         actionsMenu.getAccessibleContext().setAccessibleDescription("Действия над приложением");
 
         actionsMenu.add(generateMenuItem("Закрыть", KeyEvent.VK_U, (event) -> {
-            if (ConfirmWindow.confirmExit(actionsMenu) == JOptionPane.YES_OPTION) {
+            if (confirmExit(actionsMenu) == JOptionPane.YES_OPTION) {
                 saveWindows();
                 System.exit(0);
             }
@@ -174,10 +182,10 @@ public class MainApplicationFrame extends JFrame {
 
         for (JInternalFrame window: desktopPane.getAllFrames()) {
             if (window instanceof GameWindow gameWindow) {
-                gameWindow.save(  gameWindow.getName() + ".bin");
+                gameWindow.save();
             }
             else if (window instanceof LogWindow logWindow) {
-                logWindow.save( logWindow.getName() + ".bin");
+                logWindow.save();
             }
             else {
                 System.out.println("Окно нераспознанного класса!");

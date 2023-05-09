@@ -4,13 +4,18 @@ import javax.swing.*;
 import java.io.*;
 
 public abstract class WindowWithPathState extends JInternalFrame implements IObjectState{
-    public WindowWithPathState(String title, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
+    final private File fileNameToSave;
+    public WindowWithPathState(String title, File fileName, boolean resizable, boolean closable, boolean maximizable, boolean iconifiable) {
         super(title, resizable, closable, maximizable, iconifiable);
+        fileNameToSave = fileName;
     }
 
-    protected void save(String filename){
-        File file = new File(filename);
-        try (OutputStream os = new FileOutputStream(file);
+    public Boolean ifFileExists(){
+        return fileNameToSave != null;
+    }
+
+    protected void save(){
+        try (OutputStream os = new FileOutputStream(fileNameToSave);
              ObjectOutputStream oos = new ObjectOutputStream(new BufferedOutputStream(os))) {
             oos.writeObject(getName());
             oos.writeObject(getLocation().x);
@@ -22,9 +27,9 @@ public abstract class WindowWithPathState extends JInternalFrame implements IObj
             ex.printStackTrace();
         }
     }
-    protected void load(String filename){
+    protected void load(){
         try {
-            InputStream is = new FileInputStream(filename);
+            InputStream is = new FileInputStream(fileNameToSave);
             ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(is));
             try {
                 setName((String) ois.readObject());
