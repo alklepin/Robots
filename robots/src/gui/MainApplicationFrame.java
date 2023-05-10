@@ -145,14 +145,26 @@ public class MainApplicationFrame extends JFrame
                 Logger.debug("Выход из программы");
                 closeProgram();
             });
-            OptionMenu.add(addExitItem);
+
+            //сделать красивенький класс
+
+//            createMenuItem("Выход", KeyEvent.VK_ESCAPE, (event) -> {
+//                Logger.debug("Выход из программы");
+//                closeProgram();
+//            })
+//            OptionMenu.add(createMenuItem("Выход", KeyEvent.VK_ESCAPE, (event) -> {
+//                Logger.debug("Выход из программы");
+//                closeProgram();
+//            });
         }
 
+        //Выделить в методы всё, что выше.
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
         menuBar.add(OptionMenu);
         return menuBar;
     }
+
 
     private void setLookAndFeel(String className)
     {
