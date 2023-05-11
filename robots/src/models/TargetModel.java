@@ -1,5 +1,9 @@
 package models;
 
+
+import models.states.TargetState;
+import models.states.TargetStateReader;
+
 import java.util.Observable;
 
 public class TargetModel extends Observable {
@@ -11,11 +15,10 @@ public class TargetModel extends Observable {
     }
 
 
-    public ModelCoordinate getPos(){
-        ModelCoordinate ans=new ModelCoordinate(0,0);
+    public TargetStateReader getPos(){
+        TargetStateReader ans;
         synchronized (this){
-            ans.x=m_PositionX;
-            ans.y=m_PositionY;
+            ans=new TargetState(m_PositionX,m_PositionY);
         }
         return ans;
     }

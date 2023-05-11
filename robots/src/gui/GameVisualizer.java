@@ -3,7 +3,6 @@ package gui;
 import controllers.TargetPositionController;
 import gui.drawModels.RobotRepresentation;
 import gui.drawModels.TargetRepresentation;
-import models.ModelCoordinate;
 import models.RobotModel;
 import models.TargetModel;
 

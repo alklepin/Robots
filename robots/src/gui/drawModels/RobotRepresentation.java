@@ -1,6 +1,6 @@
 package gui.drawModels;
-import models.ModelCoordinate;
 import models.RobotModel;
+import models.states.RobotStateReader;
 
 import static utils.DrawUtils.*;
 import static utils.MathUtils.*;
@@ -17,10 +17,10 @@ public class RobotRepresentation implements Drawable{
 
     @Override
     public void draw(Graphics2D g) {
-        ModelCoordinate coord=m_model.getPos();
-        int robotCenterX = round(coord.x);
-        int robotCenterY = round(coord.y);
-        AffineTransform t = AffineTransform.getRotateInstance(coord.z, robotCenterX, robotCenterY);
+        RobotStateReader state=m_model.getPos();
+        int robotCenterX = round(state.getX());
+        int robotCenterY = round(state.getY());
+        AffineTransform t = AffineTransform.getRotateInstance(state.getDir(), robotCenterX, robotCenterY);
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
         fillOval(g, robotCenterX, robotCenterY, 30, 10);

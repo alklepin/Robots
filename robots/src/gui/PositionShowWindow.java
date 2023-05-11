@@ -1,7 +1,8 @@
 package gui;
 
-import models.ModelCoordinate;
+
 import models.RobotModel;
+import models.states.RobotStateReader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,9 +16,9 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
     public PositionShowWindow(RobotModel model){
         super("Robot coordinates", true, true, true, true);
         m_model=model;
-        ModelCoordinate coord= m_model.getPos();
-        m_labelX=new JLabel("X : %f".formatted(coord.x));
-        m_labelY=new JLabel("T : %f".formatted(coord.y));
+        RobotStateReader state= m_model.getPos();
+        m_labelX=new JLabel("X : %f".formatted(state.getX()));
+        m_labelY=new JLabel("T : %f".formatted(state.getY()));
         m_model.addObserver(this);
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(m_labelX, BorderLayout.CENTER);
@@ -31,8 +32,8 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
         EventQueue.invokeLater(this::onTextUpdate);
     }
     void onTextUpdate(){
-        ModelCoordinate coord= m_model.getPos();
-        m_labelX.setText("X : %f".formatted(coord.x));
-        m_labelY.setText("Y : %f".formatted(coord.y));
+        RobotStateReader state= m_model.getPos();
+        m_labelX.setText("X : %f".formatted(state.getX()));
+        m_labelY.setText("Y : %f".formatted(state.getY()));
     }
 }

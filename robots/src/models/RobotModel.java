@@ -1,5 +1,10 @@
 package models;
 
+
+import models.states.RobotState;
+import models.states.RobotStateReader;
+import models.states.TargetStateReader;
+
 import static utils.MathUtils.*;
 import java.util.Observable;
 
@@ -40,14 +45,13 @@ public class RobotModel extends Observable {
 
 
 
-    public ModelCoordinate getPos(){
-        ModelCoordinate ans=new ModelCoordinate(0,0);
+    public RobotStateReader getPos(){
+        RobotState ans;
         synchronized (this){
-            ans.x=m_PositionX;
-            ans.y=m_PositionY;
-            ans.z=m_Direction;
+            ans=new RobotState(m_PositionX,m_PositionY,m_Direction);
         }
         return ans;
+
     }
 
 
@@ -55,8 +59,8 @@ public class RobotModel extends Observable {
         return maxVelocity;
     }
     private double calculateAngularVelocity(){
-        ModelCoordinate targetCoord= m_Target.getPos();
-        double angleToTarget = angleTo(m_PositionX, m_PositionY, targetCoord.x, targetCoord.y);
+        TargetStateReader targetCoord= m_Target.getPos();
+        double angleToTarget = angleTo(m_PositionX, m_PositionY, targetCoord.getX(), targetCoord.getY());
         double angularVelocity = 0;
         if (angleToTarget > m_Direction)
         {
@@ -73,8 +77,8 @@ public class RobotModel extends Observable {
         return angularVelocity;
     }
     private boolean isTooClose(){
-        ModelCoordinate targetCoord= m_Target.getPos();
-        double distance = distance(targetCoord.x, targetCoord.y,
+        TargetStateReader targetCoord= m_Target.getPos();
+        double distance = distance(targetCoord.getX(), targetCoord.getY(),
                 m_PositionX, m_PositionY);
         return distance<0.5;
     }

@@ -1,7 +1,8 @@
 package gui.drawModels;
 
-import models.ModelCoordinate;
+
 import models.TargetModel;
+import models.states.TargetStateReader;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -20,13 +21,13 @@ public class TargetRepresentation implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-        ModelCoordinate targetCoord=m_model.getPos();
+        TargetStateReader targetCoord=m_model.getPos();
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);
-        fillOval(g, round(targetCoord.x) ,round(targetCoord.y) , 5, 5);
+        fillOval(g, round(targetCoord.getX()) ,round(targetCoord.getY()) , 5, 5);
         g.setColor(Color.BLACK);
-        drawOval(g, round(targetCoord.x) ,round(targetCoord.y),  5, 5);
+        drawOval(g, round(targetCoord.getX()) ,round(targetCoord.getY()),  5, 5);
     }
 
 
