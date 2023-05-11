@@ -15,7 +15,7 @@ public class TargetModel extends Observable {
     }
 
 
-    public TargetStateReader getPos(){
+    public TargetStateReader getState(){
         TargetStateReader ans;
         synchronized (this){
             ans=new TargetState(m_PositionX,m_PositionY);

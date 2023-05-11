@@ -21,7 +21,7 @@ public class TargetRepresentation implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-        TargetStateReader targetCoord=m_model.getPos();
+        TargetStateReader targetCoord=m_model.getState();
         AffineTransform t = AffineTransform.getRotateInstance(0, 0, 0);
         g.setTransform(t);
         g.setColor(Color.GREEN);

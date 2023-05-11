@@ -17,7 +17,7 @@ public class RobotRepresentation implements Drawable{
 
     @Override
     public void draw(Graphics2D g) {
-        RobotStateReader state=m_model.getPos();
+        RobotStateReader state=m_model.getState();
         int robotCenterX = round(state.getX());
         int robotCenterY = round(state.getY());
         AffineTransform t = AffineTransform.getRotateInstance(state.getDir(), robotCenterX, robotCenterY);

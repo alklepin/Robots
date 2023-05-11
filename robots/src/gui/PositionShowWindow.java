@@ -16,7 +16,7 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
     public PositionShowWindow(RobotModel model){
         super("Robot coordinates", true, true, true, true);
         m_model=model;
-        RobotStateReader state= m_model.getPos();
+        RobotStateReader state= m_model.getState();
         m_labelX=new JLabel("X : %f".formatted(state.getX()));
         m_labelY=new JLabel("T : %f".formatted(state.getY()));
         m_model.addObserver(this);
@@ -32,7 +32,7 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
         EventQueue.invokeLater(this::onTextUpdate);
     }
     void onTextUpdate(){
-        RobotStateReader state= m_model.getPos();
+        RobotStateReader state= m_model.getState();
         m_labelX.setText("X : %f".formatted(state.getX()));
         m_labelY.setText("Y : %f".formatted(state.getY()));
     }

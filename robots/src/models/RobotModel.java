@@ -45,7 +45,7 @@ public class RobotModel extends Observable {
 
 
 
-    public RobotStateReader getPos(){
+    public RobotStateReader getState(){
         RobotState ans;
         synchronized (this){
             ans=new RobotState(m_PositionX,m_PositionY,m_Direction);
@@ -59,7 +59,7 @@ public class RobotModel extends Observable {
         return maxVelocity;
     }
     private double calculateAngularVelocity(){
-        TargetStateReader targetCoord= m_Target.getPos();
+        TargetStateReader targetCoord= m_Target.getState();
         double angleToTarget = angleTo(m_PositionX, m_PositionY, targetCoord.getX(), targetCoord.getY());
         double angularVelocity = 0;
         if (angleToTarget > m_Direction)
@@ -77,7 +77,7 @@ public class RobotModel extends Observable {
         return angularVelocity;
     }
     private boolean isTooClose(){
-        TargetStateReader targetCoord= m_Target.getPos();
+        TargetStateReader targetCoord= m_Target.getState();
         double distance = distance(targetCoord.getX(), targetCoord.getY(),
                 m_PositionX, m_PositionY);
         return distance<0.5;
