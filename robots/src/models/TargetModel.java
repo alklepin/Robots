@@ -11,8 +11,8 @@ public class TargetModel extends Observable {
     }
 
 
-    public Vector getPos(){
-        Vector ans=new Vector(0,0);
+    public ModelCoordinate getPos(){
+        ModelCoordinate ans=new ModelCoordinate(0,0);
         synchronized (this){
             ans.x=m_PositionX;
             ans.y=m_PositionY;

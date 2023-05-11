@@ -1,14 +1,14 @@
 package models;
 
-public class Vector {
+public class ModelCoordinate {
     public double x;
     public double y;
     public double z=0;
-    public Vector(double _x, double _y){
+    public ModelCoordinate(double _x, double _y){
         x=_x;
         y=_y;
     }
-    public Vector(double _x, double _y, double _z){
+    public ModelCoordinate(double _x, double _y, double _z){
         x=_x;
         y=_y;
         z=_z;

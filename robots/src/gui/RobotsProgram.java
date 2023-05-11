@@ -1,15 +1,12 @@
 package gui;
 
-import controllers.ModelPositionController;
-import controllers.ModelUpdateController;
-import gui.drawModels.TargetDrawRepresentation;
+import controllers.TargetPositionController;
+import controllers.RobotUpdateController;
 import models.RobotModel;
 import models.TargetModel;
 
 import java.awt.Frame;
-import java.lang.annotation.Target;
 
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
@@ -27,8 +24,8 @@ public class RobotsProgram
       SwingUtilities.invokeLater(() -> {
         TargetModel target=new TargetModel(150,100);
         RobotModel model=new RobotModel(100,100,100,target);
-        ModelUpdateController updateController = new ModelUpdateController(model);
-        ModelPositionController movementController=new ModelPositionController(target);
+        RobotUpdateController updateController = new RobotUpdateController(model);
+        TargetPositionController movementController=new TargetPositionController(target);
 
         MainApplicationFrame frame = new MainApplicationFrame(model, movementController, target);
         frame.pack();
