@@ -29,7 +29,7 @@ public class MainApplicationFrame extends JFrame {
     private final ResourceBundle bundle;
     private final ArrayList<Configurable> configurableItems = new ArrayList<>();
 
-    public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow[] windows) {
+    public MainApplicationFrame(ResourceBundle defaultBundle, int inset, AbstractWindow ... windows) {
         bundle = defaultBundle;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
@@ -45,7 +45,6 @@ public class MainApplicationFrame extends JFrame {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent evt) {
-//                saveAllConfigurations();
                 exitConfirmation();
             }
         });
