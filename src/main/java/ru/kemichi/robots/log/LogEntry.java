@@ -2,13 +2,13 @@ package ru.kemichi.robots.log;
 
 public class LogEntry
 {
-    private LogLevel m_logLevel;
+    private LogLevel logLevel;
     private String m_strMessage;
     
     public LogEntry(LogLevel logLevel, String strMessage)
     {
         m_strMessage = strMessage;
-        m_logLevel = logLevel;
+        this.logLevel = logLevel;
     }
     
     public String getMessage()
@@ -18,7 +18,7 @@ public class LogEntry
     
     public LogLevel getLevel()
     {
-        return m_logLevel;
+        return logLevel;
     }
 }
 
