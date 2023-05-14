@@ -8,6 +8,8 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -40,7 +42,13 @@ public class MainApplicationFrame extends JFrame {
         internalFrames.add(gameWindow);
 
         generateAndSetMenuBar();
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        WindowAdapter windowAdapter = new WindowAdapter() {
+            public void windowClosing(WindowEvent windowEvent) {
+                exit();
+            }
+        };
+        addWindowListener(windowAdapter);
     }
 
     protected LogWindow createLogWindow() {
@@ -110,11 +118,30 @@ public class MainApplicationFrame extends JFrame {
         return menu;
     }
 
+    private void exit() {
+        if (JOptionPane.showConfirmDialog(desktopPane,
+                "Вы уверены, что хотите закрыть это окно?", "Закрыть окно?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE) == 0) {
+            System.exit(0);
+        }
+    }
+
+    private JMenu createExit() {
+        JMenu createExit = new JMenu("Выйти");
+        JButton exit = new JButton("Выход");
+
+        exit.addActionListener(event -> exit());
+        createExit.add(exit);
+        return  createExit;
+    }
+
     private void generateAndSetMenuBar() {
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
         menuBar.add(createLanguageMenu());
+        menuBar.add(createExit());
         setJMenuBar(menuBar);
     }
 
