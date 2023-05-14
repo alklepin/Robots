@@ -119,8 +119,10 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void exit() {
-        if (JOptionPane.showConfirmDialog(desktopPane,
-                "Вы уверены, что хотите закрыть это окно?", "Закрыть окно?",
+        if (JOptionPane.showConfirmDialog(
+                desktopPane,
+                languageManager.getLocaleValue("close.confirmMessage"),
+                languageManager.getLocaleValue("close.confirmTitle"),
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE) == 0) {
             System.exit(0);
@@ -128,8 +130,8 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private JMenu createExit() {
-        JMenu createExit = new JMenu("Выйти");
-        JButton exit = new JButton("Выход");
+        JMenu createExit = new JMenu(languageManager.getLocaleValue("close"));
+        JButton exit = new JButton(languageManager.getLocaleValue("close.button"));
 
         exit.addActionListener(event -> exit());
         createExit.add(exit);
