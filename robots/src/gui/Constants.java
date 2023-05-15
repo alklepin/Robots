@@ -72,4 +72,8 @@ public interface Constants {
     class LoggerConstants {
         public static final int LOGGER_IQUEUE_LENGTH = 100;
     }
+
+    class KeyEventListenerConstants {
+        public static final double TARGET_VELOCITY = 0.1;
+    }
 }

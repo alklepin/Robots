@@ -11,9 +11,9 @@ public class GameWindow extends JInternalFrame {
 
     public GameWindow() {
         super(GAME_WINDOW_TITLE, true, true, true, true);
-        GameVisualizer m_visualizer = new GameVisualizer();
+        GameController controller = new GameController();
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+        panel.add(controller, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
     }
