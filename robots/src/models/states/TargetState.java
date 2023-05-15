@@ -1,6 +1,8 @@
 package models.states;
 
-public class TargetState implements TargetStateReader{
+import java.io.Serializable;
+
+public class TargetState implements TargetStateReader, Serializable {
     private double x;
     private double y;
 

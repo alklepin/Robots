@@ -3,6 +3,8 @@ package gui;
 import controllers.TargetPositionController;
 import gui.drawModels.RobotRepresentation;
 import gui.drawModels.TargetRepresentation;
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.MySerializable;
 import models.RobotModel;
 import models.TargetModel;
 
@@ -14,7 +16,7 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
-public class GameVisualizer extends JPanel implements Observer {
+public class GameVisualizer extends JPanel implements Observer{
 
 
 
@@ -74,5 +76,7 @@ public class GameVisualizer extends JPanel implements Observer {
     public void update(Observable o, Object arg) {
         EventQueue.invokeLater(this::onModelUpdateEvent);
     }
+
+
 
 }

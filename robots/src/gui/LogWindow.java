@@ -7,11 +7,13 @@ import java.awt.TextArea;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.MySerializable;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
+public class LogWindow extends JInternalFrame implements LogChangeListener, MySerializable
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -46,5 +48,9 @@ public class LogWindow extends JInternalFrame implements LogChangeListener
     public void onLogChanged()
     {
         EventQueue.invokeLater(this::updateLogContent);
+    }
+
+    public InnerWindowStateContainer getState(){
+        return new InnerWindowStateContainer(getX(),getY(),getSize().width,getSize().height);
     }
 }

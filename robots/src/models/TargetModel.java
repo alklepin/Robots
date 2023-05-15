@@ -13,10 +13,13 @@ public class TargetModel extends Observable {
     public TargetModel(double posX, double posY) {
         setPos(posX, posY);
     }
+    public TargetModel(TargetState state){
+        m_PositionX=state.getX();
+        m_PositionY=state.getY();
+    }
 
-
-    public TargetStateReader getState(){
-        TargetStateReader ans;
+    public TargetState getState(){
+        TargetState ans;
         synchronized (this){
             ans=new TargetState(m_PositionX,m_PositionY);
         }

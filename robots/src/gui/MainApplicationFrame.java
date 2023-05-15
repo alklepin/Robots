@@ -17,6 +17,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import controllers.TargetPositionController;
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.MainWindowStateContainer;
 import log.Logger;
 import models.RobotModel;
 import models.TargetModel;
@@ -30,7 +32,11 @@ import models.TargetModel;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+    private final LogWindow m_logger;
+    private final GameWindow m_game;
+
+    private final PositionShowWindow m_coordShow;
+
     public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
@@ -42,18 +48,18 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
 
-        
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
+
+        m_logger = createLogWindow();
+        addWindow(m_logger);
 
 
-        GameWindow gameWindow = new GameWindow(model,controller,target);
-        gameWindow.setSize(400,  400);
+        m_game = new GameWindow(model,controller,target);
+        m_game.setSize(400,  400);
 
-        PositionShowWindow coordWindow=new PositionShowWindow(model);
-        coordWindow.setSize(200,100);
-        addWindow(coordWindow);
-        addWindow(gameWindow);
+        m_coordShow=new PositionShowWindow(model);
+        m_coordShow.setSize(200,100);
+        addWindow(m_coordShow);
+        addWindow(m_game);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -65,7 +71,39 @@ public class MainApplicationFrame extends JFrame
             }
         });
     }
-    
+
+    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target,MainWindowStateContainer container){
+        int inset = 50;
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setBounds(inset, inset,
+                screenSize.width  - inset*2,
+                screenSize.height - inset*2);
+
+        setContentPane(desktopPane);
+        m_logger = createLogWindow();
+        m_logger.setLocation(container.LoggerState.x,container.LoggerState.y);
+        m_logger.setSize(container.LoggerState.sizeX,container.LoggerState.sizeY);
+        addWindow(m_logger);
+        m_game=new GameWindow(model,controller,target);
+        m_game.setLocation(container.GameState.x,container.GameState.y);
+        m_game.setSize(container.GameState.sizeX,container.GameState.sizeY);
+        addWindow(m_game);
+
+        m_coordShow=new PositionShowWindow(model);
+        m_coordShow.setLocation(container.PositionShowState.x,container.PositionShowState.y);
+        m_coordShow.setSize(container.PositionShowState.sizeX,container.PositionShowState.sizeY);
+        addWindow(m_coordShow);
+
+        setJMenuBar(generateMenuBar());
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.out.println("Window Closed!");
+                super.windowClosing(e);
+            }
+        });
+    }
     protected LogWindow createLogWindow()
     {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
@@ -169,5 +207,8 @@ public class MainApplicationFrame extends JFrame
         {
             // just ignore
         }
+    }
+    public MainWindowStateContainer getFrameState(){
+        return new MainWindowStateContainer(m_game.getState(),m_logger.getState(),m_coordShow.getState());
     }
 }

@@ -30,6 +30,12 @@ public class RobotModel extends Observable {
         this.m_Direction = m_Direction;
         m_Target=target;
     }
+    public RobotModel(RobotState state,TargetModel target){
+        this.m_Target=target;
+        this.m_PositionY=state.getY();
+        this.m_PositionX=state.getX();
+        this.m_Direction=state.getDir();
+    }
 
 
     public void updatePos(){
@@ -45,7 +51,7 @@ public class RobotModel extends Observable {
 
 
 
-    public RobotStateReader getState(){
+    public RobotState getState(){
         RobotState ans;
         synchronized (this){
             ans=new RobotState(m_PositionX,m_PositionY,m_Direction);

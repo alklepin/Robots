@@ -1,6 +1,8 @@
 package gui;
 
 import controllers.TargetPositionController;
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.MySerializable;
 import models.RobotModel;
 import models.TargetModel;
 
@@ -10,7 +12,7 @@ import java.awt.BorderLayout;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame
+public class GameWindow extends JInternalFrame implements MySerializable
 {
     private final GameVisualizer m_visualizer;
     public GameWindow(RobotModel model, TargetPositionController controller, TargetModel target)
@@ -24,4 +26,8 @@ public class GameWindow extends JInternalFrame
         getContentPane().add(panel);
         pack();
     }
+    public InnerWindowStateContainer getState(){
+        return new InnerWindowStateContainer(getX(),getY(),getSize().width,getSize().height);
+    }
+
 }

@@ -1,6 +1,8 @@
 package gui;
 
 
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.MySerializable;
 import models.RobotModel;
 import models.states.RobotStateReader;
 
@@ -9,7 +11,7 @@ import java.awt.*;
 import java.util.Observable;
 import java.util.Observer;
 
-public class PositionShowWindow extends JInternalFrame implements Observer {
+public class PositionShowWindow extends JInternalFrame implements Observer, MySerializable {
     private RobotModel m_model;
     private JLabel m_labelX;
     private JLabel m_labelY;
@@ -35,5 +37,9 @@ public class PositionShowWindow extends JInternalFrame implements Observer {
         RobotStateReader state= m_model.getState();
         m_labelX.setText("X : %f".formatted(state.getX()));
         m_labelY.setText("Y : %f".formatted(state.getY()));
+    }
+
+    public InnerWindowStateContainer getState(){
+        return new InnerWindowStateContainer(getX(),getY(),getSize().width,getSize().height);
     }
 }

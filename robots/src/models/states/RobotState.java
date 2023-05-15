@@ -1,6 +1,8 @@
 package models.states;
 
-public class RobotState implements RobotStateReader{
+import java.io.Serializable;
+
+public class RobotState implements RobotStateReader, Serializable {
 
 
     private volatile double m_x;
