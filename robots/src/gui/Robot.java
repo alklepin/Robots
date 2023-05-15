@@ -51,16 +51,8 @@ public class Robot extends GameModel implements Moveable {
     @Override
     public void move() {
         double newRobotDirection = getDirection() + getAngularVelocity() * TIMER_UPDATE_PERIOD;
-        double newRobotXCoordinate = getxCoordinate() + ROBOT_VELOCITY / getAngularVelocity() *
-                (Math.sin(newRobotDirection) - Math.sin(getDirection()));
-        if (!Double.isFinite(newRobotXCoordinate)) {
-            newRobotXCoordinate = getxCoordinate() + ROBOT_VELOCITY * TIMER_UPDATE_PERIOD * Math.cos(getDirection());
-        }
-        double newRobotYCoordinate = getyCoordinate() - ROBOT_VELOCITY / getAngularVelocity() *
-                (Math.cos(newRobotDirection) - Math.cos(getDirection()));
-        if (!Double.isFinite(newRobotYCoordinate)) {
-            newRobotYCoordinate = getyCoordinate() + ROBOT_VELOCITY * TIMER_UPDATE_PERIOD * Math.sin(getDirection());
-        }
+        double newRobotXCoordinate = getxCoordinate() + ROBOT_VELOCITY * TIMER_UPDATE_PERIOD * Math.cos(getDirection());
+        double newRobotYCoordinate = getyCoordinate() + ROBOT_VELOCITY * TIMER_UPDATE_PERIOD * Math.sin(getDirection());
         setxCoordinate(newRobotXCoordinate);
         setyCoordinate(newRobotYCoordinate);
         setDirection(MathModule.asNormalizedRadians(newRobotDirection));

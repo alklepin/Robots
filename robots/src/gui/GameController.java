@@ -55,12 +55,21 @@ public class GameController extends JPanel {
             return;
         }
         double angleToTarget = MathModule.calculateAngle(robot.getxCoordinate(), robot.getyCoordinate(), target.getxCoordinate(), target.getyCoordinate());
-        robot.setAngularVelocity(0);
-        if (angleToTarget > robot.getDirection()) {
-            robot.setAngularVelocity(MAX_ANGULAR_VELOCITY);
+        if (angleToTarget == robot.getDirection()) {
+            robot.setAngularVelocity(0);
+        } else if (angleToTarget <= Math.PI) {
+            if (angleToTarget > robot.getDirection() || robot.getDirection() > angleToTarget + Math.PI) {
+                robot.setAngularVelocity(MAX_ANGULAR_VELOCITY);
+            } else {
+                robot.setAngularVelocity(-MAX_ANGULAR_VELOCITY);
+            }
         }
-        if (angleToTarget < robot.getDirection()) {
-            robot.setAngularVelocity(-MAX_ANGULAR_VELOCITY);
+        else {
+            if (angleToTarget > robot.getDirection() && robot.getDirection() > angleToTarget - Math.PI) {
+                robot.setAngularVelocity(MAX_ANGULAR_VELOCITY);
+            } else {
+                robot.setAngularVelocity(-MAX_ANGULAR_VELOCITY);
+            }
         }
         robot.move();
     }
