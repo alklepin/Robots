@@ -19,6 +19,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import controllers.TargetPositionController;
 import gui.serial.InnerWindowStateContainer;
 import gui.serial.MainWindowStateContainer;
+import log.LogWindowSource;
 import log.Logger;
 import models.RobotModel;
 import models.TargetModel;
@@ -37,7 +38,7 @@ public class MainApplicationFrame extends JFrame
 
     private final PositionShowWindow m_coordShow;
 
-    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target) {
+    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target, LogWindowSource logs) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;
@@ -49,7 +50,7 @@ public class MainApplicationFrame extends JFrame
         setContentPane(desktopPane);
 
 
-        m_logger = createLogWindow();
+        m_logger = createLogWindow(logs);
         addWindow(m_logger);
 
 
@@ -72,7 +73,7 @@ public class MainApplicationFrame extends JFrame
         });
     }
 
-    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target,MainWindowStateContainer container){
+    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target,MainWindowStateContainer container,LogWindowSource logs){
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -80,7 +81,7 @@ public class MainApplicationFrame extends JFrame
                 screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        m_logger = createLogWindow();
+        m_logger = createLogWindow(logs);
         m_logger.setLocation(container.LoggerState.x,container.LoggerState.y);
         m_logger.setSize(container.LoggerState.sizeX,container.LoggerState.sizeY);
         addWindow(m_logger);
@@ -104,9 +105,9 @@ public class MainApplicationFrame extends JFrame
             }
         });
     }
-    protected LogWindow createLogWindow()
+    protected LogWindow createLogWindow(LogWindowSource source)
     {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+        LogWindow logWindow = new LogWindow(source);
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
