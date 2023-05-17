@@ -1,5 +1,7 @@
 package log;
 
+import log.states.LoggerSourceState;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,6 +27,11 @@ public class LogWindowSource
         m_iQueueLength = iQueueLength;
         m_messages = new ArrayList<LogEntry>(iQueueLength);
         m_listeners = new ArrayList<LogChangeListener>();
+    }
+    public LogWindowSource(LoggerSourceState container){
+        m_iQueueLength=container.qLength;
+        m_messages=container.logs;
+        m_listeners=new ArrayList<LogChangeListener>();
     }
     
     public void registerListener(LogChangeListener listener)
@@ -85,5 +92,9 @@ public class LogWindowSource
     public Iterable<LogEntry> all()
     {
         return m_messages;
+    }
+
+    public LoggerSourceState getState(){
+        return new LoggerSourceState(m_messages,m_iQueueLength);
     }
 }
