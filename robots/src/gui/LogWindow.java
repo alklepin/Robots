@@ -20,6 +20,7 @@ public class LogWindow extends WindowWithPathState implements LogChangeListener
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");
+        m_logContent.setLocation(10, 10);
         m_logContent.setSize(200, 500);
         
         JPanel panel = new JPanel(new BorderLayout());

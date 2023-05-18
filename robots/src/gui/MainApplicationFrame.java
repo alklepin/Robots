@@ -10,9 +10,11 @@ import log.Logger;
 
 
 public class MainApplicationFrame extends JFrame {
+    GameLogic gameLogic;
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
+        gameLogic = new GameLogic();
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
         int inset = 50;
@@ -23,16 +25,19 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = createGameWindow();
+        GameWindow gameWindow = createGameWindow(gameLogic);
         addWindow(gameWindow);
+
+        LogCoordinatesWindow logCoorsWindow = createlogCoorsWindow();
+        addWindow(logCoorsWindow);
 
         if (confirmRestore()){
             gameWindow.load();
             logWindow.load();
+            logCoorsWindow.load();
         }
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -53,18 +58,18 @@ public class MainApplicationFrame extends JFrame {
 
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10, 10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
         Logger.debug("Протокол работает");
         return logWindow;
     }
 
-    protected GameWindow createGameWindow() {
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
-        return gameWindow;
+    protected GameWindow createGameWindow(GameLogic gameLogic) {
+        return new GameWindow(gameLogic);
+    }
+
+    protected LogCoordinatesWindow createlogCoorsWindow() {
+        LogCoordinatesWindow logCoorsWindow = new LogCoordinatesWindow();
+        gameLogic.addObserver(logCoorsWindow);
+        return logCoorsWindow;
     }
 
     protected void addWindow(JInternalFrame frame) {

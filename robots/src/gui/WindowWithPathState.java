@@ -1,6 +1,7 @@
 package gui;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 
 public abstract class WindowWithPathState extends JInternalFrame implements IObjectState{
@@ -23,8 +24,8 @@ public abstract class WindowWithPathState extends JInternalFrame implements IObj
             oos.writeObject(getName());
             oos.writeObject(getLocation().x);
             oos.writeObject(getLocation().y);
-            oos.writeObject(getHeight());
             oos.writeObject(getWidth());
+            oos.writeObject(getHeight());
             oos.flush();
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -47,5 +48,8 @@ public abstract class WindowWithPathState extends JInternalFrame implements IObj
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void update(Point p) {
     }
 }
