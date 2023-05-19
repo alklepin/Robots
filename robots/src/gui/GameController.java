@@ -8,15 +8,18 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import static gui.Constants.GameVisualizerConstants.*;
+import static gui.MainApplicationFrame.updateStateRobot;
 
 public class GameController extends JPanel {
 
     private final Robot robot;
     private final Target target;
+    private boolean isMoving;
 
-    public GameController() {
-        robot = new Robot(ROBOT_INITIAL_X_COORDINATE, ROBOT_INITIAL_Y_COORDINATE, ROBOT_INITIAL_DIRECTION);
-        target = new Target(TARGET_INITIAL_X_COORDINATE, TARGET_INITIAL_Y_COORDINATE);
+    public GameController(Robot robot, Target target) {
+        this.robot = robot;
+        this.target = target;
+        isMoving = false;
         java.util.Timer timer = new Timer(TIMER_NAME, true);
         timer.schedule(new TimerTask() {
             @Override
@@ -51,8 +54,18 @@ public class GameController extends JPanel {
     private void onModelUpdateEvent() {
         double distance = MathModule.calculateDistance(target.getxCoordinate(), target.getyCoordinate(), robot.getxCoordinate(), robot.getyCoordinate());
         target.move();
+
         if (distance < ROBOT_STOP_DISTANCE) {
+
+            if (isMoving) {
+                isMoving = false;
+                updateStateRobot(isMoving);
+            }
             return;
+        }
+        if (!isMoving) {
+            isMoving = true;
+            updateStateRobot(isMoving);
         }
         double angleToTarget = MathModule.calculateAngle(robot.getxCoordinate(), robot.getyCoordinate(), target.getxCoordinate(), target.getyCoordinate());
         if (angleToTarget == robot.getDirection()) {

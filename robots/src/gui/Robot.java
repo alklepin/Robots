@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
 
 import static gui.Constants.GameVisualizerConstants.*;
 import static gui.Constants.GameVisualizerConstants.ROBOT_HEAD_DIAMETER;
@@ -56,5 +57,7 @@ public class Robot extends GameModel implements Moveable {
         setxCoordinate(newRobotXCoordinate);
         setyCoordinate(newRobotYCoordinate);
         setDirection(MathModule.asNormalizedRadians(newRobotDirection));
+
     }
+
 }
