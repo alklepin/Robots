@@ -8,17 +8,17 @@ public enum LogLevel
     Warning(3),
     Error(4),
     Fatal(5);
-    
-    private int m_iLevel;
-    
-    private LogLevel(int iLevel)
+
+    private final int iLevel;
+
+    LogLevel(int iLevel)
     {
-        m_iLevel = iLevel;
+        this.iLevel = iLevel;
     }
-    
+
     public int level()
     {
-        return m_iLevel;
+        return iLevel;
     }
 }
 

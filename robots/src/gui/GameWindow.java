@@ -5,15 +5,15 @@ import java.awt.BorderLayout;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame
-{
-    private final GameVisualizer m_visualizer;
-    public GameWindow() 
-    {
-        super("Игровое поле", true, true, true, true);
-        m_visualizer = new GameVisualizer();
+import static gui.Constants.GameWindowConstants.GAME_WINDOW_TITLE;
+
+public class GameWindow extends JInternalFrame {
+
+    public GameWindow(Robot robot, Target target) {
+        super(GAME_WINDOW_TITLE, true, true, true, true);
+        GameController controller = new GameController(robot, target);
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_visualizer, BorderLayout.CENTER);
+        panel.add(controller, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
     }
