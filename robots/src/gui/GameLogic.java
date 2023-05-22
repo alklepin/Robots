@@ -5,13 +5,27 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class GameLogic {
-    private final GameData gameData = new GameData();
+    private static final GameData gameData = new GameData();
     private ArrayList<WindowWithPathState> observers;
     private final Timer m_timer = initTimer();
 
     private Boolean ifGameStarted;
 
+    protected void modifyDimension(){
+        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+        gameData.width = dimension.width;
+        gameData.height = dimension.height;
+    }
+
+    protected int getWidth(){
+        return (int)gameData.width;
+    }
+
+    protected int getHeight(){
+        return (int)gameData.height;
+    }
     private static Timer initTimer()
     {
         Timer timer = new Timer("notifies generator", true);
@@ -37,7 +51,7 @@ public class GameLogic {
                 notifyObservers();
             }
         }, 0, 1000);
-    }
+        }
     }
 
     protected Point getTargetPosition()
@@ -71,13 +85,11 @@ public class GameLogic {
     private static double asNormalizedRadians(double angle)
     {
         while (angle < 0)
-        {
             angle += 2*Math.PI;
-        }
+
         while (angle >= 2*Math.PI)
-        {
             angle -= 2*Math.PI;
-        }
+
         return angle;
     }
 
@@ -87,20 +99,17 @@ public class GameLogic {
         double distance = distance(gameData.m_targetPositionX, gameData.m_targetPositionY,
                 gameData.m_robotPositionX, gameData.m_robotPositionY);
         if (distance < 0.5)
-        {
             return;
-        }
+
         double velocity = gameData.maxVelocity;
         double angleToTarget = angleTo(gameData.m_robotPositionX, gameData.m_robotPositionY, gameData.m_targetPositionX, gameData.m_targetPositionY);
         double angularVelocity = 0;
         if (angleToTarget > gameData.m_robotDirection)
-        {
             angularVelocity = gameData.maxAngularVelocity;
-        }
+
         if (angleToTarget < gameData.m_robotDirection)
-        {
             angularVelocity = -gameData.maxAngularVelocity;
-        }
+
 
         moveRobot(velocity, angularVelocity, 10);
 
@@ -117,9 +126,7 @@ public class GameLogic {
     {
         if (value < min)
             return min;
-        if (value > max)
-            return max;
-        return value;
+        return Math.min(value, max);
     }
 
     private void moveRobot(double velocity, double angularVelocity, double duration)
@@ -130,16 +137,14 @@ public class GameLogic {
                 (Math.sin(gameData.m_robotDirection  + angularVelocity * duration) -
                         Math.sin(gameData.m_robotDirection));
         if (!Double.isFinite(newX))
-        {
             newX = gameData.m_robotPositionX + velocity * duration * Math.cos(gameData.m_robotDirection);
-        }
+
         double newY = gameData.m_robotPositionY - velocity / angularVelocity *
-                (Math.cos(gameData.m_robotDirection  + angularVelocity * duration) -
+                (Math.cos(gameData.m_robotDirection + angularVelocity * duration) -
                         Math.cos(gameData.m_robotDirection));
         if (!Double.isFinite(newY))
-        {
             newY = gameData.m_robotPositionY + velocity * duration * Math.sin(gameData.m_robotDirection);
-        }
+
         gameData.m_robotPositionX = newX;
         gameData.m_robotPositionY = newY;
         double newDirection = asNormalizedRadians(gameData.m_robotDirection + angularVelocity * duration);

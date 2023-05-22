@@ -27,9 +27,9 @@ public class LogCoordinatesWindow extends WindowWithPathState {
     public void update(Point p) {
 
         logs.append(p.x).append(", ").append(p.y).append("\n");
-        if (logs.length() >= maxNumberOfSymbols) {
+        if (logs.length() >= maxNumberOfSymbols)
             logs = new StringBuffer();
-        }
+
         textArea.setText(logs.toString());
         textArea.invalidate();
 

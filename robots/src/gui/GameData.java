@@ -12,4 +12,7 @@ public class GameData {
     static final double maxVelocity = 0.1;
     static final double maxAngularVelocity = 0.001;
 
+    volatile double width = 150;
+    volatile double height = 150;
+
 }

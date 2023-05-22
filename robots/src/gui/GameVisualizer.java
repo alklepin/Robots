@@ -1,10 +1,6 @@
 package gui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.AffineTransform;
@@ -12,6 +8,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.JPanel;
+
+import static java.lang.Math.min;
 
 public class GameVisualizer extends JPanel
 {
@@ -48,7 +46,11 @@ public class GameVisualizer extends JPanel
             @Override
             public void mouseClicked(MouseEvent e)
             {
-                gameLogic.setTargetPosition(e.getPoint());
+                Point point = e.getPoint();
+                double resolution = Toolkit.getDefaultToolkit().getScreenResolution() / 140.0;
+                point.x = (int) (point.x / resolution);
+                point.y = (int) (point.y / resolution);
+                gameLogic.setTargetPosition(point);
                 repaint();
             }
         });
@@ -89,9 +91,28 @@ public class GameVisualizer extends JPanel
     
     private void drawRobot(Graphics2D g, int x, int y, double direction)
     {
-        Point currentPoint = gameLogic.getRobotPosition();
-        int robotCenterX = round(currentPoint.x);
-        int robotCenterY = round(currentPoint.y);
+//        Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
+//        int width = dimension.width;
+//        if (x < 0)
+//            x = 0;
+//        int robotCenterX = min(x, width);
+//
+//        int height = dimension.height;
+//        if (y < 0)
+//            y = 0;
+//        int robotCenterY = min(y, height);
+
+        gameLogic.modifyDimension();
+        int width = gameLogic.getWidth();
+        if (x < 0)
+            x = 0;
+        int robotCenterX = min(x, width);
+
+        int height = gameLogic.getHeight();
+        if (y < 0)
+            y = 0;
+        int robotCenterY = min(y, height);
+
         AffineTransform t = AffineTransform.getRotateInstance(direction, robotCenterX, robotCenterY); 
         g.setTransform(t);
         g.setColor(Color.MAGENTA);
@@ -103,6 +124,7 @@ public class GameVisualizer extends JPanel
         g.setColor(Color.BLACK);
         drawOval(g, robotCenterX  + 10, robotCenterY, 5, 5);
     }
+
     
     private void drawTarget(Graphics2D g, int x, int y)
     {
