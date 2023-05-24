@@ -43,44 +43,26 @@ public class RobotModel extends JPanel {
         if (distance < 0.5) {
             return;
         }
-        parameters.m_robotDirection = asNormalizedRadians(parameters.m_robotDirection);
-        double velocity = maxVelocity;
-        double angleToTarget = angleTo(parameters.m_robotPositionX, parameters.m_robotPositionY, parameters.m_targetPositionX, parameters.m_targetPositionY);
-        double angularVelocity = 0;
-        if (angleToTarget > parameters.m_robotDirection) {
-            angularVelocity = maxAngularVelocity;
-        }
-        if (angleToTarget < parameters.m_robotDirection) {
-            angularVelocity = -maxAngularVelocity;
-        }
+        var newX = parameters.m_robotPositionX;
+        var newY = parameters.m_robotPositionY;
+        var koef = 0.4;
 
-
-        moveRobot(velocity, angularVelocity, 10);
+        if (parameters.m_robotPositionX < parameters.m_targetPositionX)
+            newX += koef;
+        if (parameters.m_robotPositionY < parameters.m_targetPositionY)
+            newY += koef;
+        if (parameters.m_robotPositionX > parameters.m_targetPositionX)
+            newX -= koef;
+        if (parameters.m_robotPositionY > parameters.m_targetPositionY)
+            newY -= koef;
+        var dir = angleTo(newX, newY, parameters.m_targetPositionX, parameters.m_targetPositionY);
+        parameters.updateRobot(newX, newY, dir);
     }
 
     private static double angleTo(double fromX, double fromY, double toX, double toY) {
         double diffX = toX - fromX;
         double diffY = toY - fromY;
         return asNormalizedRadians(Math.atan2(diffY, diffX));
-    }
-
-    private void moveRobot(double velocity, double angularVelocity, double duration) {
-        velocity = applyLimits(velocity, 0, maxVelocity);
-        angularVelocity = applyLimits(angularVelocity, -maxAngularVelocity, maxAngularVelocity);
-        double newX = parameters.m_robotPositionX + velocity / angularVelocity *
-                (Math.sin(parameters.m_robotDirection + angularVelocity * duration) -
-                        Math.sin(parameters.m_robotDirection));
-        if (!Double.isFinite(newX)) {
-            newX = parameters.m_robotPositionX + velocity * duration * Math.cos(parameters.m_robotDirection);
-        }
-        double newY = parameters.m_robotPositionY - velocity / angularVelocity *
-                (Math.cos(parameters.m_robotDirection + angularVelocity * duration) -
-                        Math.cos(parameters.m_robotDirection));
-        if (!Double.isFinite(newY)) {
-            newY = parameters.m_robotPositionY + velocity * duration * Math.sin(parameters.m_robotDirection);
-        }
-        double newDirection = asNormalizedRadians(parameters.m_robotDirection + angularVelocity * duration);
-        parameters.updateRobot(newX, newY, newDirection);
     }
 
     private static double asNormalizedRadians(double angle) {
@@ -91,14 +73,6 @@ public class RobotModel extends JPanel {
             angle -= 2 * Math.PI;
         }
         return angle;
-    }
-
-    private static double applyLimits(double value, double min, double max) {
-        if (value < min)
-            return min;
-        if (value > max)
-            return max;
-        return value;
     }
 
 
