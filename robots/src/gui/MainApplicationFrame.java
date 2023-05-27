@@ -4,15 +4,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -134,12 +126,35 @@ public class MainApplicationFrame extends JFrame
             });
             testMenu.add(addLogMessageItem);
         }
+        JMenu exitMenu = new JMenu("Выход");
+        exitMenu.setMnemonic(KeyEvent.VK_V);
+        exitMenu.getAccessibleContext().setAccessibleDescription(
+                "Выход из приложения");
+        {
+            JMenuItem exitItem = new JMenuItem("Выйти", KeyEvent.VK_S);
+            exitItem.addActionListener((event) -> {
+                exitApplication();
+            });
+            exitMenu.add(exitItem);
+        }
+
 
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        menuBar.add(exitMenu);
+
         return menuBar;
     }
-    
+    {UIManager.put("OptionPane.yesButtonText","Да");
+        UIManager.put("OptionPane.noButtonText","Нет");}
+    public void exitApplication() {
+        int answer = JOptionPane.showConfirmDialog(null,
+                "Вы уверены? Весь несохраненный прогресс будет утерян.", "Выход", JOptionPane.YES_NO_OPTION);
+        if (answer == JOptionPane.YES_OPTION) {
+
+            System.exit(0);
+        }
+    }
     private void setLookAndFeel(String className)
     {
         try
