@@ -149,7 +149,7 @@ public class MainApplicationFrame extends JFrame
         UIManager.put("OptionPane.noButtonText","Нет");}
     public void exitApplication() {
         int answer = JOptionPane.showConfirmDialog(null,
-                "Вы уверены? Весь несохраненный прогресс будет утерян.", "Выход", JOptionPane.YES_NO_OPTION);
+                "Вы уверены? Весь несохраненный прогресс будет утерян.", "Выход из приложения", JOptionPane.YES_NO_OPTION);
         if (answer == JOptionPane.YES_OPTION) {
 
             System.exit(0);
