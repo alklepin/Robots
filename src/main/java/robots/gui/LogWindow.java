@@ -3,6 +3,9 @@ package robots.gui;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.TextArea;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 
@@ -16,6 +19,11 @@ public class LogWindow extends InternalWindowJsonConfigurable implements LogChan
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
+    private ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+    private volatile boolean isUpdating = false;
+
+
+    private int lastLogTime = 0;
 
     public LogWindow(LogWindowSource logSource)
     {
@@ -26,11 +34,21 @@ public class LogWindow extends InternalWindowJsonConfigurable implements LogChan
         m_logContent.setSize(200, 500);
 
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setDoubleBuffered(true);
         panel.add(m_logContent, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
         updateLogContent();
+
+        executor.scheduleAtFixedRate(this::updateLogContentIfNeeded, 1, 1000, TimeUnit.MILLISECONDS);
     }
+    private void updateLogContentIfNeeded() {
+        if (isUpdating) {
+            updateLogContent();
+            isUpdating = false;
+        }
+    }
+
 
     public void load()
     {
@@ -52,6 +70,7 @@ public class LogWindow extends InternalWindowJsonConfigurable implements LogChan
         {
             content.append(entry.getMessage()).append("\n");
         }
+//        m_logContent.append(content.toString());
         m_logContent.setText(content.toString());
         m_logContent.invalidate();
     }
@@ -59,6 +78,6 @@ public class LogWindow extends InternalWindowJsonConfigurable implements LogChan
     @Override
     public void onLogChanged()
     {
-        EventQueue.invokeLater(this::updateLogContent);
+        isUpdating = true;
     }
 }

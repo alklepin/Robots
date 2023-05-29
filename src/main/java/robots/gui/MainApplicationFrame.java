@@ -17,6 +17,8 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import robots.domain.InternalWindow;
+import robots.log.LogLevel;
+import robots.log.LogWindowSource;
 import robots.log.Logger;
 
 /**
@@ -26,10 +28,12 @@ import robots.log.Logger;
  */
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private LogWindowSource logSource;
 
-    public MainApplicationFrame(InternalWindow... windows) {
+    public MainApplicationFrame(LogWindowSource logSource, InternalWindow... windows) {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
+        this.logSource = logSource;
         int inset = 50;
         Configurator configurator = new Configurator();
 
@@ -129,7 +133,7 @@ public class MainApplicationFrame extends JFrame {
         {
             JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
             addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
+                logSource.append(LogLevel.Info, "Тестовое сообщение");
             });
             testMenu.add(addLogMessageItem);
         }
