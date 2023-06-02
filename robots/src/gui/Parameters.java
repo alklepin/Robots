@@ -1,5 +1,7 @@
 package gui;
 
+import log.Logger;
+
 import java.awt.*;
 import java.util.Observable;
 
@@ -18,6 +20,7 @@ public class Parameters extends Observable {
     public void updateTarget(Point point) {
         m_targetPositionX = point.x;
         m_targetPositionY = point.y;
+        Logger.debug("Переместили цель");
         setChanged();
         notifyObservers();
     }
@@ -26,6 +29,7 @@ public class Parameters extends Observable {
         m_robotPositionX = pX;
         m_robotPositionY = pY;
         m_robotDirection = dir;
+        //Logger.debug("Новые координаты: "+ pX + " " + pY);
         setChanged();
         notifyObservers();
     }

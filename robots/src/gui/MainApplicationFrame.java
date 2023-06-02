@@ -32,7 +32,6 @@ public class MainApplicationFrame extends JFrame {
         setContentPane(desktopPane);
 
         CreateInternalWindows();
-
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         ReadPreviousSettings();

@@ -1,5 +1,7 @@
 package gui;
 
+import log.Logger;
+
 import java.awt.BorderLayout;
 import java.util.Observable;
 
@@ -12,6 +14,7 @@ public class GameWindow extends JInternalFrame {
 
     public GameWindow(Parameters parameters) {
         super("Игровое поле", true, true, true, true);
+        Logger.debug("Создано игровое поле");
         m_robot = new RobotModel(parameters);
         m_drawer = new GameDrawer(parameters);
         parameters.addObserver(m_drawer);

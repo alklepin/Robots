@@ -1,5 +1,7 @@
 package gui;
 
+import log.Logger;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Timer;
