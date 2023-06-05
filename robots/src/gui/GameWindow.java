@@ -1,11 +1,12 @@
 package gui;
 
+import serialization.SerializationInternalFrame;
+
 import java.awt.BorderLayout;
 
-import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
-public class GameWindow extends JInternalFrame
+public class GameWindow extends SerializationInternalFrame
 {
     private final GameVisualizer m_visualizer;
     public GameWindow() 
