@@ -1,4 +1,4 @@
-package robots.domain;
+package robots.domain.windows;
 
 import org.json.simple.JSONObject;
 import robots.interfaces.Configurable;

@@ -1,7 +1,6 @@
 package robots.gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.TextArea;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -9,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JPanel;
 
-import robots.domain.InternalWindowJsonConfigurable;
+import robots.domain.windows.InternalWindowJsonConfigurable;
 import robots.log.LogChangeListener;
 import robots.log.LogEntry;
 import robots.log.LogWindowSource;

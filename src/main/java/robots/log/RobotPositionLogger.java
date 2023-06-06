@@ -1,6 +1,6 @@
 package robots.log;
 
-import robots.domain.Robot;
+import robots.domain.game.Robot;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -16,7 +16,7 @@ public class RobotPositionLogger implements Observer {
     public void update(Observable o, Object arg) {
         if (o instanceof Robot) {
             Robot robot = (Robot) o;
-            logSource.append(LogLevel.Info, "Robot position: " + robot.getRobotPosition().toString());
+            logSource.append(LogLevel.Info, "Robot position: " + robot.getPosition().toString());
         }
     }
 }

@@ -1,17 +1,8 @@
 package robots.gui;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
-import robots.domain.InternalWindow;
-import robots.domain.InternalWindowJsonConfigurable;
+import robots.domain.windows.InternalWindow;
 import robots.interfaces.Configurable;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
 

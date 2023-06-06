@@ -1,8 +1,9 @@
-package robots.domain;
+package robots.domain.windows;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import robots.domain.windows.InternalWindow;
 
 import java.beans.PropertyVetoException;
 import java.io.File;

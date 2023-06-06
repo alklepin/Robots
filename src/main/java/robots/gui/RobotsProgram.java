@@ -1,10 +1,9 @@
 package robots.gui;
 
-import robots.domain.InternalWindowJsonConfigurable;
-import robots.domain.Robot;
-import robots.log.LogLevel;
+import robots.domain.game.Game;
+import robots.domain.game.Robot;
+import robots.domain.game.Target;
 import robots.log.LogWindowSource;
-import robots.log.Logger;
 import robots.log.RobotPositionLogger;
 
 import java.awt.Frame;
@@ -22,11 +21,17 @@ public class RobotsProgram {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Robot robot = new Robot();
+        Target target = new Target(150, 150);
+        Robot robot = new Robot(150, 150);
+        target.addObserver(robot);
+        Game game = new Game(
+                robot,
+                target
+        );
         LogWindowSource logSource = new LogWindowSource(50);
         RobotPositionLogger robotLogger = new RobotPositionLogger(logSource);
         robot.addObserver(robotLogger);
-        GameWindow gameWindow = new GameWindow(robot);
+        GameWindow gameWindow = new GameWindow(game);
         LogWindow logWindow = new LogWindow(logSource);
 
         SwingUtilities.invokeLater(() -> {

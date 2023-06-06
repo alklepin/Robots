@@ -16,10 +16,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import robots.domain.InternalWindow;
+import robots.domain.windows.InternalWindow;
 import robots.log.LogLevel;
 import robots.log.LogWindowSource;
-import robots.log.Logger;
 
 /**
  * Что требуется сделать:
