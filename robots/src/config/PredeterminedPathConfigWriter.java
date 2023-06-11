@@ -37,18 +37,5 @@ public class PredeterminedPathConfigWriter implements ConfigWriter {
         m_stream.close();
     }
 
-    public static void main(String[] args) {
 
-        String d ="fooo";
-
-        var p= new File(System.getProperty("user.home"),"config.conf");
-        System.out.println(p);
-        try (PredeterminedPathConfigWriter writer = new PredeterminedPathConfigWriter(p.getPath())) {
-            writer.writeObject(d);
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 }

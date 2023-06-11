@@ -17,7 +17,6 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 import controllers.TargetPositionController;
-import gui.serial.InnerWindowStateContainer;
 import gui.serial.MainWindowStateContainer;
 import log.LogWindowSource;
 import log.Logger;
@@ -82,17 +81,17 @@ public class MainApplicationFrame extends JFrame
 
         setContentPane(desktopPane);
         m_logger = createLogWindow(logs);
-        m_logger.setLocation(container.LoggerState.x,container.LoggerState.y);
-        m_logger.setSize(container.LoggerState.sizeX,container.LoggerState.sizeY);
+        m_logger.setLocation(container.m_loggerState.x,container.m_loggerState.y);
+        m_logger.setSize(container.m_loggerState.sizeX,container.m_loggerState.sizeY);
         addWindow(m_logger);
         m_game=new GameWindow(model,controller,target);
-        m_game.setLocation(container.GameState.x,container.GameState.y);
-        m_game.setSize(container.GameState.sizeX,container.GameState.sizeY);
+        m_game.setLocation(container.m_gameState.x,container.m_gameState.y);
+        m_game.setSize(container.m_gameState.sizeX,container.m_gameState.sizeY);
         addWindow(m_game);
 
         m_coordShow=new PositionShowWindow(model);
-        m_coordShow.setLocation(container.PositionShowState.x,container.PositionShowState.y);
-        m_coordShow.setSize(container.PositionShowState.sizeX,container.PositionShowState.sizeY);
+        m_coordShow.setLocation(container.m_positionShowState.x,container.m_positionShowState.y);
+        m_coordShow.setSize(container.m_positionShowState.sizeX,container.m_positionShowState.sizeY);
         addWindow(m_coordShow);
 
         setJMenuBar(generateMenuBar());
