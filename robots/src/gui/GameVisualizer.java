@@ -3,8 +3,7 @@ package gui;
 import controllers.TargetPositionController;
 import gui.drawModels.RobotRepresentation;
 import gui.drawModels.TargetRepresentation;
-import gui.serial.InnerWindowStateContainer;
-import gui.serial.MySerializable;
+
 import models.RobotModel;
 import models.TargetModel;
 
