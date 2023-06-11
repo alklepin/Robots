@@ -1,4 +1,7 @@
 package gui.serial;
 
-public interface MySerializable {
+import windowConstructors.WindowConstructor;
+
+public interface SerializableFrame {
+    WindowConstructor getFrameState();
 }

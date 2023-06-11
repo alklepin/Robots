@@ -8,12 +8,14 @@ import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 
 import gui.serial.InnerWindowStateContainer;
-import gui.serial.MySerializable;
+import gui.serial.SerializableFrame;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import windowConstructors.LogWindowConstructor;
+import windowConstructors.WindowConstructor;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener, MySerializable
+public class LogWindow extends JInternalFrame implements LogChangeListener, SerializableFrame
 {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
@@ -35,6 +37,7 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, MySe
 
     private void updateLogContent()
     {
+
         StringBuilder content = new StringBuilder();
         for (LogEntry entry : m_logSource.all())
         {
@@ -50,7 +53,8 @@ public class LogWindow extends JInternalFrame implements LogChangeListener, MySe
         EventQueue.invokeLater(this::updateLogContent);
     }
 
-    public InnerWindowStateContainer getState(){
-        return new InnerWindowStateContainer(getX(),getY(),getSize().width,getSize().height);
+    @Override
+    public WindowConstructor getFrameState() {
+        return new LogWindowConstructor(getX(),getY(),getWidth(),getHeight());
     }
 }

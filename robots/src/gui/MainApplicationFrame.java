@@ -16,12 +16,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import controllers.TargetPositionController;
-import gui.serial.MainWindowStateContainer;
-import log.LogWindowSource;
 import log.Logger;
-import models.RobotModel;
-import models.TargetModel;
+
 
 /**
  * Что требуется сделать:
@@ -32,47 +28,11 @@ import models.TargetModel;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    private final LogWindow m_logger;
-    private final GameWindow m_game;
-
-    private final PositionShowWindow m_coordShow;
-
-    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target, LogWindowSource logs) {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
-        int inset = 50;
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
-
-        setContentPane(desktopPane);
 
 
-        m_logger = createLogWindow(logs);
-        addWindow(m_logger);
 
 
-        m_game = new GameWindow(model,controller,target);
-        m_game.setSize(400,  400);
-
-        m_coordShow=new PositionShowWindow(model);
-        m_coordShow.setSize(200,100);
-        addWindow(m_coordShow);
-        addWindow(m_game);
-
-        setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("Window Closed!");
-                super.windowClosing(e);
-            }
-        });
-    }
-
-    public MainApplicationFrame(RobotModel model, TargetPositionController controller, TargetModel target,MainWindowStateContainer container,LogWindowSource logs){
+    public MainApplicationFrame(){
         int inset = 50;
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setBounds(inset, inset,
@@ -80,19 +40,9 @@ public class MainApplicationFrame extends JFrame
                 screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        m_logger = createLogWindow(logs);
-        m_logger.setLocation(container.m_loggerState.x,container.m_loggerState.y);
-        m_logger.setSize(container.m_loggerState.sizeX,container.m_loggerState.sizeY);
-        addWindow(m_logger);
-        m_game=new GameWindow(model,controller,target);
-        m_game.setLocation(container.m_gameState.x,container.m_gameState.y);
-        m_game.setSize(container.m_gameState.sizeX,container.m_gameState.sizeY);
-        addWindow(m_game);
 
-        m_coordShow=new PositionShowWindow(model);
-        m_coordShow.setLocation(container.m_positionShowState.x,container.m_positionShowState.y);
-        m_coordShow.setSize(container.m_positionShowState.sizeX,container.m_positionShowState.sizeY);
-        addWindow(m_coordShow);
+
+
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -104,51 +54,13 @@ public class MainApplicationFrame extends JFrame
             }
         });
     }
-    protected LogWindow createLogWindow(LogWindowSource source)
-    {
-        LogWindow logWindow = new LogWindow(source);
-        logWindow.setLocation(10,10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        Logger.debug("Протокол работает");
-        return logWindow;
-    }
     
-    protected void addWindow(JInternalFrame frame)
+    public void addWindow(JInternalFrame frame)
     {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
-    
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
+
     
     private JMenuBar generateMenuBar()
     {
@@ -194,7 +106,9 @@ public class MainApplicationFrame extends JFrame
         menuBar.add(testMenu);
         return menuBar;
     }
-    
+    public JInternalFrame[] getInternalFrames(){
+        return desktopPane.getAllFrames();
+    }
     private void setLookAndFeel(String className)
     {
         try
@@ -208,7 +122,5 @@ public class MainApplicationFrame extends JFrame
             // just ignore
         }
     }
-    public MainWindowStateContainer getFrameState(){
-        return new MainWindowStateContainer(m_game.getState(),m_logger.getState(),m_coordShow.getState());
-    }
+
 }

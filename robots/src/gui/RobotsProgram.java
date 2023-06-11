@@ -4,34 +4,27 @@ import config.ConfigReader;
 import config.ConfigWriter;
 import config.PredeterminedPathConfigReader;
 import config.PredeterminedPathConfigWriter;
-import controllers.TargetPositionController;
 import controllers.RobotUpdateController;
-import gui.serial.MainWindowStateContainer;
-import log.LogWindowSource;
-import log.Logger;
-import log.states.LoggerSourceState;
-import models.RobotModel;
-import models.TargetModel;
-import models.states.RobotState;
-import models.states.TargetState;
+import gui.serial.InnerWindowStateContainer;
+import gui.serial.SerializableFrame;
+import serviceLocators.ModelAndControllerLocator;
+import windowConstructors.*;
 
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import javax.swing.*;
 
 public class RobotsProgram {
-    private static File m_serialize_path = new File("C:\\Users\\as-pa\\config.conf");
-    private static TargetModel m_targetModel;
-    private static RobotModel m_robotModel;
-    private static RobotUpdateController m_updater;
-    private static LogWindowSource m_logs;
-    private static TargetPositionController m_targetController;
-    private static MainApplicationFrame m_frame;
+    private static File m_modelsPath = new File("C:\\Users\\as-pa\\modelsConfig.conf");
+    private static File m_windowsPath = new File("C:\\Users\\as-pa\\windowsConfig.conf");
+    private static MainApplicationFrame m_frame=new MainApplicationFrame();
+    public static ModelAndControllerLocator m_locator;
+
 
     public static void main(String[] args) {
         try {
@@ -46,88 +39,109 @@ public class RobotsProgram {
         SwingUtilities.invokeLater(() -> {
 
 
-            try (PredeterminedPathConfigReader reader = new PredeterminedPathConfigReader(m_serialize_path.getPath())) {
-                readProgramState(reader);
+            try(ConfigReader modelsConfig=new PredeterminedPathConfigReader(m_modelsPath.getPath())){
+                try(ConfigReader windowsConfig = new PredeterminedPathConfigReader(m_windowsPath.getPath())){
+                    readProgramState(modelsConfig,windowsConfig);
+                } catch (IOException | ClassNotFoundException e) {
+                    initProgramState();
 
-            } catch (IOException | ClassNotFoundException e) {
+                }
+            } catch (IOException e) {
                 initProgramState();
-
             }
+
+
+
+
         });
     }
-    private static void initProgramState(){
-        m_targetModel = new TargetModel(150, 100);
-        m_robotModel = new RobotModel(100, 100, 100, m_targetModel);
-        m_updater = new RobotUpdateController(m_robotModel);
-        m_logs= Logger.getDefaultLogSource();
-        m_targetController = new TargetPositionController(m_targetModel);
-        m_frame = new MainApplicationFrame(m_robotModel, m_targetController, m_targetModel,m_logs);
+
+    private static void initProgramState() {
+        System.out.println("Program state initiated");
+        m_locator = ModelAndControllerLocator.getDefault();
+        InnerWindowStateContainer defaultWindowLayout = new InnerWindowStateContainer(0, 0, 200, 200);
+        var updater = new RobotUpdateController(m_locator.getRobotModel());
+        ArrayList<WindowConstructor> frameConstructors = new ArrayList<>();
+        frameConstructors.add(new GameWindowConstructor(defaultWindowLayout));
+        frameConstructors.add(new LogWindowConstructor(defaultWindowLayout));
+        frameConstructors.add(new PositionShowConstructor(defaultWindowLayout));
+
+        m_frame = new MainApplicationFrame();
+        for (var constructor:frameConstructors) {
+            m_frame.addWindow(constructor.construct(m_locator));
+        }
+
         m_frame.pack();
         m_frame.setVisible(true);
         m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         m_frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                synchronized (this){
-                    try(ConfigWriter writer = new PredeterminedPathConfigWriter(m_serialize_path.getPath())){
-                        writeProgramState(writer);
-
+                System.out.println("program ended");
+                try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
+                    try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
+                        writeProgramState(modelsConfig,windowsConfig);
+                        System.exit(0);
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
 
                     }
-                    finally {
-                        super.windowClosing(e);
-                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
+
 
 
             }
         });
     }
-    private static void readProgramState(ConfigReader reader) throws IOException, ClassNotFoundException {
-        MainWindowStateContainer Windowscontainer=(MainWindowStateContainer)reader.readObject();
-        RobotState robotContainer=(RobotState) reader.readObject();
-        TargetState targetContainer=(TargetState) reader.readObject();
-        LoggerSourceState logs=(LoggerSourceState)reader.readObject();
-        m_logs=new LogWindowSource(logs);
-        m_targetModel=new TargetModel(targetContainer);
-        m_robotModel=new RobotModel(robotContainer,m_targetModel);
-        m_targetController=new TargetPositionController(m_targetModel);
-        m_updater=new RobotUpdateController(m_robotModel);
-        m_frame=new MainApplicationFrame(m_robotModel,m_targetController,m_targetModel, Windowscontainer,m_logs);
+    private static void readProgramState(ConfigReader modelsReader, ConfigReader windowReader) throws IOException, ClassNotFoundException {
+        System.out.println("program state read from disk");
+        m_locator=ModelAndControllerLocator.getFromConfig(modelsReader);
+        m_frame = new MainApplicationFrame();
+        var updater = new RobotUpdateController(m_locator.getRobotModel());
+        int windowsCount=(Integer)windowReader.readObject();
+        for (int i = 0; i < windowsCount; i++) {
+            m_frame.addWindow(((WindowConstructor)windowReader.readObject()).construct(m_locator));
+        }
         m_frame.pack();
         m_frame.setVisible(true);
         m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
         m_frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                synchronized (this){
-                    try(ConfigWriter writer = new PredeterminedPathConfigWriter(m_serialize_path.getPath())){
-                        writeProgramState(writer);
-
+                System.out.println("program ended");
+                try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
+                    try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
+                        writeProgramState(modelsConfig,windowsConfig);
                     } catch (IOException ex) {
-                        ex.printStackTrace();
+                        throw new RuntimeException(ex);
 
                     }
-                    finally {
-                        super.windowClosing(e);
-                    }
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
 
 
             }
         });
     }
-
-    private static void writeProgramState(ConfigWriter writer) throws IOException{
-        MainWindowStateContainer windowContainer=m_frame.getFrameState();
-        RobotState robotContainer=m_robotModel.getState();
-        TargetState targetContainer=m_targetModel.getState();
-        LoggerSourceState logs=m_logs.getState();
-        writer.writeObject(windowContainer);
-        writer.writeObject(robotContainer);
-        writer.writeObject(targetContainer);
-        writer.writeObject(logs);
+    private static void writeProgramState(ConfigWriter modelsWriter,ConfigWriter windowsWriter) throws IOException {
+        m_locator.writeStateToConfig(modelsWriter);
+        JInternalFrame[] frames=m_frame.getInternalFrames();
+        int frameCount=0;
+        ArrayList<WindowConstructor> constructors=new ArrayList<>();
+        for (JInternalFrame frame:frames) {
+            if(frame instanceof SerializableFrame){
+                frameCount++;
+                constructors.add(((SerializableFrame)frame).getFrameState());
+            }
+        }
+        windowsWriter.writeObject(frameCount);
+        for (var constructor:constructors) {
+            windowsWriter.writeObject(constructor);
+        }
     }
+
+
 }
