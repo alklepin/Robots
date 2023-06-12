@@ -22,7 +22,7 @@ import javax.swing.*;
 public class RobotsProgram {
     private static File m_modelsPath = new File("C:\\Users\\as-pa\\modelsConfig.conf");
     private static File m_windowsPath = new File("C:\\Users\\as-pa\\windowsConfig.conf");
-    private static MainApplicationFrame m_frame=new MainApplicationFrame();
+    private static MainApplicationFrame m_frame;
     public static ModelAndControllerLocator m_locator;
 
 
@@ -49,7 +49,16 @@ public class RobotsProgram {
             } catch (IOException e) {
                 initProgramState();
             }
+            m_frame.pack();
+            m_frame.setVisible(true);
+            m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+            m_frame.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    onExit();
 
+                }
+            });
 
 
 
@@ -57,7 +66,7 @@ public class RobotsProgram {
     }
 
     private static void initProgramState() {
-        System.out.println("Program state initiated");
+        m_frame=new MainApplicationFrame();
         m_locator = ModelAndControllerLocator.getDefault();
         InnerWindowStateContainer defaultWindowLayout = new InnerWindowStateContainer(0, 0, 200, 200);
         var updater = new RobotUpdateController(m_locator.getRobotModel());
@@ -71,60 +80,17 @@ public class RobotsProgram {
             m_frame.addWindow(constructor.construct(m_locator));
         }
 
-        m_frame.pack();
-        m_frame.setVisible(true);
-        m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        m_frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("program ended");
-                try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
-                    try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
-                        writeProgramState(modelsConfig,windowsConfig);
-                        System.exit(0);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
 
-                    }
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-
-            }
-        });
     }
     private static void readProgramState(ConfigReader modelsReader, ConfigReader windowReader) throws IOException, ClassNotFoundException {
-        System.out.println("program state read from disk");
+        m_frame=new MainApplicationFrame();
         m_locator=ModelAndControllerLocator.getFromConfig(modelsReader);
-        m_frame = new MainApplicationFrame();
         var updater = new RobotUpdateController(m_locator.getRobotModel());
         int windowsCount=(Integer)windowReader.readObject();
         for (int i = 0; i < windowsCount; i++) {
             m_frame.addWindow(((WindowConstructor)windowReader.readObject()).construct(m_locator));
         }
-        m_frame.pack();
-        m_frame.setVisible(true);
-        m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-        m_frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                System.out.println("program ended");
-                try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
-                    try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
-                        writeProgramState(modelsConfig,windowsConfig);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
 
-                    }
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-
-            }
-        });
     }
     private static void writeProgramState(ConfigWriter modelsWriter,ConfigWriter windowsWriter) throws IOException {
         m_locator.writeStateToConfig(modelsWriter);
@@ -140,6 +106,20 @@ public class RobotsProgram {
         windowsWriter.writeObject(frameCount);
         for (var constructor:constructors) {
             windowsWriter.writeObject(constructor);
+        }
+    }
+    private static void onExit(){
+
+        try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
+            try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
+                writeProgramState(modelsConfig,windowsConfig);
+                System.exit(0);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
