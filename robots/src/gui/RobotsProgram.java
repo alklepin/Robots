@@ -1,9 +1,7 @@
 package gui;
 
-import config.ConfigReader;
-import config.ConfigWriter;
-import config.PredeterminedPathConfigReader;
-import config.PredeterminedPathConfigWriter;
+import config.FileSupplier;
+import config.PredeterminedPathFileSupplier;
 import controllers.RobotUpdateController;
 import gui.serial.InnerWindowStateContainer;
 import gui.serial.SerializableFrame;
@@ -13,15 +11,14 @@ import windowConstructors.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 
 import javax.swing.*;
 
 public class RobotsProgram {
-    private static File m_modelsPath = new File("C:\\Users\\as-pa\\modelsConfig.conf");
-    private static File m_windowsPath = new File("C:\\Users\\as-pa\\windowsConfig.conf");
+    private static FileSupplier m_modelsPath = new PredeterminedPathFileSupplier("C:\\Users\\as-pa\\modelsConfig.conf");
+    private static FileSupplier m_windowsPath = new PredeterminedPathFileSupplier("C:\\Users\\as-pa\\windowsConfig.conf");
     private static MainApplicationFrame m_frame;
     public static ModelAndControllerLocator m_locator;
 
@@ -37,25 +34,29 @@ public class RobotsProgram {
         }
 
         SwingUtilities.invokeLater(() -> {
-
-
-            try(ConfigReader modelsConfig=new PredeterminedPathConfigReader(m_modelsPath.getPath())){
-                try(ConfigReader windowsConfig = new PredeterminedPathConfigReader(m_windowsPath.getPath())){
-                    readProgramState(modelsConfig,windowsConfig);
+            try(var modelsFileStream=new FileInputStream(m_modelsPath.getFile().getPath())){
+                try(var windowsFileStream=new FileInputStream(m_windowsPath.getFile().getPath())){
+                    var modelsInputStream=new ObjectInputStream(new BufferedInputStream(modelsFileStream));
+                    var windowsInputStream=new ObjectInputStream(new BufferedInputStream(windowsFileStream));
+                    readProgramState(modelsInputStream,windowsInputStream);
                 } catch (IOException | ClassNotFoundException e) {
                     initProgramState();
-
                 }
             } catch (IOException e) {
                 initProgramState();
             }
+
             m_frame.pack();
             m_frame.setVisible(true);
             m_frame.setExtendedState(Frame.MAXIMIZED_BOTH);
             m_frame.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    onExit();
+                    try {
+                        onExit();
+                    } catch (FileNotFoundException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
                 }
             });
@@ -82,7 +83,7 @@ public class RobotsProgram {
 
 
     }
-    private static void readProgramState(ConfigReader modelsReader, ConfigReader windowReader) throws IOException, ClassNotFoundException {
+    private static void readProgramState(ObjectInputStream modelsReader, ObjectInputStream windowReader) throws IOException, ClassNotFoundException {
         m_frame=new MainApplicationFrame();
         m_locator=ModelAndControllerLocator.getFromConfig(modelsReader);
         var updater = new RobotUpdateController(m_locator.getRobotModel());
@@ -92,7 +93,7 @@ public class RobotsProgram {
         }
 
     }
-    private static void writeProgramState(ConfigWriter modelsWriter,ConfigWriter windowsWriter) throws IOException {
+    private static void writeProgramState(ObjectOutputStream modelsWriter,ObjectOutputStream windowsWriter) throws IOException {
         m_locator.writeStateToConfig(modelsWriter);
         JInternalFrame[] frames=m_frame.getInternalFrames();
         int frameCount=0;
@@ -108,20 +109,21 @@ public class RobotsProgram {
             windowsWriter.writeObject(constructor);
         }
     }
-    private static void onExit(){
+    private static void onExit() throws FileNotFoundException {
 
-        try(ConfigWriter modelsConfig=new PredeterminedPathConfigWriter(m_modelsPath.getPath())){
-            try(ConfigWriter windowsConfig = new PredeterminedPathConfigWriter(m_windowsPath.getPath())){
-                writeProgramState(modelsConfig,windowsConfig);
-                System.exit(0);
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
+        try (var modelsInputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(m_modelsPath.getFile().getPath())));
+             var windowsInputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(m_windowsPath.getFile().getPath())))
+        ) {
 
-            }
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
+            writeProgramState(modelsInputStream, windowsInputStream);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+
         }
+
+
+
+
     }
-
-
 }

@@ -1,7 +1,5 @@
 package serviceLocators;
 
-import config.ConfigReader;
-import config.ConfigWriter;
 import controllers.TargetPositionController;
 import log.LogWindowSource;
 import log.Logger;
@@ -12,6 +10,8 @@ import models.states.RobotState;
 import models.states.TargetState;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class ModelAndControllerLocator {
     private RobotModel m_robotModel;
@@ -31,7 +31,7 @@ public class ModelAndControllerLocator {
         var targetController = new TargetPositionController(targetModel);
         return new ModelAndControllerLocator(robotModel, targetModel, targetController, logs);
     }
-    public static ModelAndControllerLocator getFromConfig(ConfigReader reader) throws IOException, ClassNotFoundException {
+    public static ModelAndControllerLocator getFromConfig(ObjectInputStream reader) throws IOException, ClassNotFoundException {
         RobotState robotState=(RobotState)reader.readObject();
         TargetState targetState=(TargetState)reader.readObject();
         TargetModel targetModel=new TargetModel(targetState);
@@ -45,7 +45,7 @@ public class ModelAndControllerLocator {
         var TargetController=new TargetPositionController(targetModel);
 return new ModelAndControllerLocator(robotModel, targetModel, TargetController, logs);
     }
-    public void writeStateToConfig(ConfigWriter writer) throws IOException {
+    public void writeStateToConfig(ObjectOutputStream writer) throws IOException {
         writer.writeObject(m_robotModel.getState());
         writer.writeObject(m_targetModel.getState());
         writer.writeObject(m_logs.getState());
