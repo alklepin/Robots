@@ -1,7 +1,6 @@
 package gui;
 
 import controllers.TargetPositionController;
-import gui.serial.InnerWindowStateContainer;
 import gui.serial.SerializableFrame;
 import models.RobotModel;
 import models.TargetModel;
