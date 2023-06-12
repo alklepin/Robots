@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import javax.swing.*;
 
 public class RobotsProgram {
-    private static FileSupplier m_modelsPath = new PredeterminedPathFileSupplier("C:\\Users\\as-pa\\modelsConfig.conf");
-    private static FileSupplier m_windowsPath = new PredeterminedPathFileSupplier("C:\\Users\\as-pa\\windowsConfig.conf");
+    private static FileSupplier m_modelsPath = new PredeterminedPathFileSupplier(System.getProperty("user.home").concat("\\modelsConfig.conf"));
+    private static FileSupplier m_windowsPath = new PredeterminedPathFileSupplier(System.getProperty("user.home").concat("\\windowsConfig.conf"));
     private static MainApplicationFrame m_frame;
     public static ModelAndControllerLocator m_locator;
 
@@ -34,15 +34,10 @@ public class RobotsProgram {
         }
 
         SwingUtilities.invokeLater(() -> {
-            try(var modelsFileStream=new FileInputStream(m_modelsPath.getFile().getPath())){
-                try(var windowsFileStream=new FileInputStream(m_windowsPath.getFile().getPath())){
-                    var modelsInputStream=new ObjectInputStream(new BufferedInputStream(modelsFileStream));
-                    var windowsInputStream=new ObjectInputStream(new BufferedInputStream(windowsFileStream));
-                    readProgramState(modelsInputStream,windowsInputStream);
-                } catch (IOException | ClassNotFoundException e) {
-                    initProgramState();
-                }
-            } catch (IOException e) {
+            try (var modelsInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(m_modelsPath.getFile().getPath())));
+                 var windowsInputStream = new ObjectInputStream(new BufferedInputStream(new FileInputStream(m_windowsPath.getFile().getPath())))) {
+                readProgramState(modelsInputStream, windowsInputStream);
+            } catch (IOException | ClassNotFoundException e) {
                 initProgramState();
             }
 
@@ -62,12 +57,11 @@ public class RobotsProgram {
             });
 
 
-
         });
     }
 
     private static void initProgramState() {
-        m_frame=new MainApplicationFrame();
+        m_frame = new MainApplicationFrame();
         m_locator = ModelAndControllerLocator.getDefault();
         InnerWindowStateContainer defaultWindowLayout = new InnerWindowStateContainer(0, 0, 200, 200);
         var updater = new RobotUpdateController(m_locator.getRobotModel());
@@ -77,38 +71,41 @@ public class RobotsProgram {
         frameConstructors.add(new PositionShowConstructor(defaultWindowLayout));
 
         m_frame = new MainApplicationFrame();
-        for (var constructor:frameConstructors) {
+        for (var constructor : frameConstructors) {
             m_frame.addWindow(constructor.construct(m_locator));
         }
 
 
     }
+
     private static void readProgramState(ObjectInputStream modelsReader, ObjectInputStream windowReader) throws IOException, ClassNotFoundException {
-        m_frame=new MainApplicationFrame();
-        m_locator=ModelAndControllerLocator.getFromConfig(modelsReader);
+        m_frame = new MainApplicationFrame();
+        m_locator = ModelAndControllerLocator.getFromConfig(modelsReader);
         var updater = new RobotUpdateController(m_locator.getRobotModel());
-        int windowsCount=(Integer)windowReader.readObject();
+        int windowsCount = (Integer) windowReader.readObject();
         for (int i = 0; i < windowsCount; i++) {
-            m_frame.addWindow(((WindowConstructor)windowReader.readObject()).construct(m_locator));
+            m_frame.addWindow(((WindowConstructor) windowReader.readObject()).construct(m_locator));
         }
 
     }
-    private static void writeProgramState(ObjectOutputStream modelsWriter,ObjectOutputStream windowsWriter) throws IOException {
+
+    private static void writeProgramState(ObjectOutputStream modelsWriter, ObjectOutputStream windowsWriter) throws IOException {
         m_locator.writeStateToConfig(modelsWriter);
-        JInternalFrame[] frames=m_frame.getInternalFrames();
-        int frameCount=0;
-        ArrayList<WindowConstructor> constructors=new ArrayList<>();
-        for (JInternalFrame frame:frames) {
-            if(frame instanceof SerializableFrame){
+        JInternalFrame[] frames = m_frame.getInternalFrames();
+        int frameCount = 0;
+        ArrayList<WindowConstructor> constructors = new ArrayList<>();
+        for (JInternalFrame frame : frames) {
+            if (frame instanceof SerializableFrame) {
                 frameCount++;
-                constructors.add(((SerializableFrame)frame).getFrameState());
+                constructors.add(((SerializableFrame) frame).getFrameState());
             }
         }
         windowsWriter.writeObject(frameCount);
-        for (var constructor:constructors) {
+        for (var constructor : constructors) {
             windowsWriter.writeObject(constructor);
         }
     }
+
     private static void onExit() throws FileNotFoundException {
 
         try (var modelsInputStream = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(m_modelsPath.getFile().getPath())));
@@ -121,8 +118,6 @@ public class RobotsProgram {
             throw new RuntimeException(e);
 
         }
-
-
 
 
     }
