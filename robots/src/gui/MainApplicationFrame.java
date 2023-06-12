@@ -23,12 +23,11 @@ public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     private final GameWindow gameWindow;
     private final LogWindow logWindow;
+
+    private final RobotsCoordView coordWindow;
     private final Properties cfg = new Properties();
     public MainApplicationFrame() {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
 
-        //
         File configFile = new File("robots/src/config.properties");
         try{
             FileInputStream configInp = new FileInputStream(configFile.getAbsolutePath());
@@ -49,8 +48,10 @@ public class MainApplicationFrame extends JFrame {
 
         logWindow = createLogWindow();
         gameWindow = createGameWindow();
+        coordWindow = createCoordWindow();
         addWindow(logWindow);
         addWindow(gameWindow);
+        addWindow(coordWindow);
         loadWindows();
 
         setJMenuBar(generateMenuBar());
@@ -82,12 +83,24 @@ public class MainApplicationFrame extends JFrame {
         return gameWindow;
     }
 
+    protected RobotsCoordView createCoordWindow(){
+        RobotsCoordView coordWindow = new RobotsCoordView(gameWindow);
+        coordWindow.setVisible(true);
+        coordWindow.setLocation(20, 20);
+        coordWindow.setSize(200,100);
+        setMinimumSize(coordWindow.getSize());
+        return coordWindow;
+    }
+
     private void saveWindows() {
         if (Boolean.parseBoolean(cfg.getProperty("isGameWindowSerializable"))) {
             gameWindow.save(cfg.getProperty("gameWindowOutPath"));
         }
         if (Boolean.parseBoolean(cfg.getProperty("isLogWindowSerializable"))) {
             logWindow.save(cfg.getProperty("logWindowOutPath"));
+        }
+        if (Boolean.parseBoolean(cfg.getProperty("isCoordWindowSerializable"))) {
+            coordWindow.save(cfg.getProperty("coordWindowOutPath"));
         }
     }
 
@@ -97,6 +110,9 @@ public class MainApplicationFrame extends JFrame {
         }
         if (Boolean.parseBoolean(cfg.getProperty("isLogWindowSerializable"))) {
             logWindow.load(cfg.getProperty("logWindowOutPath"));
+        }
+        if (Boolean.parseBoolean(cfg.getProperty("isCoordWindowSerializable"))) {
+            coordWindow.load(cfg.getProperty("coordWindowOutPath"));
         }
         this.invalidate();
     }

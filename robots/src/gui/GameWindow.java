@@ -8,6 +8,9 @@ import javax.swing.JPanel;
 
 public class GameWindow extends SerializationInternalFrame
 {
+    public GameVisualizer getM_visualizer() {
+        return m_visualizer;
+    }
     private final GameVisualizer m_visualizer;
     public GameWindow() 
     {
