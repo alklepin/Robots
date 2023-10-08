@@ -16,6 +16,7 @@ public class GameWindow extends JInternalFrame
         panel.add(this.gameView, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
+        setSize(400, 400);
     }
 
     public GameView getGameView() {

@@ -1,6 +1,8 @@
 package application.view.draw;
 
+import application.model.Bot;
 import application.model.Entity;
+import application.model.Food;
 
 import java.awt.*;
 
@@ -15,8 +17,4 @@ public abstract class Drawer
     {
         g.drawOval(centerX - diam1 / 2, centerY - diam2 / 2, diam1, diam2);
     }
-
-    public abstract void draw(Graphics2D g, Entity entity);
-
-    public abstract Class<?> getDrawingType();
 }

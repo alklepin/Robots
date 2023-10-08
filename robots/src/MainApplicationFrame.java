@@ -3,7 +3,7 @@ package application;
 import application.view.GameWindow;
 import application.log.LogWindow;
 import application.log.Logger;
-import application.viewModel.GameViewModel;
+import application.viewModel.ViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +14,7 @@ public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
 
-    public MainApplicationFrame(GameViewModel gameViewModel)
+    public MainApplicationFrame(ViewModel gameViewModel)
     {
 
         int inset = 50;
@@ -52,7 +52,7 @@ public class MainApplicationFrame extends JFrame
         frame.setVisible(true);
     }
 
-    private JMenu createMenu(String nameOfMenu, String description, int mnemonic)
+    private JMenu createMenu(String nameOfMenu, String description)
     {
         JMenu lookAndFeelMenu = new JMenu(nameOfMenu);
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
@@ -74,7 +74,7 @@ public class MainApplicationFrame extends JFrame
         JMenuBar menuBar = new JMenuBar();
 
         JMenu lookAndFeelMenu = createMenu("Режим отображения",
-                "Управление режимом отображения приложения", KeyEvent.VK_V);
+                "Управление режимом отображения приложения");
         JMenuItem systemLookAndFeel = createMenuItem("Системная схема", (event) -> {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             this.invalidate();
@@ -87,7 +87,7 @@ public class MainApplicationFrame extends JFrame
         });
         lookAndFeelMenu.add(crossplatformLookAndFeel);
 
-        JMenu testMenu = createMenu("Тесты", "Тестовые команды", KeyEvent.VK_S);
+        JMenu testMenu = createMenu("Тесты", "Тестовые команды");
 
         JMenuItem addLogMessageItem = createMenuItem("Сообщение в лог",
                 (event) -> Logger.debug("Новая строка"));
@@ -108,7 +108,7 @@ public class MainApplicationFrame extends JFrame
         catch (ClassNotFoundException | InstantiationException
                  | IllegalAccessException | UnsupportedLookAndFeelException e)
         {
-            // just ignore
+            // skip
         }
     }
 }

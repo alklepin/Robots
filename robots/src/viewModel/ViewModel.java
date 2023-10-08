@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
-public class GameViewModel
+public class ViewModel
 {
     private final GameModel gameModel;
     private final GameWindow gameWindow;
@@ -23,7 +23,7 @@ public class GameViewModel
         return new Timer("events generator", true);
     }
 
-    public GameViewModel(GameModel gameModel, GameWindow gameWindow)
+    public ViewModel(GameModel gameModel, GameWindow gameWindow)
     {
         this.gameModel = gameModel;
         this.gameWindow = gameWindow;
@@ -37,10 +37,10 @@ public class GameViewModel
             @Override
             public void run()
             {
-                gameModel.setDimension(gameWindow.getGameView().getSize());
+                gameModel.setDimension(gameWindow.getSize());
                 getGameView().updateView();
             }
-        }, 0, 50);
+        }, 0, 10);
 
         timer.schedule(new TimerTask()
         {
@@ -57,7 +57,7 @@ public class GameViewModel
             public void mouseClicked(MouseEvent e)
             {
                 System.out.println(e.getPoint());
-                gameModel.setTarget(e.getPoint());
+                gameModel.setFoodGoal(e.getPoint());
                 getGameView().repaint();
             }
         });

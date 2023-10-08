@@ -1,10 +1,9 @@
 package application;
 
-import com.formdev.flatlaf.FlatLightLaf;
 import application.view.GameView;
 import application.view.GameWindow;
 import application.model.GameModel;
-import application.viewModel.GameViewModel;
+import application.viewModel.ViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +12,6 @@ public class Main
 {
     public static void main(String[] args)
     {
-        FlatLightLaf.setup();
         try
         {
             UIManager.setLookAndFeel("com.formdev.flatlaf.FlatLightLaf");
@@ -25,7 +23,7 @@ public class Main
         GameModel gameModel = new GameModel();
         GameView gameView = new GameView(gameModel);
         GameWindow gameWindow = new GameWindow(gameView);
-        GameViewModel viewModel = new GameViewModel(gameModel, gameWindow);
+        ViewModel viewModel = new ViewModel(gameModel, gameWindow);
 
         SwingUtilities.invokeLater(() -> {
             MainApplicationFrame frame = new MainApplicationFrame(viewModel);

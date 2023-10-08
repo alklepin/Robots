@@ -1,23 +1,28 @@
 package application.model;
 
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class GameModel
 {
-    private List<Entity> entities;
+    private final List<Bot> bots;
     private final PropertyChangeSupport support;
-
-    private static final int MIN_BACTERIA_COUNT = 4;
+    private static final int BOT_COUNT = 5;
 
     public GameModel()
     {
+        this.bots = new ArrayList<>();
         this.support = new PropertyChangeSupport(this);
-        this.entities = initStateOfBacterias(20);
+
+        for (int i = 0; i < BOT_COUNT; i++)
+        {
+            Bot bot = new Bot(Math.random() * 400, Math.random() * 400);
+            bots.add(bot);
+            addPropertyChangeListener(bot);
+        }
 
         Timer timer = initTimer();
         timer.schedule(new TimerTask()
@@ -26,60 +31,62 @@ public class GameModel
             public void run()
             {
                 System.out.println("timer");
-                support.firePropertyChange("change satiety", null, -10);
+                support.firePropertyChange("change life time", null, -10);
+                if (Math.random() * 4 > 2.3)
+                    suddenBotClone();
             }
-        }, 0, 2400);
+        }, 0, 3000);
     }
 
     private static java.util.Timer initTimer()
     {
-        return new Timer("satiety generator", true);
+        return new Timer("events generator", true);
+    }
+
+    public void addPropertyChangeListener(PropertyChangeListener pcl) {
+        support.addPropertyChangeListener(pcl);
+    }
+
+    public void removePropertyChangeListener(PropertyChangeListener pcl) {
+        support.removePropertyChangeListener(pcl);
     }
 
     public void setDimension(Dimension dimension)
     {
-        support.firePropertyChange("set dimension", null, dimension);
+        for (Bot robot : bots)
+            robot.setDimension(dimension);
     }
 
     public Dimension getDimension()
     {
-        return ((Bacteria) entities.get(0)).getDimension();
+        return bots.get(0).getDimension();
     }
 
     public void updateModel()
     {
-        for (Entity entity : entities)
-        {
-            entity.update();
-            if (!entity.isAlive())
-                entity.onFinish(support);
-        }
-        entities.removeIf(entity -> !entity.isAlive());
-
-        if (entities.size() <= MIN_BACTERIA_COUNT)
-            this.entities = initStateOfBacterias(20);
+        for (Bot bot : bots)
+            bot.update();
     }
 
-    public List<Entity> getEntities()
+    private void suddenBotClone()
     {
-        return entities;
+        Random rand = new Random();
+        Bot bot = bots.get(rand.nextInt(bots.size()));
+        double x = bot.getPositionX();
+        double y = bot.getPositionY();
+        removePropertyChangeListener(bot);
+        bots.remove(bot);
+        for (int i = 0; i < 2; i++)
+            bots.add(new Bot(x, y));
     }
 
-    public void setTarget(Point point)
+    public List<Bot> getRobots()
+    {
+        return bots;
+    }
+
+    public void setFoodGoal(Point point)
     {
         support.firePropertyChange("new point", null, point);
-    }
-
-    public List<Entity> initStateOfBacterias(int amount)
-    {
-        List<Entity> entityList = new ArrayList<>();
-        for (int i = 0; i < amount; i++)
-        {
-            Bacteria bacteria = new Bacteria(Math.random() * 400, Math.random() * 400);
-            bacteria.setTarget(new Point((int) (Math.random() * 400), (int) (Math.random() * 400)));
-            bacteria.onStart(support);
-            entityList.add(bacteria);
-        }
-        return entityList;
     }
 }
