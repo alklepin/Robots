@@ -22,24 +22,16 @@ public class Bot implements Entity
     private static final int START_LIFETIME = 40;
     private static final int FULL_LIFETIME = 90;
 
-    public Bot(double startX, double startY)
+    public Bot(double startX, double startY, int lifeTime)
     {
         this.positionX = startX;
         this.positionY = startY;
         this.dimension = new Dimension(400, 400);
-        this.foodGoal = new Food((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height));
+        this.foodGoal = new Food();
         this.botDirection = Math.random() * 10;
-        this.lifeTime = (int) (START_LIFETIME + Math.random() * (FULL_LIFETIME - START_LIFETIME));
+        this.lifeTime = lifeTime;
         this.condition = Condition.randomCondition();
         this.isAlive = true;
-    }
-
-    public Bot()
-    {
-        this.positionX = 300;
-        this.positionY = 300;
-        this.foodGoal = new Food();
-        this.botDirection = 0;
     }
 
     public void setDimension(Dimension dimension)
@@ -47,7 +39,8 @@ public class Bot implements Entity
         this.dimension = dimension;
         if (!foodGoal.isPositionCorrect(dimension))
         {
-            foodGoal = new Food((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height));
+            foodGoal.setX((int) (Math.random() * dimension.width));
+            foodGoal.setY((int) (Math.random() * dimension.height));
         }
     }
 
@@ -147,6 +140,11 @@ public class Bot implements Entity
         return foodGoal;
     }
 
+    public int getLifeTime()
+    {
+        return lifeTime;
+    }
+
     public void changeLifeTime(int lifeTmeDif)
     {
         this.lifeTime += lifeTmeDif;
@@ -159,6 +157,10 @@ public class Bot implements Entity
             this.foodGoal.setFoodPosition(new Point(point.x / dimension.width, point.y / dimension.height));
         }
         this.foodGoal.setFoodPosition(point);
+    }
+
+    public void setFoodGoal(Food food){
+        this.foodGoal = food;
     }
 
     private void moveBot(double velocity, double angularVelocity, double duration)
@@ -244,8 +246,8 @@ public class Bot implements Entity
 
     private void foodGoalAchieved()
     {
-        this.setFoodGoal(new Point((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height)));
-        this.setFoodGoal(new Point((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height)));
+        //this.setFoodGoal(new Point((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height)));
+        this.foodGoal=new Food();
         this.lifeTime += 20;
         if (this.lifeTime > 50)
         {
