@@ -1,6 +1,7 @@
 package main.java.gui;
 
-import model.*;
+import main.java.model.Robot;
+import main.java.model.Target;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -14,15 +15,14 @@ import java.util.Observer;
 
 import javax.swing.JPanel;
 
-import static main.java.tools.DrawTools.*;
 import static main.java.tools.MathTools.*;
 
 
 public class GameVisualizer extends JPanel implements Observer {
-    private final RobotModel robotModel;
-    private final TargetModel targetModel;
+    private final Robot robotModel;
+    private final Target targetModel;
 
-    public GameVisualizer(RobotModel robotModel, TargetModel targetModel) {
+    public GameVisualizer(Robot robotModel, Target targetModel) {
         this.robotModel = robotModel;
         this.targetModel = targetModel;
         robotModel.addObserver(this);
@@ -43,7 +43,7 @@ public class GameVisualizer extends JPanel implements Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-        if (arg.equals(RobotModel.ROBOT_POSITION_CHANGED)) EventQueue.invokeLater(this::onRedrawEvent);
+        if (arg.equals(Robot.ROBOT_POSITION_CHANGED)) EventQueue.invokeLater(this::onRedrawEvent);
     }
 
 
@@ -59,7 +59,7 @@ public class GameVisualizer extends JPanel implements Observer {
         }
     }
 
-    private void drawTarget(Graphics2D g, TargetModel targetModel) {
+    private void drawTarget(Graphics2D g, Target targetModel) {
         int targetX = targetModel.getTargetX();
         int targetY = targetModel.getTargetY();
         AffineTransform t = new AffineTransform();
@@ -70,7 +70,7 @@ public class GameVisualizer extends JPanel implements Observer {
         drawOval(g, targetX, targetY, 5, 5);
     }
 
-    private void drawRobot(Graphics2D g, RobotModel robotModel) {
+    private void drawRobot(Graphics2D g, Robot robotModel) {
         int robotCenterX = round(robotModel.getM_robotPositionX());
         int robotCenterY = round(robotModel.getM_robotPositionY());
         AffineTransform t = AffineTransform.getRotateInstance(robotModel.getM_robotDirection(), robotCenterX, robotCenterY);

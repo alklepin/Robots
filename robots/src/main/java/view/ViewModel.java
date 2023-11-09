@@ -1,7 +1,8 @@
 package main.java.view;
 
 import main.java.gui.GameWindow;
-import model.Model;
+import main.java.model.Model;
+
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;

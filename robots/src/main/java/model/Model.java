@@ -1,4 +1,4 @@
-package model;
+package main.java.model;
 
 import java.awt.*;
 import java.beans.PropertyChangeSupport;
@@ -11,6 +11,12 @@ public class Model {
     private final List<Entity> entities;
     private final PropertyChangeSupport support;
 
+    public static final String NEW_POINT_EVENT = "new point";
+    public static final String CHANGE_SATIETY = "change satiety";
+    public static final String SATIETY_GENERATOR = "satiety generator";
+    public static final String SET_DIMENSION = "set dimension";
+
+
     public Model() {
         this.support = new PropertyChangeSupport(this);
         this.entities = initStateOfBacterias(2);
@@ -20,17 +26,17 @@ public class Model {
             @Override
             public void run() {
                 System.out.println("timer");
-                support.firePropertyChange("change satiety", null, -10);
+                support.firePropertyChange(CHANGE_SATIETY, null, -10);
             }
         }, 0, 1500);
     }
 
-    private static java.util.Timer initTimer() {
-        return new Timer("satiety generator", true);
+    private static Timer initTimer() {
+        return new Timer(SATIETY_GENERATOR, true);
     }
 
     public void setDimension(Dimension dimension) {
-        support.firePropertyChange("set dimension", null, dimension);
+        support.firePropertyChange(SET_DIMENSION, null, dimension);
     }
 
     public Dimension getDimension() {
@@ -48,16 +54,16 @@ public class Model {
     }
 
     public void setTarget(Point point) {
-        support.firePropertyChange("new point", null, point);
+        support.firePropertyChange(NEW_POINT_EVENT, null, point);
     }
 
     public List<Entity> initStateOfBacterias(int amount) {
         List<Entity> entityList = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < amount; i++) {
             Robot robot = new Robot(Math.random() * 400, Math.random() * 400);
-            robot.setTarget(new Point((int) (Math.random() * 400), (int) (Math.random() * 400)));
+            robot.setTargetPosition(new Point((int) (Math.random() * 400), (int) (Math.random() * 400)));
             robot.onStart(support);
-            entityList.add(robot);
+            entityList.add((Entity) robot);
         }
         return entityList;
     }

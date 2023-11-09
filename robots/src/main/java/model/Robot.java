@@ -1,10 +1,15 @@
-package model;
+package main.java.model;
+
+import main.java.gui.GameVisualizer;
+import model.TypeRobot;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 
 public class Robot implements Entity {
+    public static final Object ROBOT_POSITION_CHANGED = "robot position changed";
     private double positionX;
     private double positionY;
     private Target target;
@@ -15,9 +20,10 @@ public class Robot implements Entity {
     private static final int INITIAL_SATIETY = 50;
     private static final int MAX_SATIETY = 100;
     private int satiety;
-    private TypeRobot type;
+    private model.TypeRobot type;
     private boolean isAlive;
     private boolean isTargetAchieved;
+    private Point targetPosition;
 
     public Robot(double x, double y) {
         this.positionX = x;
@@ -27,7 +33,7 @@ public class Robot implements Entity {
         this.dimension = new Dimension(300, 300);
         this.satiety = (int) (INITIAL_SATIETY + Math.random() * (MAX_SATIETY - INITIAL_SATIETY));
         this.isAlive = true;
-        this.type= TypeRobot.randomType();
+        this.type= model.TypeRobot.randomType();
     }
 
     public Robot() {
@@ -38,19 +44,29 @@ public class Robot implements Entity {
     }
 
     private void setRandomType() {
-        this.type = TypeRobot.randomType();
+        this.type = model.TypeRobot.randomType();
     }
 
-    public void setType(TypeRobot type) {
+    public void setType(model.TypeRobot type) {
         this.type = type;
     }
-    public TypeRobot getType() {
+    public model.TypeRobot getType() {
         return type;
     }
 
     public int getSatiety() {
         return satiety;
     }
+
+//    public TypeRobot getType() {
+//        if (satiety >= MAX_SATIETY) {
+//            return TypeRobot.FAT;
+//        } else if (satiety >= MEDIUM_SATIETY) {
+//            return TypeRobot.NORMAL;
+//        } else {
+//            return TypeRobot.HUNGRY;
+//        }
+//    }
 
     public void changeSatiety(int satiety) {
         this.satiety += satiety;
@@ -169,27 +185,41 @@ public class Robot implements Entity {
 
     @Override
     public void update() {
+        updateRobotState();
+        if (needSkipUpdate()) {
+            return;
+        }
+        interactionWithEnvironment();
+        transformRobot();
+    }
+
+    private void updateRobotState() {
         if (!this.isAlive) {
             this.setType(TypeRobot.DEAD);
-
-            return;
         }
         if (this.satiety < 50) {
             if (this.satiety < 0) {
                 isAlive = false;
             }
             this.setType(TypeRobot.HUNGRY);
-
         }
+    }
+
+    private boolean needSkipUpdate() {
+        return !this.isAlive || this.isTargetAchieved;
+    }
+
+    private void interactionWithEnvironment() {
         double distance = distance(target.getX(), target.getY(),
                 getPositionX(), getPositionY());
         this.isTargetAchieved = false;
         if (distance < 0.5) {
             this.isTargetAchieved = true;
             this.onTargetAchieved();
-
-            return;
         }
+    }
+
+    private void transformRobot() {
         double angleToTarget = angleTo(getPositionX(), getPositionY(),
                 target.getX(), target.getY());
         double angularVelocity = 0;
@@ -201,7 +231,6 @@ public class Robot implements Entity {
         }
 
         moveRobot(Robot.maxVelocity, angularVelocity, 10);
-
     }
 
     @Override
@@ -218,7 +247,7 @@ public class Robot implements Entity {
         this.setTarget(new Point((int) (Math.random() * dimension.width), (int) (Math.random() * dimension.height)));
         this.satiety += 25;
         if (this.satiety > 50) {
-            this.setRandomType();
+            this.setType(TypeRobot.CALM);
         }
     }
 
@@ -230,5 +259,15 @@ public class Robot implements Entity {
             changeSatiety((int) evt.getNewValue());
         if (evt.getPropertyName().equals("set dimension"))
             setDimension((Dimension) evt.getNewValue());
+    }
+
+    public void setTargetPosition(Point targetPosition) {
+        this.targetPosition = targetPosition;
+    }
+
+    private final ArrayList<GameVisualizer> m_PositionWindowObservers = new ArrayList<GameVisualizer>();
+
+    public void addObserver(GameVisualizer observer) {
+        m_PositionWindowObservers.add(observer);
     }
 }

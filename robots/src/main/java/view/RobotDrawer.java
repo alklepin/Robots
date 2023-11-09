@@ -1,7 +1,5 @@
 package main.java.view;
-
-import model.Robot;
-import model.Entity;
+import main.java.model.Entity;
 import model.TypeRobot;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -10,7 +8,7 @@ public class RobotDrawer extends GameDrawer {
     @Override
     public void draw(Graphics2D g, Entity entity)
     {
-        Robot robot = (Robot) entity;
+        Robot robot = (Robot)entity;
         AffineTransform oldTransform = g.getTransform();
         int robotCenterX = (int) (Math.round(robot.getPositionX()));
         int robotCenterY = (int) (Math.round(robot.getPositionY()));

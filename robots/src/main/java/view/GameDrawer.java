@@ -1,6 +1,6 @@
 package main.java.view;
 
-import model.Entity;
+import main.java.model.Entity;
 
 import java.awt.*;
 

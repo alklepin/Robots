@@ -1,10 +1,13 @@
-package model;
+package main.java.model;
 
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeSupport;
 
-public class Target {
+public class Target implements Entity {
     private volatile int x;
     private volatile int y;
+    private Target target;
 
     public Target() {
         this.x = 100;
@@ -35,6 +38,7 @@ public class Target {
     public void setTargetPosition(Point p) {
         setX(p.x);
         setY(p.y);
+        this.target = new Target(p.x, p.y);
     }
 
 
@@ -43,4 +47,32 @@ public class Target {
         return this.x <= dimension.width && this.y <= dimension.height;
     }
 
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void onStart(PropertyChangeSupport publisher) {
+
+    }
+
+    @Override
+    public void onFinish(PropertyChangeSupport publisher) {
+
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+    }
+
+
+    public Target getTarget() {
+        return target;
+    }
+
+    public void setTarget(Target target) {
+        this.target = target;
+    }
 }
