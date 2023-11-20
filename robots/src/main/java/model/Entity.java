@@ -6,7 +6,7 @@ import java.beans.PropertyChangeSupport;
 public interface Entity extends PropertyChangeListener {
     void update();
 
-    void onStart(PropertyChangeSupport publisher);
+    default void onStart(PropertyChangeSupport var1) {
 
-    void onFinish(PropertyChangeSupport publisher);
+    }
 }

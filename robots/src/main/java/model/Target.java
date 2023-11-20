@@ -1,13 +1,13 @@
 package main.java.model;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeSupport;
 
 public class Target implements Entity {
     private volatile int x;
     private volatile int y;
-    private Target target;
 
     public Target() {
         this.x = 100;
@@ -28,51 +28,29 @@ public class Target implements Entity {
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public void setTargetPosition(Point p) {
-        setX(p.x);
-        setY(p.y);
-        this.target = new Target(p.x, p.y);
+        this.setX(p.x);
+        this.setY(p.y);
     }
-
-
 
     public boolean isPositionCorrect(Dimension dimension) {
         return this.x <= dimension.width && this.y <= dimension.height;
     }
 
-    @Override
     public void update() {
-
     }
 
-    @Override
     public void onStart(PropertyChangeSupport publisher) {
-
+        publisher.addPropertyChangeListener(this);
     }
 
-    @Override
-    public void onFinish(PropertyChangeSupport publisher) {
-
-    }
-
-    @Override
     public void propertyChange(PropertyChangeEvent evt) {
-
-    }
-
-
-    public Target getTarget() {
-        return target;
-    }
-
-    public void setTarget(Target target) {
-        this.target = target;
     }
 }

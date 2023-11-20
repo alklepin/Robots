@@ -1,6 +1,6 @@
-package model;
+package main.java.model;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.List;
 import java.util.Random;
 
@@ -8,38 +8,20 @@ public enum TypeRobot {
     CALM(Color.GREEN),
     HUNGRY(Color.RED),
     DEAD(Color.BLACK);
+
     private final Color color;
     private static final Random RANDOM = new Random();
-    private static final List<TypeRobot> values = List.of(values());
-
-    public static final int FAT = 0;
-    public static final int NORMAL = 1;
-    public static final int HUNG = 2;
-
-    public static final int MAX_SATIETY = 100;
-    public static final int MEDIUM_SATIETY = 50;
-
+    private static final List<TypeRobot> VALUES = List.of(values());
 
     public static TypeRobot randomType() {
-        return TypeRobot.values()[(int) (Math.random() * TypeRobot.values().length)];
+        return (TypeRobot)VALUES.get(RANDOM.nextInt(values().length - 2));
     }
 
-    public static int getTypeBySatiety(int satiety) {
-        if (satiety >= TypeRobot.MAX_SATIETY) {
-            return TypeRobot.FAT;
-        } else if (satiety >= TypeRobot.MEDIUM_SATIETY) {
-            return TypeRobot.NORMAL;
-        } else {
-            return TypeRobot.HUNG;
-        }
-    }
-
-    TypeRobot(Color color) {
+    private TypeRobot(Color color) {
         this.color = color;
     }
 
-
     public Color getColor() {
-        return color;
+        return this.color;
     }
 }

@@ -1,23 +1,25 @@
 package main.java.view;
-import main.java.model.Entity;
-import model.TypeRobot;
-import java.awt.*;
+
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
+import main.java.model.Entity;
+import main.java.model.Robot;
+import main.java.model.TypeRobot;
 
 public class RobotDrawer extends GameDrawer {
-    @Override
-    public void draw(Graphics2D g, Entity entity)
-    {
+    public RobotDrawer() {
+    }
+
+    public void draw(Graphics2D g, Entity entity) {
         Robot robot = (Robot)entity;
         AffineTransform oldTransform = g.getTransform();
-        int robotCenterX = (int) (Math.round(robot.getPositionX()));
-        int robotCenterY = (int) (Math.round(robot.getPositionY()));
+        int robotCenterX = (int)Math.round(robot.getPositionX());
+        int robotCenterY = (int)Math.round(robot.getPositionY());
         AffineTransform l = new AffineTransform(oldTransform);
-        AffineTransform t = AffineTransform.getRotateInstance(robot.getRobotDirection(), robotCenterX, robotCenterY);
+        AffineTransform t = AffineTransform.getRotateInstance(robot.getRobotDirection(), (double)robotCenterX, (double)robotCenterY);
         l.concatenate(t);
-
         g.setTransform(l);
-
         g.setColor(robot.getType().getColor());
         if (robot.getType().equals(TypeRobot.HUNGRY)) {
             fillOval(g, robotCenterX, robotCenterY, 20, 10);
@@ -46,7 +48,6 @@ public class RobotDrawer extends GameDrawer {
         g.setTransform(oldTransform);
     }
 
-    @Override
     public Class<?> getDrawingType() {
         return Robot.class;
     }

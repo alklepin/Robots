@@ -1,23 +1,19 @@
 package main.java.log;
 
-public class LogEntry
-{
-    private LogLevel m_logLevel;
-    private String m_strMessage;
+public class LogEntry {
+    private LogLevel mLogLevel;
+    private String mStrMessage;
 
-    public LogEntry(LogLevel logLevel, String strMessage)
-    {
-        m_strMessage = strMessage;
-        m_logLevel = logLevel;
+    public LogEntry(LogLevel logLevel, String strMessage) {
+        this.mStrMessage = strMessage;
+        this.mLogLevel = logLevel;
     }
 
-    public String getMessage()
-    {
-        return m_strMessage;
+    public String getMessage() {
+        return this.mStrMessage;
     }
 
-    public LogLevel getLevel()
-    {
-        return m_logLevel;
+    public LogLevel getLevel() {
+        return this.mLogLevel;
     }
 }

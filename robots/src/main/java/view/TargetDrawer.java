@@ -1,19 +1,25 @@
 package main.java.view;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import main.java.model.Entity;
 import main.java.model.Target;
 
-import java.awt.*;
-
 public class TargetDrawer extends GameDrawer {
-    public void draw(Graphics2D g, Entity entity) {
-        Target target = ((Target) entity).getTarget();
-        g.setColor(Color.GREEN);
-        fillOval(g, target.getX(), target.getY(), 5, 5);
-        g.setColor(Color.BLACK);
-        drawOval(g, target.getX(), target.getY(), 5, 5);
+    public TargetDrawer() {
     }
-    @Override
+
+    public void draw(Graphics2D g, Entity entity) {
+        Target target = (Target)entity;
+        if (target != null) {
+            g.setColor(Color.GREEN);
+            fillOval(g, target.getX(), target.getY(), 5, 5);
+            g.setColor(Color.BLACK);
+            drawOval(g, target.getX(), target.getY(), 5, 5);
+        }
+
+    }
+
     public Class<?> getDrawingType() {
         return Target.class;
     }
