@@ -27,9 +27,7 @@ public class MainApplicationFrame extends JFrame {
     //of the screen.
     int inset = 50;
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    setBounds(inset, inset,
-        screenSize.width - inset * 2,
-        screenSize.height - inset * 2);
+    setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
 
     setContentPane(desktopPane);
 
@@ -60,66 +58,83 @@ public class MainApplicationFrame extends JFrame {
   }
 
   private JMenuBar generateMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
-
-    JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-    lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-    lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-        "Управление режимом отображения приложения");
-
-    {
-      JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-      systemLookAndFeel.addActionListener((event) -> {
-        setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        this.invalidate();
-      });
-      lookAndFeelMenu.add(systemLookAndFeel);
-    }
-
-    {
-      JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-      crossplatformLookAndFeel.addActionListener((event) -> {
-        setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        this.invalidate();
-      });
-      lookAndFeelMenu.add(crossplatformLookAndFeel);
-    }
-
-    JMenu testMenu = new JMenu("Тесты");
-    testMenu.setMnemonic(KeyEvent.VK_T);
-    testMenu.getAccessibleContext().setAccessibleDescription(
-        "Тестовые команды");
-
-    {
-      JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-      addLogMessageItem.addActionListener((event) -> {
-        Logger.debug("Новая строка");
-      });
-      testMenu.add(addLogMessageItem);
-    }
-
-    JMenuItem closeMenuItem = new JMenuItem("Закрыть", KeyEvent.VK_C);
-    closeMenuItem.getAccessibleContext().setAccessibleDescription(
-        "Закрыть приложение");
-
-    closeMenuItem.addActionListener((event) -> {
-      MainApplicationFrame.this.setVisible(false);
-      MainApplicationFrame.this.dispose();
-    });
-
-    menuBar.add(lookAndFeelMenu);
-    menuBar.add(testMenu);
-    menuBar.add(closeMenuItem);
-    return menuBar;
+    return new MainMenuBar();
   }
 
   private void setLookAndFeel(String className) {
     try {
       UIManager.setLookAndFeel(className);
       SwingUtilities.updateComponentTreeUI(this);
-    } catch (ClassNotFoundException | InstantiationException
-             | IllegalAccessException | UnsupportedLookAndFeelException e) {
+    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+             UnsupportedLookAndFeelException e) {
       // just ignore
+    }
+  }
+
+  public class MainMenuBar extends JMenuBar {
+
+    public MainMenuBar() {
+      super();
+
+      this.add(getLookAndFeelMenu());
+      this.add(getTestMenu());
+      this.add(getCloseMenuItem());
+    }
+
+    private JMenu getLookAndFeelMenu() {
+      JMenu lookAndFeelMenu = new JMenu("Режим отображения");
+      lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
+      lookAndFeelMenu.getAccessibleContext()
+          .setAccessibleDescription("Управление режимом отображения приложения");
+
+      {
+        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+        systemLookAndFeel.addActionListener((event) -> {
+          MainApplicationFrame.this.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+          this.invalidate();
+        });
+        lookAndFeelMenu.add(systemLookAndFeel);
+      }
+
+      {
+        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
+        crossplatformLookAndFeel.addActionListener((event) -> {
+          MainApplicationFrame.this.setLookAndFeel(
+              UIManager.getCrossPlatformLookAndFeelClassName());
+          this.invalidate();
+        });
+        lookAndFeelMenu.add(crossplatformLookAndFeel);
+      }
+
+      return lookAndFeelMenu;
+    }
+
+    private JMenu getTestMenu() {
+      JMenu testMenu = new JMenu("Тесты");
+      testMenu.setMnemonic(KeyEvent.VK_T);
+      testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
+
+      {
+        JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
+        addLogMessageItem.addActionListener((event) -> {
+          Logger.debug("Новая строка");
+        });
+        testMenu.add(addLogMessageItem);
+      }
+
+      return testMenu;
+    }
+
+    private JMenuItem getCloseMenuItem() {
+      JMenuItem closeMenuItem = new JMenuItem("Закрыть", KeyEvent.VK_C);
+      closeMenuItem.getAccessibleContext().setAccessibleDescription("Закрыть приложение");
+
+      closeMenuItem.addActionListener((event) -> {
+        MainApplicationFrame.this.setVisible(false);
+        MainApplicationFrame.this.dispose();
+      });
+
+      return closeMenuItem;
     }
   }
 }
