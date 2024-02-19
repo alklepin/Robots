@@ -127,8 +127,18 @@ public class MainApplicationFrame extends JFrame {
       testMenu.add(addLogMessageItem);
     }
 
+    JMenuItem closeMenuItem = new JMenuItem("Закрыть", KeyEvent.VK_C);
+    closeMenuItem.getAccessibleContext().setAccessibleDescription(
+        "Закрыть приложение");
+
+    closeMenuItem.addActionListener((event) -> {
+      MainApplicationFrame.this.setVisible(false);
+      MainApplicationFrame.this.dispose();
+    });
+
     menuBar.add(lookAndFeelMenu);
     menuBar.add(testMenu);
+    menuBar.add(closeMenuItem);
     return menuBar;
   }
 
