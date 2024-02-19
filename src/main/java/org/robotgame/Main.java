@@ -1,6 +1,6 @@
-package org.example;
+package org.robotgame;
 
-import org.example.gui.MainApplicationFrame;
+import org.robotgame.gui.MainApplicationFrame;
 
 import javax.swing.*;
 import java.awt.*;

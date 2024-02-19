@@ -1,4 +1,4 @@
-package org.example.log;
+package org.robotgame.log;
 
 public class LogEntry
 {

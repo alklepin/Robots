@@ -1,4 +1,4 @@
-package org.example.gui;
+package org.robotgame.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -14,7 +14,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import org.example.log.Logger;
+import org.robotgame.log.Logger;
 
 /**
  * Что требуется сделать:

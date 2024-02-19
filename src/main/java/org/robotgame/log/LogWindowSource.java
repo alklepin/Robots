@@ -1,7 +1,8 @@
-package org.example.log;
+package org.robotgame.log;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
 
 /**
  * Что починить:
@@ -16,7 +17,7 @@ public class LogWindowSource
 {
     private int m_iQueueLength;
     
-    private ArrayList<LogEntry> m_messages;
+    private ArrayList<org.robotgame.log.LogEntry> m_messages;
     private final ArrayList<LogChangeListener> m_listeners;
     private volatile LogChangeListener[] m_activeListeners;
     

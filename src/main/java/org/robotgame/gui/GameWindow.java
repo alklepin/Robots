@@ -1,4 +1,4 @@
-package org.example.gui;
+package org.robotgame.gui;
 
 import java.awt.BorderLayout;
 
