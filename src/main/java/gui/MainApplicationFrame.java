@@ -3,12 +3,15 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -39,7 +42,14 @@ public class MainApplicationFrame extends JFrame {
     addWindow(gameWindow);
 
     setJMenuBar(generateMenuBar());
-    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+
+    addWindowListener(new WindowAdapter() {
+      @Override
+      public void windowClosing(WindowEvent e) {
+        MainApplicationFrame.this.callCloseDialog();
+      }
+    });
   }
 
   protected LogWindow createLogWindow() {
@@ -68,6 +78,16 @@ public class MainApplicationFrame extends JFrame {
     } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
              UnsupportedLookAndFeelException e) {
       // just ignore
+    }
+  }
+
+
+  private void callCloseDialog() {
+    int confirm = JOptionPane.showConfirmDialog(this, "Закрыть приложение?", "Закрыть", JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+      this.setVisible(false);
+      this.dispose();
     }
   }
 
@@ -130,8 +150,7 @@ public class MainApplicationFrame extends JFrame {
       closeMenuItem.getAccessibleContext().setAccessibleDescription("Закрыть приложение");
 
       closeMenuItem.addActionListener((event) -> {
-        MainApplicationFrame.this.setVisible(false);
-        MainApplicationFrame.this.dispose();
+        MainApplicationFrame.this.callCloseDialog();
       });
 
       return closeMenuItem;
