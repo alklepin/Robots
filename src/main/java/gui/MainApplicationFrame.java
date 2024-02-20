@@ -42,8 +42,8 @@ public class MainApplicationFrame extends JFrame {
     addWindow(gameWindow);
 
     setJMenuBar(generateMenuBar());
-    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 
+    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
     addWindowListener(new WindowAdapter() {
       @Override
       public void windowClosing(WindowEvent e) {
@@ -83,7 +83,8 @@ public class MainApplicationFrame extends JFrame {
 
 
   private void callCloseDialog() {
-    int confirm = JOptionPane.showConfirmDialog(this, "Закрыть приложение?", "Закрыть", JOptionPane.YES_NO_OPTION);
+    int confirm = JOptionPane.showConfirmDialog(this, "Закрыть приложение?", "Закрыть",
+        JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
       this.setVisible(false);
@@ -101,32 +102,48 @@ public class MainApplicationFrame extends JFrame {
       this.add(getCloseMenuItem());
     }
 
+    private static JMenuItem getAddLogMessageMenuItem() {
+      JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
+
+      addLogMessageItem.addActionListener((event) -> {
+        Logger.debug("Новая строка");
+      });
+
+      return addLogMessageItem;
+    }
+
     private JMenu getLookAndFeelMenu() {
       JMenu lookAndFeelMenu = new JMenu("Режим отображения");
       lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
       lookAndFeelMenu.getAccessibleContext()
           .setAccessibleDescription("Управление режимом отображения приложения");
 
-      {
-        JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
-          MainApplicationFrame.this.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-          this.invalidate();
-        });
-        lookAndFeelMenu.add(systemLookAndFeel);
-      }
-
-      {
-        JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-        crossplatformLookAndFeel.addActionListener((event) -> {
-          MainApplicationFrame.this.setLookAndFeel(
-              UIManager.getCrossPlatformLookAndFeelClassName());
-          this.invalidate();
-        });
-        lookAndFeelMenu.add(crossplatformLookAndFeel);
-      }
+      lookAndFeelMenu.add(getSystemLookAndFeelMenuItem());
+      lookAndFeelMenu.add(getCrossPlatformLookAndFeel());
 
       return lookAndFeelMenu;
+    }
+
+    private JMenuItem getCrossPlatformLookAndFeel() {
+      JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
+
+      crossplatformLookAndFeel.addActionListener((event) -> {
+        MainApplicationFrame.this.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        this.invalidate();
+      });
+
+      return crossplatformLookAndFeel;
+    }
+
+    private JMenuItem getSystemLookAndFeelMenuItem() {
+      JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
+
+      systemLookAndFeel.addActionListener((event) -> {
+        MainApplicationFrame.this.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        this.invalidate();
+      });
+
+      return systemLookAndFeel;
     }
 
     private JMenu getTestMenu() {
@@ -134,13 +151,7 @@ public class MainApplicationFrame extends JFrame {
       testMenu.setMnemonic(KeyEvent.VK_T);
       testMenu.getAccessibleContext().setAccessibleDescription("Тестовые команды");
 
-      {
-        JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> {
-          Logger.debug("Новая строка");
-        });
-        testMenu.add(addLogMessageItem);
-      }
+      testMenu.add(getAddLogMessageMenuItem());
 
       return testMenu;
     }
