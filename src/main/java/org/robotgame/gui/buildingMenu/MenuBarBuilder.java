@@ -41,7 +41,7 @@ public class MenuBarBuilder {
         return lookAndFeelMenu;
     }
 
-    private static JMenu buildTestMenu(JMenuBar menuBar) { // принимаем menuBar в качестве параметра
+    private static JMenu buildTestMenu(JMenuBar menuBar) {
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription(

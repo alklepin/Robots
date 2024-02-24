@@ -41,7 +41,6 @@ public class GameVisualizer extends JPanel {
             }
         });
 
-        // Добавляем слушатель клавиатуры
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -76,15 +75,12 @@ public class GameVisualizer extends JPanel {
             }
 
 
-            // Другие методы KeyListener
             @Override
             public void keyReleased(KeyEvent e) {
-                // Не используется
             }
 
             @Override
             public void keyTyped(KeyEvent e) {
-                // Не используется
             }
         });
 
@@ -109,7 +105,6 @@ public class GameVisualizer extends JPanel {
     protected void onModelUpdateEvent() {
         double distance = distance(m_targetPositionX, m_targetPositionY, m_robotPositionX, m_robotPositionY);
 
-        // Проверяем, находится ли робот достаточно близко к текущей цели
         if (distance < 0.5) {
             return;
         }
@@ -117,7 +112,6 @@ public class GameVisualizer extends JPanel {
         double angleToTarget = asNormalizedRadians(angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY));
         moveRobot(maxVelocity, angleToTarget, 10);
 
-        // Ограничиваем положение объектов в пределах игрового поля
         m_robotPositionX = (int) applyLimits(m_robotPositionX, 0, getWidth());
         m_robotPositionY = (int) applyLimits(m_robotPositionY, 0, getHeight());
 
@@ -161,11 +155,9 @@ public class GameVisualizer extends JPanel {
         int deltaX = (int) Math.round(velocity * Math.cos(angleToTarget) * duration);
         int deltaY = (int) Math.round(velocity * Math.sin(angleToTarget) * duration);
 
-        // Обновляем положение робота
         m_robotPositionX += deltaX;
         m_robotPositionY += deltaY;
 
-        // Обновляем направление робота
         m_robotDirection = angleToTarget;
     }
 
@@ -188,7 +180,7 @@ public class GameVisualizer extends JPanel {
         int robotCenterX = x;
         int robotCenterY = y;
 
-        int noseLength = 8; // смещение носика
+        int noseLength = 8; // Смещение носика
         int noseX = robotCenterX + (int) (noseLength * Math.cos(direction));
         int noseY = robotCenterY + (int) (noseLength * Math.sin(direction));
 
