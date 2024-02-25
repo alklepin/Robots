@@ -3,7 +3,11 @@ package gui;
 import log.Logger;
 
 import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 public class MenuBar {
     static MainApplicationFrame mainFrame; // Используем вместо this, т.к. this имеет ввиду MainApplicationFrame объект
@@ -16,8 +20,35 @@ public class MenuBar {
 
         menuBar.add(createLookAndFeelMenu());
         menuBar.add(createTestMenu());
+        //menuBar.add(createSettingMenu());
+        menuBar.add(createExitButton());
         return menuBar;
     }
+
+//    private static JMenu createSettingMenu() {
+//        ResourceBundle rb = ResourceBundle.getBundle("Language", Locale.getDefault());
+//        JMenu settingMenu = new JMenu("Настройки");
+//        JMenu settingLanguage = new JMenu(rb.getString("Language"));
+//        Locale ru = new Locale("ru", "RU");
+//        Locale en = new Locale("en", "US");
+//
+//        {
+//            JMenuItem english = new JMenuItem("Английский", KeyEvent.VK_S);
+//            english.addActionListener((event) -> {
+//                Locale.setDefault(new Locale("en", "US"));
+//            });
+//            settingLanguage.add(english);
+//        }
+//
+//        {
+//            JMenuItem russian = new JMenuItem("Русский");
+//
+//            settingLanguage.add(russian);
+//        }
+//
+//        settingMenu.add(settingLanguage);
+//        return settingMenu;
+//    }
 
     private static JMenu createLookAndFeelMenu() {
 
@@ -62,6 +93,21 @@ public class MenuBar {
             testMenu.add(addLogMessageItem);
         }
         return testMenu;
+    }
+
+    private static JMenu createExitButton() {
+        JMenu menu = new JMenu("Выйти");
+        menu.setMnemonic(KeyEvent.VK_T);//KeyEvent.VK_T
+
+        {
+            JMenuItem exit1 = new JMenuItem("Выйти", KeyEvent.VK_S);
+            exit1.setFocusable(false);
+            exit1.addActionListener((event) -> {
+                System.exit(0);
+            });
+            menu.add(exit1);
+        }
+        return menu;
     }
 
     private static void setLookAndFeel(String className) {

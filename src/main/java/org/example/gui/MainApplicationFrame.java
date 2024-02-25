@@ -1,11 +1,9 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.*;
 
 
 import log.Logger;
@@ -41,6 +39,7 @@ public class MainApplicationFrame extends JFrame  //
         GameWindow gameWindow = new GameWindow();
         gameWindow.setSize(400,  400);
         addWindow(gameWindow);
+
         MenuBar menuBar = new MenuBar(this);
         setJMenuBar(menuBar.generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
