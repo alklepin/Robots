@@ -3,16 +3,10 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import log.Logger;
 
@@ -25,7 +19,7 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
@@ -46,7 +40,14 @@ public class MainApplicationFrame extends JFrame
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        WindowAdapter listener = new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitOperation();
+            }
+        };
+        addWindowListener(listener);
     }
     
     protected LogWindow createLogWindow()
@@ -64,6 +65,16 @@ public class MainApplicationFrame extends JFrame
     {
         desktopPane.add(frame);
         frame.setVisible(true);
+    }
+
+    protected void exitOperation(){
+        String[] options = {"Да", "Нет"};
+        int option = JOptionPane.showOptionDialog(this, "Вы действительно хотите выйти?",
+                "Выход", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
+                null, options, null);
+        if (option == JOptionPane.YES_OPTION){
+            setDefaultCloseOperation(EXIT_ON_CLOSE);
+        }
     }
     
 //    protected JMenuBar createMenuBar() {
@@ -135,8 +146,23 @@ public class MainApplicationFrame extends JFrame
             testMenu.add(addLogMessageItem);
         }
 
+        JMenu appMenu = new JMenu("Приложение");
+        appMenu.setMnemonic(KeyEvent.VK_T);
+        appMenu.getAccessibleContext().setAccessibleDescription(
+                "Команды приложению");
+
+        {
+            JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_S);
+            exitItem.addActionListener((event) -> {
+                Logger.debug("exit trigger");
+                exitOperation();
+            });
+            appMenu.add(exitItem);
+        }
+
         menuBar.add(lookAndFeelMenu);
         menuBar.add(testMenu);
+        menuBar.add(appMenu);
         return menuBar;
     }
     
