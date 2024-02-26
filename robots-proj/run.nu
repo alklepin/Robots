@@ -1,0 +1,1 @@
+java -cp target\robots-proj-0.jar robots.gui.RobotsProgram
