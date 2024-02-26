@@ -1,11 +1,13 @@
-package gui;
+package org.robots;
+
+import org.robots.gui.MainApplicationFrame;
 
 import java.awt.Frame;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-public class RobotsProgram
+public class Main
 {
     public static void main(String[] args) {
       try {
