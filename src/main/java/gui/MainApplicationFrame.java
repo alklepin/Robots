@@ -71,7 +71,7 @@ public class MainApplicationFrame extends JFrame
      * Exit operation handler
      * Asks user if he really wants to quit the application
      */
-    protected void exitOperation(){
+    private void exitOperation(){
         String[] options = {"Да", "Нет"};
         int option = JOptionPane.showOptionDialog(this, "Вы действительно хотите выйти?",
                 "Выход", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
