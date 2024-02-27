@@ -159,7 +159,7 @@ public class MainApplicationFrame extends JFrame
             JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_S);
             exitItem.addActionListener((event) -> {
                 Logger.debug("exit trigger");
-                exitOperation();
+                dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             });
             appMenu.add(exitItem);
         }
