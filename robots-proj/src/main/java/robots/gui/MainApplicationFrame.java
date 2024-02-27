@@ -5,7 +5,6 @@ import java.awt.Toolkit;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
@@ -122,8 +121,10 @@ public class MainApplicationFrame extends JFrame {
         button.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.SHIFT_DOWN_MASK));
 
         button.addActionListener((event) -> {
-            int sure = JOptionPane.showConfirmDialog(this, "Вы уверены?", "Закрыть приложение? ",
-                    JOptionPane.YES_NO_OPTION);
+            String[] options = {"Да", "Нет"};
+            int sure = JOptionPane.showOptionDialog(this, "Вы уверены?", "Закрыть приложение? ",
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
+                    options[1]);
             if (JOptionPane.YES_OPTION == sure) {
                 WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
                 Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
