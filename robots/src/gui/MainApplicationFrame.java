@@ -2,12 +2,11 @@ package gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowAdapter;
+import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
-import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -21,6 +20,7 @@ import log.Logger;
  */
 public class MainApplicationFrame extends JFrame
 {
+    private final ResourceBundle bundle = ResourceBundle.getBundle("resources", Locale.getDefault());
     private final JDesktopPane desktopPane = new JDesktopPane();
     
     public MainApplicationFrame() {
@@ -38,8 +38,7 @@ public class MainApplicationFrame extends JFrame
         LogWindow logWindow = createLogWindow();
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        GameWindow gameWindow = new GameWindow(bundle.getString("gameWindow.title"));
         addWindow(gameWindow);
 
         setJMenuBar(new MenuGenerator(this));
@@ -48,12 +47,12 @@ public class MainApplicationFrame extends JFrame
     
     protected LogWindow createLogWindow()
     {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
+        LogWindow logWindow = new LogWindow(bundle.getString("logWindow.title"), Logger.getDefaultLogSource());
         logWindow.setLocation(10,10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug(bundle.getString("Logger.debug.strMessage.status"));
         return logWindow;
     }
     
