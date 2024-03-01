@@ -3,7 +3,6 @@ package gui;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.util.Locale;
 import java.awt.event.WindowAdapter;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
@@ -44,16 +43,7 @@ public class MainApplicationFrame extends JFrame
         addWindow(gameWindow);
 
         setJMenuBar(new MenuGenerator(this));
-        addWindowListener(new WindowAdapter() {
-            public void windowClosed(WindowEvent we){
-                int option = JOptionPane.showConfirmDialog(null, "Подтверждение выхода", "Выход", JOptionPane.YES_NO_OPTION);
-                if (option == JOptionPane.YES_OPTION) {
-                    setDefaultCloseOperation(EXIT_ON_CLOSE);
-                } else {
-                    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-                }
-            }
-        });
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
     
     protected LogWindow createLogWindow()

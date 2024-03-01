@@ -7,6 +7,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import log.Logger;
@@ -58,9 +59,13 @@ public class MenuGenerator extends JMenuBar{
         exitMenu.setMnemonic(KeyEvent.VK_X);
         JMenuItem exitItem = new JMenuItem("Закрыть программу", KeyEvent.VK_X);
         exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.SHIFT_DOWN_MASK));
+
         exitItem.addActionListener((event) -> {
-            WindowEvent eventExit  = new WindowEvent(applicationFrame, WindowEvent.WINDOW_CLOSING);
-            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(eventExit);
+                int option = JOptionPane.showConfirmDialog(null, "Подтверждение выхода", "Выход", JOptionPane.YES_NO_OPTION);
+                if (option == JOptionPane.YES_OPTION) {
+                    WindowEvent eventExit  = new WindowEvent(applicationFrame, WindowEvent.WINDOW_CLOSING);
+                    Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(eventExit);
+                }
         });
         exitMenu.add(exitItem);
         return exitMenu;
