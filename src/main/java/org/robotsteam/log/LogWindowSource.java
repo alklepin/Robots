@@ -1,4 +1,4 @@
-package log;
+package org.robotsteam.log;
 
 import java.util.ArrayList;
 import java.util.Collections;

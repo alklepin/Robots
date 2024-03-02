@@ -1,4 +1,4 @@
-package log;
+package org.robotsteam.log;
 
 public enum LogLevel
 {
