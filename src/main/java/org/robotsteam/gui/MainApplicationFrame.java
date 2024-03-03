@@ -1,11 +1,10 @@
 package org.robotsteam.gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.*;
 
 import org.robotsteam.log.Logger;
 
@@ -27,7 +26,20 @@ public class MainApplicationFrame extends JFrame {
         addWindow(initGameWindow());
 
         setJMenuBar(new MenuBar(this));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                MainApplicationFrame.this.confirmWindowClose();
+            }
+        });
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    }
+
+    public void confirmWindowClose() {
+        if (JOptionPane.showConfirmDialog(this,
+                "Вы действительно хотите закрыть приложение?", "Закрыть?",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE
+        ) == JOptionPane.YES_OPTION) { System.exit(0); }
     }
 
     protected LogWindow initLogWindow() {

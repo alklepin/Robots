@@ -3,17 +3,17 @@ package org.robotsteam.gui;
 import org.robotsteam.log.Logger;
 
 import javax.swing.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 
 public class MenuBar extends JMenuBar {
-    private final JFrame parent;
+    private final MainApplicationFrame parent;
 
-    public MenuBar(JFrame parent) {
+    public MenuBar(MainApplicationFrame parent) {
         this.parent = parent;
 
         this.add(initTestMenu());
         this.add(initLookAndFeelMenu());
+        this.add(initExitMenu());
     }
 
     private JMenu initTestMenu() {
@@ -47,6 +47,19 @@ public class MenuBar extends JMenuBar {
         ));
 
         return menu;
+    }
+
+    private JMenu initExitMenu() {
+        JMenu menu = createJMenu(
+                "Выход", KeyEvent.VK_E,
+                "Выход из приложения"
+        );
+        menu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                parent.confirmWindowClose();
+            }
+        }); return menu;
     }
 
     private JMenu createJMenu(String label, int mnemonic, String accessDesc) {
