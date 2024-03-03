@@ -6,7 +6,7 @@ import java.awt.TextArea;
 
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-
+import robots.data.DataContainer;
 import robots.log.LogChangeListener;
 import robots.log.LogEntry;
 import robots.log.LogWindowSource;
@@ -14,9 +14,12 @@ import robots.log.LogWindowSource;
 public class LogWindow extends JInternalFrame implements LogChangeListener {
     private LogWindowSource m_logSource;
     private TextArea m_logContent;
+    static private final DataContainer DC = DataContainer.getInstance();
+
 
     public LogWindow(LogWindowSource logSource) {
-        super("Протокол работы", true, true, true, true);
+        super(DC.getContentNoException("logger/title"), // "Протокол работы"
+                true, true, true, true);
         m_logSource = logSource;
         m_logSource.registerListener(this);
         m_logContent = new TextArea("");

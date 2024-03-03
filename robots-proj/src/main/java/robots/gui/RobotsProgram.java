@@ -6,7 +6,6 @@ import javax.swing.UIManager;
 
 public class RobotsProgram {
     public static void main(String[] args) {
-        //Locale.setDefault(Locale.JAPAN); //(new Locale("ru", "RU"));
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
             // UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
