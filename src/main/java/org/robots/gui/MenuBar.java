@@ -1,6 +1,5 @@
 package org.robots.gui;
 
-import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -12,14 +11,17 @@ import org.robots.log.Logger;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class MenuBar extends JMenuBar{
-    private final JFrame parent;
+    private final MainApplicationFrame parent;
 
-    public MenuBar(JFrame parent) {
+    public MenuBar(MainApplicationFrame parent) {
         this.parent = parent;
         this.add(initTestMenu());
         this.add(initLookAndFeelMenu());
+        this.add(initExitMenu());
     }
 
     private JMenu createJMenu(String label, int mnemonic, String accessDescription){
@@ -30,6 +32,19 @@ public class MenuBar extends JMenuBar{
         return menu;
     }
 
+    private JMenu initExitMenu(){
+        JMenu menu = createJMenu("Выход", KeyEvent.VK_E,
+                "Выход из приложения");
+
+        menu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent event) {
+                parent.confirmWindowClose();
+            }
+        });
+
+        return menu;
+    }
     private JMenuItem createJMenuItem(String label, int mnemonic, ActionListener listener){
         JMenuItem menuItem = new JMenuItem(label, mnemonic);
         menuItem.addActionListener(listener);

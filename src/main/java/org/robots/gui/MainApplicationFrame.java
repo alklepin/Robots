@@ -2,17 +2,10 @@ package org.robots.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import org.robots.log.Logger;
 
@@ -41,11 +34,27 @@ public class MainApplicationFrame extends JFrame {
         addWindow(createGameWindow());
 
         setJMenuBar(new MenuBar(this));
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent event){
+                MainApplicationFrame.this.confirmWindowClose();
+            }
+        });
+
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+    }
+
+    public void confirmWindowClose(){
+        if (JOptionPane.showConfirmDialog(this, "Вы уверены, что хотите закрыть приложение?",
+                "Закрыть?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+            System.exit(0);
+        }
     }
 
     protected GameWindow createGameWindow(){
         GameWindow gameWindow = new GameWindow();
+        gameWindow.setLocation(300, 10);
         gameWindow.setSize(400, 400);
 
         return gameWindow;
