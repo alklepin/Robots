@@ -109,7 +109,7 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void confirmExit() {
-        String message = "Вы уверены, что хотите выйти?";
+        String message = "Вы уверены,что хотите выйти?";
         int confirmation = JOptionPane.showConfirmDialog(this, message, "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
         if (confirmation == JOptionPane.YES_OPTION) {
             this.dispose();
