@@ -46,7 +46,7 @@ public class MainApplicationFrame extends JFrame {
         JMenuBar menuBar = new JMenuBar();
 
         // Menu: Документ
-        JMenu documentMenu = new JMenu("Документ");
+        JMenu documentMenu = new JMenu("Меню");
         documentMenu.setMnemonic(KeyEvent.VK_D);
 
         JMenuItem newGameItem = new JMenuItem("Новое игровое поле", KeyEvent.VK_N);
