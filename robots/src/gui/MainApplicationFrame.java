@@ -45,7 +45,6 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        // Menu: Документ
         JMenu documentMenu = new JMenu("Меню");
         documentMenu.setMnemonic(KeyEvent.VK_D);
 
@@ -66,7 +65,6 @@ public class MainApplicationFrame extends JFrame {
 
         menuBar.add(documentMenu);
 
-        // Menu: Режим отображения
         JMenu viewMenu = new JMenu("Режим отображения");
         viewMenu.setMnemonic(KeyEvent.VK_V);
 
@@ -75,7 +73,6 @@ public class MainApplicationFrame extends JFrame {
 
         menuBar.add(viewMenu);
 
-        // Menu: Тесты
         JMenu testMenu = new JMenu("Тесты");
         testMenu.setMnemonic(KeyEvent.VK_T);
 
@@ -103,7 +100,6 @@ public class MainApplicationFrame extends JFrame {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
         } catch (Exception e) {
-            // handle exception properly
             e.printStackTrace();
         }
     }
