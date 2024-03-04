@@ -17,7 +17,11 @@ import org.robots.log.Logger;
  */
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
+
+    private LogWindow logWindow;
+    private GameWindow gameWindow;
+
+
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
@@ -30,8 +34,10 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-        addWindow(createLogWindow());
-        addWindow(createGameWindow());
+        logWindow = createLogWindow(10, 10, 300, 800);
+        gameWindow = createGameWindow(300, 10, 400 ,400);
+        addWindow(logWindow);
+        addWindow(gameWindow);
 
         setJMenuBar(new MenuBar(this));
 
@@ -48,24 +54,25 @@ public class MainApplicationFrame extends JFrame {
     public void confirmWindowClose(){
         if (JOptionPane.showConfirmDialog(this, "Вы уверены, что хотите закрыть приложение?",
                 "Закрыть?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-            System.exit(0);
+            this.setVisible(false);
+            this.dispose();
         }
     }
 
-    protected GameWindow createGameWindow(){
+    protected GameWindow createGameWindow(int xLocation, int yLocation, int width, int height){
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setLocation(300, 10);
-        gameWindow.setSize(400, 400);
+        gameWindow.setLocation(xLocation, yLocation);
+        gameWindow.setSize(width, height);
 
         return gameWindow;
     }
 
-    protected LogWindow createLogWindow() {
+    protected LogWindow createLogWindow(int xLocation, int yLocation, int width, int height) {
 
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
 
-        logWindow.setLocation(10,10);
-        logWindow.setSize(300, 800);
+        logWindow.setLocation(xLocation,yLocation);
+        logWindow.setSize(width, height);
 
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
@@ -78,6 +85,14 @@ public class MainApplicationFrame extends JFrame {
 
         desktopPane.add(frame);
         frame.setVisible(true);
+    }
+
+    public GameWindow getGameWindow(){
+        return gameWindow;
+    }
+
+    public LogWindow getLogWindow(){
+        return logWindow;
     }
 
 }
