@@ -1,18 +1,10 @@
 package org.robots.gui;
 
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.*;
 
 import org.robots.log.Logger;
 
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 
 public class MenuBar extends JMenuBar{
     private final MainApplicationFrame parent;
@@ -45,8 +37,9 @@ public class MenuBar extends JMenuBar{
 
         return menu;
     }
-    private JMenuItem createJMenuItem(String label, int mnemonic, ActionListener listener){
-        JMenuItem menuItem = new JMenuItem(label, mnemonic);
+    private JMenuItem createJMenuItem(String label, KeyStroke key, ActionListener listener){
+        JMenuItem menuItem = new JMenuItem(label);
+        menuItem.setAccelerator(key);
         menuItem.addActionListener(listener);
 
         return menuItem;
@@ -73,10 +66,10 @@ public class MenuBar extends JMenuBar{
         JMenu menu = createJMenu("Режим отображения", KeyEvent.VK_V,
                 "Управление режимом отображения приложения");
 
-        menu.add(createJMenuItem("Системная схема", KeyEvent.VK_S,
+        menu.add(createJMenuItem("Системная схема", KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK),
                 event -> setLookAndFeel(UIManager.getSystemLookAndFeelClassName())));
 
-        menu.add(createJMenuItem("Универсальная схема", KeyEvent.VK_S,
+        menu.add(createJMenuItem("Универсальная схема", KeyStroke.getKeyStroke(KeyEvent.VK_S, InputEvent.ALT_MASK),
                 event -> setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())));
 
         return menu;
@@ -85,7 +78,7 @@ public class MenuBar extends JMenuBar{
         JMenu menu = createJMenu("Тесты", KeyEvent.VK_T,
                 "Тестовые команды");
 
-        menu.add(createJMenuItem("Сообщение в лог", KeyEvent.VK_S,
+        menu.add(createJMenuItem("Сообщение в лог", KeyStroke.getKeyStroke(KeyEvent.VK_N, InputEvent.ALT_MASK),
                 event -> Logger.debug("Новая строка")));
 
         return menu;

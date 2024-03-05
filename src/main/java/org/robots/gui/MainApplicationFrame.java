@@ -34,10 +34,10 @@ public class MainApplicationFrame extends JFrame {
 
         setContentPane(desktopPane);
 
-        logWindow = createLogWindow(10, 10, 300, 800);
-        gameWindow = createGameWindow(300, 10, 400 ,400);
-        addWindow(logWindow);
-        addWindow(gameWindow);
+        logWindow = createLogWindow();
+        gameWindow = createGameWindow();
+        addWindow(logWindow, 10, 10, 300, 800);
+        addWindow(gameWindow, 300, 10, 400, 400);
 
         setJMenuBar(new MenuBar(this));
 
@@ -61,20 +61,16 @@ public class MainApplicationFrame extends JFrame {
         }
     }
 
-    protected GameWindow createGameWindow(int xLocation, int yLocation, int width, int height){
+    protected GameWindow createGameWindow(){
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setLocation(xLocation, yLocation);
-        gameWindow.setSize(width, height);
 
         return gameWindow;
     }
 
-    protected LogWindow createLogWindow(int xLocation, int yLocation, int width, int height) {
+    protected LogWindow createLogWindow() {
 
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
 
-        logWindow.setLocation(xLocation,yLocation);
-        logWindow.setSize(width, height);
 
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
@@ -87,6 +83,12 @@ public class MainApplicationFrame extends JFrame {
 
         desktopPane.add(frame);
         frame.setVisible(true);
+    }
+
+    protected void addWindow(JInternalFrame frame, int xLocation, int yLocation, int width, int height){
+        frame.setSize(width, height);
+        frame.setLocation(xLocation, yLocation);
+        addWindow(frame);
     }
 
     public GameWindow getGameWindow(){
