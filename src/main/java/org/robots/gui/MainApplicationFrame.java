@@ -54,7 +54,9 @@ public class MainApplicationFrame extends JFrame {
     public void confirmWindowClose(){
         if (JOptionPane.showConfirmDialog(this, "Вы уверены, что хотите закрыть приложение?",
                 "Закрыть?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-            this.setVisible(false);
+
+            logWindow.dispose();
+            gameWindow.dispose();
             this.dispose();
         }
     }
