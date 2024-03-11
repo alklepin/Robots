@@ -5,7 +5,12 @@ import java.awt.event.*;
 import javax.swing.*;
 import log.Logger;
 
+import java.util.Locale;
+import java.util.ResourceBundle;
+
 public class MainApplicationFrame extends JFrame {
+    Locale locale = new Locale("ru", "RU");
+    ResourceBundle bundle = ResourceBundle.getBundle("recources", locale);
     private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
@@ -33,7 +38,7 @@ public class MainApplicationFrame extends JFrame {
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
+        Logger.debug(bundle.getString("protocol"));
         return logWindow;
     }
 
@@ -45,38 +50,39 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu documentMenu = new JMenu("Меню");
+
+        JMenu documentMenu = new JMenu(bundle.getString("menu"));
         documentMenu.setMnemonic(KeyEvent.VK_D);
 
-        JMenuItem newGameItem = new JMenuItem("Новое игровое поле", KeyEvent.VK_N);
+        JMenuItem newGameItem = new JMenuItem(bundle.getString("new_game_field"), KeyEvent.VK_N);
         newGameItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
         newGameItem.addActionListener((event) -> addWindow(new GameWindow()));
         documentMenu.add(newGameItem);
 
-        JMenuItem logItem = new JMenuItem("Окно логов", KeyEvent.VK_L);
+        JMenuItem logItem = new JMenuItem(bundle.getString("log_window"), KeyEvent.VK_L);
         logItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
         logItem.addActionListener((event) -> addWindow(new LogWindow(Logger.getDefaultLogSource())));
         documentMenu.add(logItem);
 
-        JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_Q);
+        JMenuItem exitItem = new JMenuItem(bundle.getString("exit"), KeyEvent.VK_Q);
         exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
         exitItem.addActionListener((event) -> confirmExit());
         documentMenu.add(exitItem);
 
         menuBar.add(documentMenu);
 
-        JMenu viewMenu = new JMenu("Режим отображения");
+        JMenu viewMenu = new JMenu(bundle.getString("display_mode"));
         viewMenu.setMnemonic(KeyEvent.VK_V);
 
-        viewMenu.add(createLookAndFeelMenuItem("Системная схема", UIManager.getSystemLookAndFeelClassName()));
-        viewMenu.add(createLookAndFeelMenuItem("Универсальная схема", UIManager.getCrossPlatformLookAndFeelClassName()));
+        viewMenu.add(createLookAndFeelMenuItem(bundle.getString("system_diagram"), UIManager.getSystemLookAndFeelClassName()));
+        viewMenu.add(createLookAndFeelMenuItem(bundle.getString("universal_scheme"), UIManager.getCrossPlatformLookAndFeelClassName()));
 
         menuBar.add(viewMenu);
 
-        JMenu testMenu = new JMenu("Тесты");
+        JMenu testMenu = new JMenu(bundle.getString("tests"));
         testMenu.setMnemonic(KeyEvent.VK_T);
 
-        testMenu.add(createTestMenuItem("Сообщение в лог", () -> Logger.debug("Новая строка")));
+        testMenu.add(createTestMenuItem(bundle.getString("message_in_the_log"), () -> Logger.debug(bundle.getString("new_str"))));
 
         menuBar.add(testMenu);
 
@@ -105,8 +111,10 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void confirmExit() {
-        String message = "Вы уверены,что хотите выйти?";
-        int confirmation = JOptionPane.showConfirmDialog(this, message, "Подтверждение выхода", JOptionPane.YES_NO_OPTION);
+        String message = bundle.getString("exit?");
+        UIManager.put("OptionPane.yesButtonText", bundle.getString("yes_button_text"));
+        UIManager.put("OptionPane.noButtonText", bundle.getString("no_button_text"));
+        int confirmation = JOptionPane.showConfirmDialog(this, message, bundle.getString("exit-yes"), JOptionPane.YES_NO_OPTION);
         if (confirmation == JOptionPane.YES_OPTION) {
             this.dispose();
         }
