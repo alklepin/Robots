@@ -45,11 +45,9 @@ public class MainApplicationFrame extends JFrame {
         setContentPane(desktopPane);
 
 
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
+        addWindow(createLogWindow());
 
-        GameWindow gameWindow = new GameWindow();
-        addWindow(gameWindow, 400, 400);
+        addWindow(new GameWindow(), 400, 400);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -117,35 +115,81 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        JMenu lookAndFeelMenu = new JMenu( //
-                DC.getContentNoException("menu/view/title")); // "Режим отображения"
-        addSystemShameTo(lookAndFeelMenu);
-        addUniversalSchemeTo(lookAndFeelMenu);
+        // JMenu testMenu = new JMenu(DC.getContentNoException("menu/test/title")); // "Тесты"
+        // addLogMessageTo(testMenu);
 
-        JMenu testMenu = new JMenu(DC.getContentNoException("menu/test/title")); // "Тесты"
-        addLogMessageTo(testMenu);
-
-        JMenu actionsMenu = new JMenu(DC.getContentNoException("menu/action/title")); // "Действия"
-        addCloseOption(actionsMenu);
+        // JMenu actionsMenu = new JMenu(DC.getContentNoException("menu/action/title")); // "Действия"
+        // addCloseOption(actionsMenu);
 
         JMenu langMenu = new JMenu(DC.getContentNoException("menu/lang/title"));
         addLanguages(langMenu);
 
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
+        menuBar.add(createLookAndFeelMenu());
+        menuBar.add(createTestMenu());
         menuBar.add(langMenu);
-        menuBar.add(actionsMenu);
+        menuBar.add(createActionsMenu());
         return menuBar;
     }
 
-    private void setProperties(JMenu menu, String bottonName, int bottonMnemonic,
-            KeyStroke accelerator, ActionListener listener) {
-        JMenuItem botton = new JMenuItem(bottonName, bottonMnemonic);
-        botton.addActionListener(listener);
+    private JMenu createActionsMenu() {
+        JMenu actionsMenu = new JMenu(DC.getContentNoException("menu/action/title")); // "Действия"
+        // addCloseOption(actionsMenu);
+        actionsMenu.add(createProperties( //
+                DC.getContentNoException("menu/action/exit/name"), // "Выйти"
+                KeyEvent.VK_Q, //
+                KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.SHIFT_DOWN_MASK), //
+                (event) -> {
+                    WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+                    Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
+                }));
+        return actionsMenu;
+    }
+
+    private JMenu createTestMenu() {
+        JMenu testMenu = new JMenu(DC.getContentNoException("menu/test/title")); // "Тесты"
+        testMenu.setMnemonic(KeyEvent.VK_T);
+        testMenu.getAccessibleContext().setAccessibleDescription( //
+                DC.getContentNoException("menu/test/description"));
+        testMenu.add(createProperties( //
+                DC.getContentNoException("menu/test/items/massage_to_log"), //
+                KeyEvent.VK_S, null, //
+                (event) -> {
+                    Logger.debug(DC.getContentNoException("logger/debug_test")); // "Новая строка"
+                }));
+        return testMenu;
+    }
+
+    private JMenu createLookAndFeelMenu() {
+        JMenu lookAndFeelMenu = new JMenu( //
+                DC.getContentNoException("menu/view/title")); // "Режим отображения"
+        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
+        lookAndFeelMenu.getAccessibleContext()
+                .setAccessibleDescription(DC.getContentNoException("menu/view/description"));
+        lookAndFeelMenu
+                .add(createProperties(DC.getContentNoException("menu/view/items/system_shame"), // ,
+                                                                                                // //
+                        KeyEvent.VK_S, null, (event) -> {
+                            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                            this.invalidate();
+                        }));
+
+        lookAndFeelMenu
+                .add(createProperties(DC.getContentNoException("menu/view/items/universal_shame"), //
+                        KeyEvent.VK_S, null, (event) -> {
+                            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                            this.invalidate();
+                        }));
+        return lookAndFeelMenu;
+    }
+
+    private JMenuItem createProperties(String bottonName, int bottonMnemonic, KeyStroke accelerator,
+            ActionListener listener) {
+        JMenuItem button = new JMenuItem(bottonName, bottonMnemonic);
+        button.addActionListener(listener);
         if (null != accelerator) {
-            botton.setAccelerator(accelerator);
+            button.setAccelerator(accelerator);
         }
-        menu.add(botton);
+        return button;
     }
 
     private void addLanguages(JMenu menu) {
@@ -171,19 +215,8 @@ public class MainApplicationFrame extends JFrame {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
-    private void addCloseOption(JMenu closeTab) {
-        setProperties(closeTab, //
-                DC.getContentNoException("menu/action/exit/name"), // "Выйти"
-                KeyEvent.VK_Q, //
-                KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.SHIFT_DOWN_MASK), //
-                (event) -> {
-                    WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-                    Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
-                });
-    }
 
     private void exitConfirm() {
         int sure = JOptionPane.showOptionDialog(this,
@@ -202,37 +235,6 @@ public class MainApplicationFrame extends JFrame {
         }
     }
 
-    private void addSystemShameTo(JMenu lookAndFeelMenu) {
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext()
-                .setAccessibleDescription(DC.getContentNoException("menu/view/description"));
-        setProperties(lookAndFeelMenu, //
-                DC.getContentNoException("menu/view/items/system_shame"), // , //
-                KeyEvent.VK_S, null, (event) -> {
-                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    this.invalidate();
-                });
-    }
-
-    private void addUniversalSchemeTo(JMenu lookAndFeelMenu) {
-        setProperties(lookAndFeelMenu, //
-                DC.getContentNoException("menu/view/items/universal_shame"), //
-                KeyEvent.VK_S, null, (event) -> {
-                    setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                    this.invalidate();
-                });
-    }
-
-    private void addLogMessageTo(JMenu testMenu) {
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription( //
-                DC.getContentNoException("menu/test/description"));
-        setProperties(testMenu, //
-                DC.getContentNoException("menu/test/items/massage_to_log"), KeyEvent.VK_S, null,
-                (event) -> {
-                    Logger.debug(DC.getContentNoException("logger/debug_test")); // "Новая строка"
-                }); // "Тестовые команды"
-    }
 
     private void setLookAndFeel(String className) {
         try {
