@@ -115,12 +115,6 @@ public class MainApplicationFrame extends JFrame {
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
-        // JMenu testMenu = new JMenu(DC.getContentNoException("menu/test/title")); // "Тесты"
-        // addLogMessageTo(testMenu);
-
-        // JMenu actionsMenu = new JMenu(DC.getContentNoException("menu/action/title")); // "Действия"
-        // addCloseOption(actionsMenu);
-
         JMenu langMenu = new JMenu(DC.getContentNoException("menu/lang/title"));
         addLanguages(langMenu);
 
