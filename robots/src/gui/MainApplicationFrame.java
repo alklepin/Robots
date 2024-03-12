@@ -3,7 +3,6 @@ package gui;
 import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -25,7 +24,7 @@ import log.Logger;
 public class MainApplicationFrame extends JFrame
 {
     //Locale eng = new Locale("en","US");
-    private String lang = readLoc();
+    private final String lang = readLoc();
     private final ResourceBundle bundle =
             ResourceBundle.getBundle("resources", new Locale(lang)); // eng
     private final JDesktopPane desktopPane = new JDesktopPane();
@@ -36,8 +35,6 @@ public class MainApplicationFrame extends JFrame
             BufferedReader reader = new BufferedReader(new FileReader("D:\\intellij\\code\\Robots\\robots\\src\\LangData.txt"));
             lang = reader.readLine();
             reader.close();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,46 +44,45 @@ public class MainApplicationFrame extends JFrame
     public class WindowMenu extends JMenuBar
     {
         private WindowMenu(){
-            JMenu lookMenu = lookAndFeelMenu();
-            JMenu testingMenu = testMenu();
-            JMenu extMenu = exitMenu();
-            JMenu switchLoc = SwitchLanguage();
-
-            add(lookMenu);
-            add(testingMenu);
-            add(switchLoc);
-            add(extMenu);
+            add(createLookAndFeelMenu());
+            add(createTestMenu());
+            add(createSwitchLanguage());
+            add(createExitMenu());
         }
 
-        private JMenu SwitchLanguage(){
-            JMenu SwitchLanguage = new JMenu(bundle.getString("switch.language"));
-            SwitchLanguage.setMnemonic(KeyEvent.VK_X);
-            {
-                JMenuItem englishLang = new JMenuItem("English");
+        private JMenuItem createJMenuItem(String s, Integer m, ActionListener l) {
+            JMenuItem item = new JMenuItem(s, m);
+            item.addActionListener(l);
+            return item;
+        }
 
-                englishLang.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mousePressed(MouseEvent ee) {
-                        try {
-                            BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\intellij\\code\\Robots\\robots\\src\\LangData.txt"));
-                            writer.write("en_US");
-                            writer.close();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-                        JOptionPane.showMessageDialog(MainApplicationFrame.this, bundle.getString("app.rest"));
-                    }
-                });
+        private JMenu createJMenu(String s, Integer m, String desc) {
+            JMenu menu = new JMenu(s);
+            menu.setMnemonic(m);
+            menu.getAccessibleContext().setAccessibleDescription(desc);
+            return menu;
+        }
 
-                SwitchLanguage.add(englishLang);
+        private JMenu createSwitchLanguage(){
+            JMenu switchLanguage = createJMenu(bundle.getString("switch.language"), KeyEvent.VK_X, "");
+
+            switchLanguage.add(createJMenuItem("English",
+                    KeyEvent.VK_X,
+                    ee -> {
+                try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\intellij\\code\\Robots\\robots\\src\\LangData.txt"));
+                writer.write("en_US");
+                writer.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
+            JOptionPane.showMessageDialog(MainApplicationFrame.this, bundle.getString("app.rest"));
+                    }));
 
-            {
-                JMenuItem rusLang = new JMenuItem("Русский");
-
-                rusLang.addMouseListener(new MouseAdapter() {
-                    @Override
-                    public void mousePressed(MouseEvent ee) {
+            switchLanguage.add(createJMenuItem("Русский",
+                    KeyEvent.VK_X,
+                    ee ->
+                    {
                         try {
                             BufferedWriter writer = new BufferedWriter(new FileWriter("D:\\intellij\\code\\Robots\\robots\\src\\LangData.txt"));
                             writer.write("ru_RU");
@@ -95,71 +91,53 @@ public class MainApplicationFrame extends JFrame
                             throw new RuntimeException(e);
                         }
                         JOptionPane.showMessageDialog(MainApplicationFrame.this, bundle.getString("app.rest"));
-                    }
-                });
+                    }));
 
-                SwitchLanguage.add(rusLang);
-            }
-            return SwitchLanguage;
+            return switchLanguage;
         }
 
-        private JMenu lookAndFeelMenu(){
-            JMenu lookAndFeelMenu = new JMenu(bundle.getString("lookAndFeelMenu.s")); // Режим отображения
-            lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-            lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
+        private JMenu createLookAndFeelMenu(){
+            JMenu lookAndFeelMenu = createJMenu(bundle.getString("lookAndFeelMenu.s"), // Режим отображения
+                    KeyEvent.VK_V,
                     bundle.getString("lookAndFeelMenu.getAccessibleContext")); // Управление режимом отображения приложения
 
-            {
-                JMenuItem systemLookAndFeel = new JMenuItem(bundle.getString("systemLookAndFeel.text"), KeyEvent.VK_S); // Системная схема
-                systemLookAndFeel.addActionListener((event) -> {
-                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                    this.invalidate();
-                });
-                lookAndFeelMenu.add(systemLookAndFeel);
-            }
+            lookAndFeelMenu.add(createJMenuItem(bundle.getString("systemLookAndFeel.text"), // Системная схема
+                    KeyEvent.VK_S,
+                    e -> MainApplicationFrame.this
+                            .setLookAndFeel(UIManager.getSystemLookAndFeelClassName())));
 
-            {
-                JMenuItem crossplatformLookAndFeel = new JMenuItem(bundle.getString("crossplatformLookAndFeel.text"), KeyEvent.VK_S); // Универсальная схема
-                crossplatformLookAndFeel.addActionListener((event) -> {
-                    setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                    this.invalidate();
-                });
-                lookAndFeelMenu.add(crossplatformLookAndFeel);
-            }
+            lookAndFeelMenu.add(createJMenuItem(bundle.getString("crossplatformLookAndFeel.text"), // Универсальная схема
+                    KeyEvent.VK_S,
+                    e -> MainApplicationFrame.this
+                                    .setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())));
 
             return lookAndFeelMenu;
         }
 
-        private JMenu testMenu(){
-            JMenu testMenu = new JMenu(bundle.getString("testMenu.s")); // Тесты
-            testMenu.setMnemonic(KeyEvent.VK_T);
-            testMenu.getAccessibleContext().setAccessibleDescription(
+        private JMenu createTestMenu(){
+            JMenu testMenu = createJMenu(bundle.getString("testMenu.s"), // Тесты
+                    KeyEvent.VK_T,
                     bundle.getString("testMenu.getAccessibleContext")); // Тестовые команды
 
-            {
-                JMenuItem addLogMessageItem = new JMenuItem(bundle.getString("addLogMessageItem.text"), KeyEvent.VK_S); // Сообщение в лог
-                addLogMessageItem.addActionListener((event) -> {
-                    Logger.debug(bundle.getString("Logger.debug.strMessage.addLine")); // Новая строка
-                });
-                testMenu.add(addLogMessageItem);
-            }
+            testMenu.add(createJMenuItem(bundle.getString("addLogMessageItem.text"), // Сообщение в лог
+                    KeyEvent.VK_S,
+                    e -> Logger
+                            .debug(bundle.getString("Logger.debug.strMessage.addLine")))); // Новая строка
+
             return testMenu;
         }
 
-        private JMenu exitMenu(){
-            JMenu exitMenu = new JMenu(bundle.getString("exitMenu.s")); // Выход
-            exitMenu.setMnemonic(KeyEvent.VK_Q);
-            exitMenu.getAccessibleContext().setAccessibleDescription(
-                    bundle.getString("exitMenuItem.text") // Выйти из приложения
-            );
+        private JMenu createExitMenu(){
+            JMenu exitMenu = createJMenu(bundle.getString("exitMenu.s"), // Выход
+                    KeyEvent.VK_Q,
+                    bundle.getString("exitMenuItem.text")); // Выйти из приложения
 
-            JMenuItem exitMenuItem = new JMenuItem(bundle.getString("exitMenu.getAccessibleContext"), KeyEvent.VK_Q); // Выход из приложения
-            exitMenuItem.addActionListener((event) -> {
-                MainApplicationFrame.this.processWindowEvent(
-                        new WindowEvent(
-                                MainApplicationFrame.this, WindowEvent.WINDOW_CLOSING));
-            });
-            exitMenu.add(exitMenuItem);
+            exitMenu.add(createJMenuItem(bundle.getString("exitMenu.getAccessibleContext"), // Выход из приложения
+                    KeyEvent.VK_Q,
+                    e -> MainApplicationFrame.this.processWindowEvent(
+                            new WindowEvent(
+                                    MainApplicationFrame.this, WindowEvent.WINDOW_CLOSING))));
+
             return exitMenu;
         }
     }
@@ -174,14 +152,11 @@ public class MainApplicationFrame extends JFrame
             screenSize.height - inset*2);
 
         setContentPane(desktopPane);
-        
-        
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow(bundle.getString("gameWindow.title"));
-        gameWindow.setSize(400,  400);
-        addWindow(gameWindow);
+
+        addWindow(createLogWindow());
+        addWindow(new GameWindow(bundle.getString("gameWindow.title")),
+                400, 400);
 
         setJMenuBar(new WindowMenu());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -194,7 +169,7 @@ public class MainApplicationFrame extends JFrame
                         JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
                 // Закрыть окно? Подтверждение
                 if (confirmed == JOptionPane.YES_OPTION) {
-                    setDefaultCloseOperation(EXIT_ON_CLOSE);
+                    setDefaultCloseOperation(EXIT_ON_CLOSE); // DISPOSE_ON_CLOSE
                 }
             }
         });
@@ -215,6 +190,11 @@ public class MainApplicationFrame extends JFrame
     {
         desktopPane.add(frame);
         frame.setVisible(true);
+    }
+
+    private void addWindow(JInternalFrame frame, int width, int height) {
+        frame.setSize(width, height);
+        addWindow(frame);
     }
     
 //    protected JMenuBar createMenuBar() {
