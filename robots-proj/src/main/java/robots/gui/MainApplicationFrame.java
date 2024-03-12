@@ -2,6 +2,7 @@ package robots.gui;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
@@ -31,6 +32,8 @@ import robots.log.Logger;
 public class MainApplicationFrame extends JFrame {
     private final JDesktopPane desktopPane = new JDesktopPane();
     static private final DataContainer DC = DataContainer.getInstance();
+    private final String[] options =
+            {DC.getContentNoException("yes"), DC.getContentNoException("no")};
 
     public MainApplicationFrame() {
         // Make the big window be indented 50 pixels from each edge
@@ -46,8 +49,7 @@ public class MainApplicationFrame extends JFrame {
         addWindow(logWindow);
 
         GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
-        addWindow(gameWindow);
+        addWindow(gameWindow, 400, 400);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
@@ -58,10 +60,11 @@ public class MainApplicationFrame extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                maybeExit();
+                exitConfirm();
             }
         });
     }
+
     protected LogWindow createLogWindow() {
         LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
         logWindow.setLocation(10, 10);
@@ -75,6 +78,11 @@ public class MainApplicationFrame extends JFrame {
     protected void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
+    }
+
+    protected void addWindow(JInternalFrame frame, int h, int w) {
+        frame.setSize(w, h);
+        addWindow(frame);
     }
 
     // protected JMenuBar createMenuBar() {
@@ -130,22 +138,28 @@ public class MainApplicationFrame extends JFrame {
         return menuBar;
     }
 
+    private void setProperties(JMenu menu, String bottonName, int bottonMnemonic,
+            KeyStroke accelerator, ActionListener listener) {
+        JMenuItem botton = new JMenuItem(bottonName, bottonMnemonic);
+        botton.addActionListener(listener);
+        if (null != accelerator) {
+            botton.setAccelerator(accelerator);
+        }
+        menu.add(botton);
+    }
+
     private void addLanguages(JMenu menu) {
-        // menu.getAccessibleContext().setAccessibleDescription( //
-        // DC.getContentNoException("menu/lang/description"));
         try {
             String path = "localization/";
             Set<String> locales = ReaderFromResouce.getAllFiles(path);
+            final String sSure = DC.getContentNoException("menu/lang/change_lang/sure");
+            final String sChange = DC.getContentNoException("menu/lang/change_lang/change");
             for (String locale : locales) {
                 String clearLocale =
                         locale.substring(path.length()).replaceAll("(?<=\\w+)\\..+$", "");
                 JMenuItem button = new JMenuItem(clearLocale);
                 button.addActionListener((event) -> {
-                    String[] options =
-                            {DC.getContentNoException("yes"), DC.getContentNoException("no")};
-                    int sure = JOptionPane.showOptionDialog(this, //
-                            DC.getContentNoException("menu/lang/change_lang/change") + clearLocale,
-                            DC.getContentNoException("menu/lang/change_lang/name"),
+                    int sure = JOptionPane.showOptionDialog(this, sSure, sChange + clearLocale,
                             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options,
                             options[1]);
                     if (JOptionPane.YES_NO_OPTION == sure) {
@@ -161,23 +175,17 @@ public class MainApplicationFrame extends JFrame {
     }
 
     private void addCloseOption(JMenu closeTab) {
-        // closeTab.getAccessibleContext().setAccessibleDescription( //
-        // DC.getContentNoException("menu/action/exit/close")); // "Закрыть приложение"
-        JMenuItem button = new JMenuItem( //
+        setProperties(closeTab, //
                 DC.getContentNoException("menu/action/exit/name"), // "Выйти"
-                KeyEvent.VK_Q);
-        button.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.SHIFT_DOWN_MASK));
-
-        button.addActionListener((event) -> {
-            WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
-            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
-        });
-
-        closeTab.add(button);
+                KeyEvent.VK_Q, //
+                KeyStroke.getKeyStroke(KeyEvent.VK_Q, InputEvent.SHIFT_DOWN_MASK), //
+                (event) -> {
+                    WindowEvent closeEvent = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+                    Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(closeEvent);
+                });
     }
 
-    private void maybeExit() {
-        String[] options = {DC.getContentNoException("yes"), DC.getContentNoException("no")};
+    private void exitConfirm() {
         int sure = JOptionPane.showOptionDialog(this,
                 DC.getContentNoException("menu/action/exit/sure"), // "Вы уверены?"
                 DC.getContentNoException("menu/action/exit/close"), // "Закрыть приложение? "
@@ -196,43 +204,34 @@ public class MainApplicationFrame extends JFrame {
 
     private void addSystemShameTo(JMenu lookAndFeelMenu) {
         lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription( //
-                DC.getContentNoException("menu/view/description"));
-        // "Управление режимом отображения приложения"
-        JMenuItem systemLookAndFeel = new JMenuItem( //
-                DC.getContentNoException("menu/view/items/system_shame"), // "Системная схема"
-                KeyEvent.VK_S);
-        systemLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            this.invalidate();
-        });
-        lookAndFeelMenu.add(systemLookAndFeel);
+        lookAndFeelMenu.getAccessibleContext()
+                .setAccessibleDescription(DC.getContentNoException("menu/view/description"));
+        setProperties(lookAndFeelMenu, //
+                DC.getContentNoException("menu/view/items/system_shame"), // , //
+                KeyEvent.VK_S, null, (event) -> {
+                    setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                    this.invalidate();
+                });
     }
 
     private void addUniversalSchemeTo(JMenu lookAndFeelMenu) {
-        JMenuItem crossplatformLookAndFeel = new JMenuItem( //
-                DC.getContentNoException("menu/view/items/universal_shame"),
-                // "УниверсальнаяS схема"
-                KeyEvent.VK_S);
-        crossplatformLookAndFeel.addActionListener((event) -> {
-            setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            this.invalidate();
-        });
-        lookAndFeelMenu.add(crossplatformLookAndFeel);
+        setProperties(lookAndFeelMenu, //
+                DC.getContentNoException("menu/view/items/universal_shame"), //
+                KeyEvent.VK_S, null, (event) -> {
+                    setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                    this.invalidate();
+                });
     }
 
     private void addLogMessageTo(JMenu testMenu) {
         testMenu.setMnemonic(KeyEvent.VK_T);
         testMenu.getAccessibleContext().setAccessibleDescription( //
                 DC.getContentNoException("menu/test/description"));
-        // "Тестовые команды"
-        JMenuItem addLogMessageItem = new JMenuItem( //
-                DC.getContentNoException("menu/test/items/massage_to_log"), // "Сообщение в лог"
-                KeyEvent.VK_S);
-        addLogMessageItem.addActionListener((event) -> {
-            Logger.debug(DC.getContentNoException("logger/debug_test")); // "Новая строка"
-        });
-        testMenu.add(addLogMessageItem);
+        setProperties(testMenu, //
+                DC.getContentNoException("menu/test/items/massage_to_log"), KeyEvent.VK_S, null,
+                (event) -> {
+                    Logger.debug(DC.getContentNoException("logger/debug_test")); // "Новая строка"
+                }); // "Тестовые команды"
     }
 
     private void setLookAndFeel(String className) {
