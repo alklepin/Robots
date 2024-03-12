@@ -23,10 +23,9 @@ public class MainApplicationFrame extends JFrame {
         setBounds(inset, inset, screenSize.width - inset * 2, screenSize.height - inset * 2);
         setContentPane(desktopPane);
 
-        addWindow(createLogWindow());
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400, 400);
-        addWindow(gameWindow);
+        addWindow(createLogWindow(), 10, 10);
+        GameWindow gameWindow = createGameWindow();
+        addWindow(gameWindow, 100, 100);
 
         setJMenuBar(generateMenuBar());
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -42,48 +41,64 @@ public class MainApplicationFrame extends JFrame {
         return logWindow;
     }
 
+    private GameWindow createGameWindow() {
+        int gameWindowWidth = 400;
+        int gameWindowHeight = 400;
+
+        GameWindow gameWindow = new GameWindow();
+        gameWindow.setSize(gameWindowWidth, gameWindowHeight);
+        return gameWindow;
+    }
+
     private void addWindow(JInternalFrame frame) {
         desktopPane.add(frame);
         frame.setVisible(true);
     }
 
+    private void addWindow(JInternalFrame frame, int x, int y) {
+        desktopPane.add(frame);
+        frame.setLocation(x, y);
+        frame.setVisible(true);
+    }
+
+    private JMenuItem createMenuItem(String label, int mnemonic, String acceleratorKey, ActionListener actionListener) {
+        JMenuItem menuItem = new JMenuItem(label, mnemonic);
+        if (acceleratorKey != null && !acceleratorKey.isEmpty()) {
+            menuItem.setAccelerator(KeyStroke.getKeyStroke(acceleratorKey));
+        }
+        menuItem.addActionListener(actionListener);
+        return menuItem;
+    }
+
+    private JMenu createMenu(String label, int mnemonic) {
+        JMenu menu = new JMenu(label);
+        menu.setMnemonic(mnemonic);
+        return menu;
+    }
+
     private JMenuBar generateMenuBar() {
         JMenuBar menuBar = new JMenuBar();
 
+        JMenu documentMenu = createMenu(bundle.getString("menu"), KeyEvent.VK_D);
 
-        JMenu documentMenu = new JMenu(bundle.getString("menu"));
-        documentMenu.setMnemonic(KeyEvent.VK_D);
-
-        JMenuItem newGameItem = new JMenuItem(bundle.getString("new_game_field"), KeyEvent.VK_N);
-        newGameItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.ALT_MASK));
-        newGameItem.addActionListener((event) -> addWindow(new GameWindow()));
+        JMenuItem newGameItem = createMenuItem(bundle.getString("new_game_field"), KeyEvent.VK_N, "alt N", (event) -> addWindow(createGameWindow()));
         documentMenu.add(newGameItem);
 
-        JMenuItem logItem = new JMenuItem(bundle.getString("log_window"), KeyEvent.VK_L);
-        logItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.ALT_MASK));
-        logItem.addActionListener((event) -> addWindow(new LogWindow(Logger.getDefaultLogSource())));
+        JMenuItem logItem = createMenuItem(bundle.getString("log_window"), KeyEvent.VK_L, "alt L", (event) -> addWindow(new LogWindow(Logger.getDefaultLogSource())));
         documentMenu.add(logItem);
 
-        JMenuItem exitItem = new JMenuItem(bundle.getString("exit"), KeyEvent.VK_Q);
-        exitItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-        exitItem.addActionListener((event) -> confirmExit());
+        JMenuItem exitItem = createMenuItem(bundle.getString("exit"), KeyEvent.VK_Q, "alt Q", (event) -> confirmExit());
         documentMenu.add(exitItem);
 
         menuBar.add(documentMenu);
 
-        JMenu viewMenu = new JMenu(bundle.getString("display_mode"));
-        viewMenu.setMnemonic(KeyEvent.VK_V);
-
+        JMenu viewMenu = createMenu(bundle.getString("display_mode"), KeyEvent.VK_V);
         viewMenu.add(createLookAndFeelMenuItem(bundle.getString("system_diagram"), UIManager.getSystemLookAndFeelClassName()));
         viewMenu.add(createLookAndFeelMenuItem(bundle.getString("universal_scheme"), UIManager.getCrossPlatformLookAndFeelClassName()));
-
         menuBar.add(viewMenu);
 
-        JMenu testMenu = new JMenu(bundle.getString("tests"));
-        testMenu.setMnemonic(KeyEvent.VK_T);
-
+        JMenu testMenu = createMenu(bundle.getString("tests"), KeyEvent.VK_T);
         testMenu.add(createTestMenuItem(bundle.getString("message_in_the_log"), () -> Logger.debug(bundle.getString("new_str"))));
-
         menuBar.add(testMenu);
 
         return menuBar;
