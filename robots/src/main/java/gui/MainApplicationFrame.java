@@ -3,18 +3,61 @@ package gui;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.prefs.Preferences;
 import log.Logger;
-
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class MainApplicationFrame extends JFrame {
+    private final JDesktopPane desktopPane = new JDesktopPane();
+    private static final String PREF_NODE = "MyAppPrefs";
+    private static final String PREF_KEY_WINDOW_COUNT = "windowCount";
+    private static final String PREF_KEY_WINDOW_X = "windowX_";
+    private static final String PREF_KEY_WINDOW_Y = "windowY_";
+    private static final String PREF_KEY_WINDOW_WIDTH = "windowWidth_";
+    private static final String PREF_KEY_WINDOW_HEIGHT = "windowHeight_";
+
+
+
     Locale locale = new Locale("ru", "RU");
     ResourceBundle bundle = ResourceBundle.getBundle("recources", locale);
-    private final JDesktopPane desktopPane = new JDesktopPane();
 
     public MainApplicationFrame() {
+
+        restoreState();
         initializeUI();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        saveState();
+    }
+
+    private void saveState() {
+        Preferences prefs = Preferences.userRoot().node(PREF_NODE);
+        prefs.putInt(PREF_KEY_WINDOW_COUNT, desktopPane.getAllFrames().length);
+        for (int i = 0; i < desktopPane.getAllFrames().length; i++) {
+            JInternalFrame frame = desktopPane.getAllFrames()[i];
+            prefs.putInt(PREF_KEY_WINDOW_X + i, frame.getX());
+            prefs.putInt(PREF_KEY_WINDOW_Y + i, frame.getY());
+            prefs.putInt(PREF_KEY_WINDOW_WIDTH + i, frame.getWidth());
+            prefs.putInt(PREF_KEY_WINDOW_HEIGHT + i, frame.getHeight());
+        }
+    }
+
+    private void restoreState() {
+        Preferences prefs = Preferences.userRoot().node(PREF_NODE);
+        int windowCount = prefs.getInt(PREF_KEY_WINDOW_COUNT, 0);
+        for (int i = 0; i < windowCount; i++) {
+            int x = prefs.getInt(PREF_KEY_WINDOW_X + i, 0);
+            int y = prefs.getInt(PREF_KEY_WINDOW_Y + i, 0);
+            int width = prefs.getInt(PREF_KEY_WINDOW_WIDTH + i, 0);
+            int height = prefs.getInt(PREF_KEY_WINDOW_HEIGHT + i, 0);
+            JInternalFrame frame = new GameWindow();
+            frame.setBounds(x, y, width, height);
+            addWindow(frame);
+        }
     }
 
     private void initializeUI() {
@@ -131,6 +174,7 @@ public class MainApplicationFrame extends JFrame {
         UIManager.put("OptionPane.noButtonText", bundle.getString("no_button_text"));
         int confirmation = JOptionPane.showConfirmDialog(this, message, bundle.getString("exit-yes"), JOptionPane.YES_NO_OPTION);
         if (confirmation == JOptionPane.YES_OPTION) {
+            saveState();
             this.dispose();
         }
     }
