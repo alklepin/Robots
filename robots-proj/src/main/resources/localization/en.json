@@ -1,0 +1,46 @@
+{
+	"yes": "Yes",
+	"no": "No",
+	"game": {
+		"title": "Gaming plane"
+	},
+	"logger": {
+		"title": "Work protocol",
+		"protocol_working": "Protocol is working",
+		"debug_test": "New line"
+	},
+	"menu": {
+		"view": {
+			"title": "Display mode",
+			"description": "Display mode management",
+			"items": {
+				"system_shame": "System scheme",
+				"universal_shame": "Universal scheme"
+			}
+		},
+		"test": {
+			"title": "Tests",
+			"description": "Test commands",
+			"items": {
+				"massage_to_log": "Message to log"
+			}
+		},
+		"action": {
+			"title": "Actions",
+			"exit": {
+				"name": "Exit",
+				"sure": "Are you sure?",
+				"close": "Close application?"
+			}
+		},
+		"lang": {
+			"title": "Languages",
+			"description": "Changes the language of the application",
+			"change_lang": {
+				"name": "Change language?",
+				"sure": "Are you sure? The application will need to be restarted.",
+				"change": "Change language to "
+			}
+		}
+	}
+}

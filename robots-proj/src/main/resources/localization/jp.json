@@ -1,0 +1,46 @@
+{
+    "yes": "はい",
+    "no": "いいえ",
+    "game": {
+        "title": "ゲーミングプレーン"
+    },
+    "logger": {
+        "title": "仕事プロトコル",
+        "protocol_working": "プロトコルは機能しています",
+        "debug_test": "新しい行"
+    },
+    "menu": {
+        "view": {
+            "title": "表示モード",
+            "description": "表示モードの管理",
+            "items": {
+                "system_shame": "システムスキーム",
+                "universal_shame": "ユニバーサルスキーム"
+            }
+        },
+        "test": {
+            "title": "テスト",
+            "description": "テストコマンド",
+            "items": {
+                "massage_to_log": "メッセージをログに"
+            }
+        },
+        "action": {
+            "title": "アクション",
+            "exit": {
+                "name": "終了",
+                "sure": "本当に？",
+                "close": "アプリケーションを閉じますか？"
+            }
+        },
+        "lang": {
+            "title": "言語",
+            "description": "アプリケーションの言語を変更します",
+            "change_lang": {
+                "name": "言語を変更しますか？",
+                "sure": "本当に？アプリケーションは再起動する必要があります。",
+                "change": "言語を"
+            }
+        }
+    }
+}
