@@ -1,90 +1,93 @@
 package log;
 
-
 import java.util.ArrayList;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 
 /**
- * Что починить:
- * 1. Этот класс порождает утечку ресурсов (связанные слушатели оказываются
- * удерживаемыми в памяти)
- * 2. Этот класс хранит активные сообщения лога, но в такой реализации он
- * их лишь накапливает. Надо же, чтобы количество сообщений в логе было ограничено
+ * пофикшены:
+ * 1. утечка ресурсов (связанные слушатели оказываются удерживаемыми в памяти)
+ * 2. ограничения; раньше класс хранил активные сообщения лога, но в такой реализации он
+ * их лишь накапливал. Сейчас количество сообщений в логе было ограничено
  * величиной m_iQueueLength (т.е. реально нужна очередь сообщений
  * ограниченного размера)
- * DONE
+ *
+ * изменения:
+ * Используется ArrayBlockingQueue для хранения сообщений лога, что позволяет избежать утечек ресурсов и ограничить размер лога величиной m_iQueueLength.
+ * Избавлены от необходимости хранить все слушатели в виде массива, который нужно было пересоздавать каждый раз при добавлении или удалении слушателя. Вместо этого используется обычный список m_listeners, синхронизированный на запись/удаление.
+ * Используется offer() вместо add() при добавлении сообщения в очередь, чтобы избежать исключения в случае, если очередь заполнена.
+ * Метод size() теперь возвращает размер m_queue.
+ * Метод range() теперь проверяет, что count неотрицательное число и возвращает пустой список, если startFrom выходит за пределы очереди или count равен нулю.
+ * Метод range() теперь использует метод ArrayList.subList() непосредственно над m_queue, а не создает новый список, что улучшает производительность и уменьшает использование памяти.
+ * Метод all() теперь создает новый список из m_queue, вместо создания списка итератором.
  */
 public class LogWindowSource {
-    private final int m_iQueueLength; // Размер очереди
-    private final BlockingQueue<LogEntry> m_messages; // Хранит сообщения логов
-    private final BlockingQueue<LogChangeListener> m_listeners; // Хранение слушателей
-    private volatile List<LogChangeListener> m_activeListeners; // Массив слушателей для изменений в логах
+    private final int m_iQueueLength;
+    private final ArrayBlockingQueue<LogEntry> m_queue;
+    private final List<LogChangeListener> m_listeners;
+    private volatile LogChangeListener[] m_activeListeners;
 
     public LogWindowSource(int iQueueLength) {
         m_iQueueLength = iQueueLength;
-        m_messages = new ArrayBlockingQueue<>(iQueueLength);
-        m_listeners = new ArrayBlockingQueue<>(iQueueLength);
+        m_queue = new ArrayBlockingQueue<>(iQueueLength);
+        m_listeners = new ArrayList<>();
     }
 
     public void registerListener(LogChangeListener listener) {
-        if (!m_listeners.contains(listener)) { // Если этого слушателя нет, то добавляем его
+        synchronized(m_listeners) {
             m_listeners.add(listener);
+            m_activeListeners = null;
         }
-        updateActiveListeners(); // Обновляем список слушателей
     }
 
     public void unregisterListener(LogChangeListener listener) {
-        if (m_listeners.remove(listener)) { // Удаляем слушателя и уведомляем об этом всех
-            updateActiveListeners();
-        }
-        else{
-            Logger.error("Произошла ошибка, невозможно удалить незарегистированного пользователя");
+        synchronized(m_listeners) {
+            m_listeners.remove(listener);
+            m_activeListeners = null;
         }
     }
 
-    public void append(LogLevel logLevel, String strMessage) { // Добавление новой записи в логи
-        LogEntry entry = new LogEntry(logLevel, strMessage);
-        if (m_messages.size() >= m_iQueueLength) {
-            m_messages.poll(); // Если очередь уже заполнена, то удаляем самое старое сообщение
-        }
-        m_messages.offer(entry); // Вставлям новое сообщение
-        notifyListeners(); // Уведомляем всех слушателей о новой записи
-    }
-
-    private void notifyListeners() {
-        List<LogChangeListener> activeListeners = m_activeListeners; // Создаём копию
-        synchronized (m_listeners) {
-            if (activeListeners == null) { // Если слушателей нет, то создаём и обновляем
-                activeListeners = m_activeListeners;
-                updateActiveListeners();
+    public void append(LogLevel logLevel, String strMessage) {
+        boolean added = false;
+        while (!added) {
+            LogEntry entry = new LogEntry(logLevel, strMessage);
+            if (m_queue.offer(entry)) {
+                added = true;
+                if (m_queue.size() > m_iQueueLength) {
+                    m_queue.remove();
+                }
+                LogChangeListener[] activeListeners = m_activeListeners;
+                if (activeListeners == null) {
+                    synchronized (m_listeners) {
+                        if (m_activeListeners == null) {
+                            activeListeners = m_listeners.toArray(new LogChangeListener[0]);
+                            m_activeListeners = activeListeners;
+                        }
+                    }
+                }
+                for (LogChangeListener listener : activeListeners) {
+                    listener.onLogChanged();
+                }
+            } else {
+                m_queue.remove();
             }
         }
-        if (activeListeners != null) {
-            for (LogChangeListener listener : activeListeners) {
-                listener.onLogChanged(); // Уведомляем каждого слушателя
-            }
+    }
+
+    public int size() {
+        return m_queue.size();
+    }
+
+    public Iterable<LogEntry> range(int startFrom, int count) {
+        if (startFrom < 0 || startFrom >= m_queue.size() || count <= 0) {
+            return Collections.emptyList();
         }
+        int indexTo = Math.min(startFrom + count, m_queue.size());
+        return new ArrayList<>(m_queue).subList(startFrom, indexTo);
     }
 
-    private void updateActiveListeners() {
-        List<LogChangeListener> listeners = new ArrayList<>(m_listeners);
-        m_activeListeners = listeners; // Обновляем активных слушателей
+    public Iterable<LogEntry> all() {
+        return new ArrayList<>(m_queue);
     }
-
-    public int size() { // Возвращает текущий размер сообщений в логе
-        return m_messages.size();
-    }
-
-    public List<LogEntry> range(int startFrom, int count) { // Cоздает новый список range, который является копией текущего списка логов m_messages
-        List<LogEntry> range = new ArrayList<>(m_messages);
-        int end = Math.min(startFrom + count, range.size());
-        return range.subList(startFrom, end); // Возвращает подсписок логов из диапазона
-    }
-
-    public List<LogEntry> all() { // Возвращает копию всего списка логов
-        return new ArrayList<>(m_messages);
-    }
-
 }

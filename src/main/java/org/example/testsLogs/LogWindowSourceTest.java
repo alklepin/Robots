@@ -1,65 +1,63 @@
-/*package testsLogs;
+package testsLogs;
+import log.LogWindowSource;
+import log.LogLevel;
 import log.LogEntry;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-import log.LogWindowSource;
-import log.LogChangeListener;
-
 
 public class LogWindowSourceTest {
 
-    public enum LogLevel {
-        INFO, DEBUG, WARN, ERROR
-    }
     @Test
-    public void testLogWindowSource() {
-        // Create LogWindowSource with a queue length of 5
-        LogWindowSource logWindowSource = new LogWindowSource(5);
+    public void testLogAppending() {
+        LogWindowSource logWindow = new LogWindowSource(5); // Создаем лог с ограничением в 5 сообщений
+        logWindow.append(LogLevel.Info, "Message 1");
+        logWindow.append(LogLevel.Warning, "Message 2");
+        logWindow.append(LogLevel.Error, "Message 3");
 
-        // Create and register listeners
-        LogChangeListener listener1 = new TestLogChangeListener();
-        LogChangeListener listener2 = new TestLogChangeListener();
-        logWindowSource.registerListener(listener1);
-        logWindowSource.registerListener(listener2);
-
-        // Append log entries
-        logWindowSource.append(LogLevel.INFO, "Message 1");
-        logWindowSource.append(LogLevel.ERROR, "Message 2");
-        logWindowSource.append(LogLevel.DEBUG, "Message 3");
-
-        // Check if listeners were notified
-        assertTrue(((TestLogChangeListener) listener1).wasNotified());
-        assertTrue(((TestLogChangeListener) listener2).wasNotified());
-
-        // Unregister one listener and append more log entries
-        logWindowSource.unregisterListener(listener1);
-        logWindowSource.append(LogLevel.WARN, "Message 4");
-        logWindowSource.append(LogLevel.INFO, "Message 5");
-
-        // Check if the unregistered listener was not notified
-        assertFalse(((TestLogChangeListener) listener1).wasNotified());
-
-        // Check the size of the log messages
-        assertEquals(4, logWindowSource.size());
-
-        // Check the range and all methods
-        assertEquals(2, logWindowSource.range(1, 2).size());
-        assertEquals(4, logWindowSource.all().size());
+        assertEquals(3, logWindow.size()); // Проверяем, что размер лога равен 3 после добавления 3 сообщений
     }
 
-    // TestLogChangeListener class for testing
-    private static class TestLogChangeListener implements LogChangeListener {
-        private boolean notified = false;
+    @Test
+    public void testLogLimit() {
+        LogWindowSource logWindow = new LogWindowSource(3); // Создаем лог с ограничением в 3 сообщения
+        logWindow.append(LogLevel.Info, "Message 1");
+        logWindow.append(LogLevel.Warning, "Message 2");
+        logWindow.append(LogLevel.Error, "Message 3");
+        logWindow.append(LogLevel.Debug, "Message 4"); // Превышаем лимит, первое сообщение должно быть удалено
 
-        @Override
-        public void onLogChanged() {
-            notified = true;
-        }
+        assertEquals(3, logWindow.size()); // Проверяем, что размер лога равен 3 после добавления 4 сообщений
+        assertEquals("Message 2", logWindow.all().iterator().next().getMessage()); // Проверяем, что первое сообщение было удалено
+    }
 
-        public boolean wasNotified() {
-            return notified;
+    @Test
+    public void testLogRange() {
+        LogWindowSource logWindow = new LogWindowSource(5); // Создаем лог с ограничением в 5 сообщений
+        logWindow.append(LogLevel.Info, "Message 1");
+        logWindow.append(LogLevel.Warning, "Message 2");
+        logWindow.append(LogLevel.Error, "Message 3");
+        logWindow.append(LogLevel.Debug, "Message 4");
+        logWindow.append(LogLevel.Info, "Message 5");
+
+        Iterable<LogEntry> range = logWindow.range(1, 3); // Получаем диапазон сообщений с индекса 1 до 3
+
+        int count = 0;
+        for (LogEntry entry : range) {
+            count++;
         }
+        assertEquals(3, count); // Проверяем, что в полученном диапазоне содержится 3 сообщения
+    }
+
+    @Test
+    public void testLogRangeOutOfBounds() {
+        LogWindowSource logWindow = new LogWindowSource(5); // Создаем лог с ограничением в 5 сообщений
+        logWindow.append(LogLevel.Info, "Message 1");
+
+        Iterable<LogEntry> range = logWindow.range(2, 3); // Пытаемся получить диапазон с индекса 2, хотя в логе только 1 сообщение
+
+        int count = 0;
+        for (LogEntry entry : range) {
+            count++;
+        }
+        assertEquals(0, count); // Проверяем, что полученный диапазон пустой
     }
 }
-
- */
