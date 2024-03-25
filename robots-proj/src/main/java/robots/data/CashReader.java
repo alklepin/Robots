@@ -3,9 +3,13 @@ package robots.data;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CashReader {
@@ -16,7 +20,7 @@ public class CashReader {
 		System.out.println("\u001B[32m[READING]\u001B[0m " + filename);
 	}
 
-	private InputStream getInputStream() throws IllegalArgumentException, IOException {
+	private InputStream getInputStream() throws IllegalArgumentException, FileNotFoundException, IOException {
 		try {
 			String noJarPath = GetPathWthoutJar.getPath();
 			String path = String.format("%s/cash/", noJarPath);
@@ -42,6 +46,13 @@ public class CashReader {
 				res.append(s.nextLine());
 			}
 			return res.toString();
+		}
+	}
+
+	public ArrayList<HashMap<String, Object>> readObjects()
+			throws IOException, FileNotFoundException, ClassNotFoundException {
+		try (ObjectInputStream ois = new ObjectInputStream(getInputStream())) {
+			return (ArrayList<HashMap<String, Object>>) ois.readObject();
 		}
 	}
 }
