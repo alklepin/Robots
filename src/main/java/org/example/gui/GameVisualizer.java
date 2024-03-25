@@ -139,6 +139,9 @@ public class GameVisualizer extends JPanel
         {
             newY = m_robotPositionY + velocity * duration * Math.sin(m_robotDirection);
         }
+        // Проверяем, не выходит ли червячок за границы экрана
+        newX = applyLimits(newX, 0, getWidth());
+        newY = applyLimits(newY, 0, getHeight());
         m_robotPositionX = newX;
         m_robotPositionY = newY;
         double newDirection = asNormalizedRadians(m_robotDirection + angularVelocity * duration); 
