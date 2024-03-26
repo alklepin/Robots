@@ -1,14 +1,16 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
+import log.Logger;
+import save.DataSaver;
+import save.Memorizable;
+import save.StateManager;
+import save.WindowInitException;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-
-import javax.swing.*;
-
-import log.Logger;
 
 /**
  * Что требуется сделать:
@@ -16,27 +18,34 @@ import log.Logger;
  * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
  *
  */
-public class MainApplicationFrame extends JFrame
+public class MainApplicationFrame extends JFrame implements Memorizable
 {
+    private final String attribute = "mainframe";
     private final JDesktopPane desktopPane = new JDesktopPane();
+    private final DataSaver saver = new DataSaver();
+    private final StateManager stateManager = saver.restore();
 
     public MainApplicationFrame() {
         //Make the big window be indented 50 pixels from each edge
         //of the screen.
-        int inset = 50;        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
+        int inset = 50;
+        try {
+            dememorize();
+        } catch (WindowInitException e) {
+            Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+            setBounds(inset, inset,
+                    screenSize.width - inset * 2,
+                    screenSize.height - inset * 2);
+            Logger.debug(e.getMessage());
+        }
 
         setContentPane(desktopPane);
-        
-        
-        LogWindow logWindow = createLogWindow();
+
+
+        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource(), stateManager);
         addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
+        GameWindow gameWindow = new GameWindow(stateManager);
         addWindow(gameWindow);
 
         setJMenuBar(generateMenuBar());
@@ -48,17 +57,6 @@ public class MainApplicationFrame extends JFrame
             }
         };
         addWindowListener(listener);
-    }
-    
-    protected LogWindow createLogWindow()
-    {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10,10);
-        logWindow.setSize(300, 800);
-        setMinimumSize(logWindow.getSize());
-        logWindow.pack();
-        Logger.debug("Протокол работает");
-        return logWindow;
     }
     
     protected void addWindow(JInternalFrame frame)
@@ -77,38 +75,11 @@ public class MainApplicationFrame extends JFrame
                 "Выход", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE,
                 null, options, null);
         if (option == JOptionPane.YES_OPTION){
+            memorize();
+            saver.store(stateManager);
             setDefaultCloseOperation(EXIT_ON_CLOSE);
         }
     }
-    
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
     
     private JMenuBar generateMenuBar()
     {
@@ -158,7 +129,7 @@ public class MainApplicationFrame extends JFrame
         {
             JMenuItem exitItem = new JMenuItem("Выход", KeyEvent.VK_S);
             exitItem.addActionListener((event) -> {
-                Logger.debug("exit trigger");
+                Logger.debug("Exit trigger");
                 dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
             });
             appMenu.add(exitItem);
@@ -182,5 +153,20 @@ public class MainApplicationFrame extends JFrame
         {
             // just ignore
         }
+    }
+
+    @Override
+    public void memorize() {
+        for (Component component : desktopPane.getComponents()) {
+            if (component instanceof Memorizable memorizable) memorizable.memorize();
+            else if (component instanceof JInternalFrame.JDesktopIcon icon)
+                if (icon.getInternalFrame() instanceof Memorizable memorizable) memorizable.memorize();
+        }
+        stateManager.storeFrame(attribute, this);
+    }
+
+    @Override
+    public void dememorize() throws WindowInitException {
+        stateManager.recoverFrame(attribute, this);
     }
 }
