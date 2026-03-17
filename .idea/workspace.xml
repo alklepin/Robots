@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="194405ee-7bf0-4701-aa30-0f60a27a29b0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/gui/RobotCoordinatesWindow.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/gui/RobotModel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/Robots.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gradle/8.14/checksums/checksums.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/checksums/checksums.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/executionHistory/executionHistory.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.14/fileHashes/fileHashes.bin" afterDir="false" />
@@ -15,14 +16,25 @@
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/outputFiles.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/file-system.probe" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/file-system.probe" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/gradle.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/GameVisualizer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/GameWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/GameWindow.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/LogWindow.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/LogWindow.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/MainApplicationFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/MainApplicationFrame.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/classes/java/main/gui/RobotsProgram.class" beforeDir="false" afterPath="$PROJECT_DIR$/build/classes/java/main/gui/RobotsProgram.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build/reports/problems/problems-report.html" beforeDir="false" afterPath="$PROJECT_DIR$/build/reports/problems/problems-report.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" beforeDir="false" afterPath="$PROJECT_DIR$/build/tmp/compileJava/previous-compilation-data.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/GameVisualizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/GameVisualizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/GameWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/GameWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/LogWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/LogWindow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/MainApplicationFrame.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/MainApplicationFrame.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/RobotCoordinatesWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/RobotCoordinatesWindow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/gui/RobotModel.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/gui/RobotsProgram.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/gui/RobotsProgram.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -51,19 +63,7 @@
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="robots" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="robots" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="application" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="robots" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
+                <item name="Run Configurations" type="7b0102dc:RunConfigurationsNode" />
               </path>
             </expand>
             <select />
@@ -80,6 +80,11 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="Begining-Patch" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -91,7 +96,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Yiumacj/Robots.git&quot;,
-    &quot;accountId&quot;: &quot;02e75a96-14a6-4ccd-92cf-008e1ba43a96&quot;
+    &quot;accountId&quot;: &quot;07ad7d70-d3fe-4344-80de-a858fbf5a7a4&quot;
   }
 }</component>
   <component name="ProjectColorInfo">{
@@ -111,9 +116,11 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "gradle-build-conversion",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "Refactor-and-Localized",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/track/IdeaProjects/Robots/robots/.project",
+    "last_opened_file_path": "C:/Codex/Robots/build.gradle",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -195,6 +202,9 @@
       <workItem from="1770699735405" duration="2081000" />
       <workItem from="1772130211412" duration="138000" />
       <workItem from="1773208388954" duration="3051000" />
+      <workItem from="1773729459008" duration="21000" />
+      <workItem from="1773730812801" duration="125000" />
+      <workItem from="1773731493778" duration="1612000" />
     </task>
     <servers />
   </component>
