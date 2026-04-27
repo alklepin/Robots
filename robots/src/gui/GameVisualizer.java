@@ -25,16 +25,17 @@ public class GameVisualizer extends JPanel
     
     private volatile double m_robotPositionX = 100;
     private volatile double m_robotPositionY = 100; 
-    private volatile double m_robotDirection = 0; 
+    private volatile double m_robotDirection = 0;
 
     private volatile int m_targetPositionX = 150;
     private volatile int m_targetPositionY = 100;
     
-    private static final double maxVelocity = 0.1; 
-    private static final double maxAngularVelocity = 0.001; 
+    private static final double maxVelocity = 0.1; //ЛИНЕЙНАЯ
+    private static final double maxAngularVelocity = 0.001;// УГЛОВАЯ
     
     public GameVisualizer() 
     {
+
         m_timer.schedule(new TimerTask()
         {
             @Override
@@ -98,7 +99,7 @@ public class GameVisualizer extends JPanel
             return;
         }
         double velocity = maxVelocity;
-        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);
+        double angleToTarget = angleTo(m_robotPositionX, m_robotPositionY, m_targetPositionX, m_targetPositionY);// поворачиваем если надо налево направо
         double angularVelocity = 0;
         if (angleToTarget > m_robotDirection)
         {
