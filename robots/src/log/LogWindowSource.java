@@ -1,17 +1,17 @@
 package log;
 
-import collections.BoundedCircularList;
+import collections.BoundedCircularQueue;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class LogWindowSource {
-    private final BoundedCircularList<LogEntry> buffer;
+    private final BoundedCircularQueue<LogEntry> buffer;
     private final List<LogChangeListener> listeners = new ArrayList<>();
     private volatile LogChangeListener[] activeListeners;
 
     public LogWindowSource(int capacity) {
-        this.buffer = new BoundedCircularList<>(capacity);
+        this.buffer = new BoundedCircularQueue<>(capacity);
     }
 
     public void registerListener(LogChangeListener listener) {
@@ -53,15 +53,13 @@ public class LogWindowSource {
 
 
     public Iterable<LogEntry> all() {
-        return buffer.subList(0, buffer.size());
+        return buffer.getAll();
     }
 
     public Iterable<LogEntry> range(int startFrom, int count) {
         int total = buffer.size();
-        if (startFrom < 0 || startFrom >= total) {
-            return Collections.emptyList();
-        }
+        if (startFrom < 0 || startFrom >= total) return Collections.emptyList();
         int end = Math.min(startFrom + count, total);
-        return buffer.subList(startFrom, end);
+        return buffer.getRange(startFrom, end);
     }
 }

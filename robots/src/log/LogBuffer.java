@@ -1,17 +1,17 @@
 package log;
 
-import collections.BoundedCircularList;
+import collections.BoundedCircularQueue;
 import java.util.List;
 
 public class LogBuffer {
-    private final BoundedCircularList<LogEntry> buffer;
+    private final BoundedCircularQueue<LogEntry> buffer;
 
     public LogBuffer(int capacity) {
-        buffer = new BoundedCircularList<>(capacity);
+        buffer = new BoundedCircularQueue<>(capacity);
     }
 
     public void add(LogEntry entry) {
-        buffer.add(entry);
+        buffer.offer(entry);
     }
 
     public int size() {
@@ -19,11 +19,10 @@ public class LogBuffer {
     }
 
     public List<LogEntry> getAll() {
-        return buffer.snapshot();
+        return buffer.getAll();
     }
 
-    // Для совместимости
     public List<LogEntry> getRange(int start, int end) {
-        return buffer.subList(start, end);
+        return buffer.getRange(start, end);
     }
 }
