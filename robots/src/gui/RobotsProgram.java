@@ -4,11 +4,10 @@ import model.RobotController;
 import model.RobotModel;
 import javax.swing.*;
 import java.awt.*;
-import java.util.Locale;
 
 public class RobotsProgram {
     public static void main(String[] args) {
-        Locale.setDefault(new Locale("ru"));
+
         try {
             UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
         } catch (Exception e) {
