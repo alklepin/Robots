@@ -25,4 +25,8 @@ public class LogBuffer {
     public List<LogEntry> getRange(int start, int end) {
         return buffer.getRange(start, end);
     }
+
+    public void clear() {
+        buffer.clear();
+    }
 }

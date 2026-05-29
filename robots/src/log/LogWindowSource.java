@@ -62,4 +62,20 @@ public class LogWindowSource {
         int end = Math.min(startFrom + count, total);
         return buffer.getRange(startFrom, end);
     }
+
+    public void clear() {
+        buffer.clear();
+        LogChangeListener[] copy = activeListeners;
+        if (copy == null) {
+            synchronized (listeners) {
+                if (activeListeners == null) {
+                    activeListeners = listeners.toArray(new LogChangeListener[0]);
+                    copy = activeListeners;
+                }
+            }
+        }
+        for (LogChangeListener l : copy) {
+            l.onLogChanged();
+        }
+    }
 }

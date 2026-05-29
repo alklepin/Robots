@@ -100,4 +100,16 @@ public class BoundedCircularQueue<E> extends AbstractQueue<E> {
         }
         return Collections.unmodifiableList(result);
     }
+
+    public void clear() {
+        while (true) {
+            int oldSize = size.get();
+            if (oldSize == 0) return;
+            if (size.compareAndSet(oldSize, 0)) {
+                head.set(0);
+                Arrays.fill(buffer, null);
+                return;
+            }
+        }
+    }
 }
