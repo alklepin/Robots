@@ -1,50 +1,50 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-import java.awt.TextArea;
-
-import javax.swing.JInternalFrame;
-import javax.swing.JPanel;
-
+import localization.LocalizationManager;
 import log.LogChangeListener;
 import log.LogEntry;
 import log.LogWindowSource;
+import log.Logger;
 
-public class LogWindow extends JInternalFrame implements LogChangeListener
-{
-    private LogWindowSource m_logSource;
-    private TextArea m_logContent;
+import javax.swing.*;
+import java.awt.*;
 
-    public LogWindow(LogWindowSource logSource) 
-    {
-        super("Протокол работы", true, true, true, true);
-        m_logSource = logSource;
-        m_logSource.registerListener(this);
-        m_logContent = new TextArea("");
-        m_logContent.setSize(200, 500);
-        
+public class LogWindow extends JInternalFrame implements LogChangeListener {
+    private final LogWindowSource logSource;
+    private final TextArea logContent;
+    private final LocalizationManager loc = LocalizationManager.getInstance();
+
+    public LogWindow(LogWindowSource logSource) {
+        super(LocalizationManager.getInstance().getString("window.log.title"), true, true, true, true);
+        this.logSource = logSource;
+        this.logSource.registerListener(this);
+        logContent = new TextArea("");
+        logContent.setEditable(false);
         JPanel panel = new JPanel(new BorderLayout());
-        panel.add(m_logContent, BorderLayout.CENTER);
+        panel.add(logContent, BorderLayout.CENTER);
         getContentPane().add(panel);
         pack();
         updateLogContent();
+        Logger.debug(loc.getString("log.start"));
+        loc.addListener(this::refreshLanguage);
     }
 
-    private void updateLogContent()
-    {
-        StringBuilder content = new StringBuilder();
-        for (LogEntry entry : m_logSource.all())
-        {
-            content.append(entry.getMessage()).append("\n");
-        }
-        m_logContent.setText(content.toString());
-        m_logContent.invalidate();
+    private void refreshLanguage() {
+        setTitle(loc.getString("window.log.title"));
+        logSource.clear();
+        Logger.debug(loc.getString("log.start"));
     }
-    
+
+    private void updateLogContent() {
+        StringBuilder sb = new StringBuilder();
+        for (LogEntry entry : logSource.all()) {
+            sb.append(entry.getMessage()).append("\n");
+        }
+        logContent.setText(sb.toString());
+    }
+
     @Override
-    public void onLogChanged()
-    {
-        EventQueue.invokeLater(this::updateLogContent);
+    public void onLogChanged() {
+        SwingUtilities.invokeLater(this::updateLogContent);
     }
 }

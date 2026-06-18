@@ -1,156 +1,136 @@
 package gui;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
-import java.awt.event.KeyEvent;
-
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-
+import config.ConfigManager;
+import localization.LocalizationManager;
 import log.Logger;
+import model.RobotController;
+import model.RobotModel;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
-/**
- * Что требуется сделать:
- * 1. Метод создания меню перегружен функционалом и трудно читается. 
- * Следует разделить его на серию более простых методов (или вообще выделить отдельный класс).
- *
- */
-public class MainApplicationFrame extends JFrame
-{
+public class MainApplicationFrame extends JFrame {
+    private static final String LOG_WINDOW_NAME = "LogWindow";
+    private static final String GAME_WINDOW_NAME = "GameWindow";
+    private static final String COORD_WINDOW_NAME = "CoordWindow";
+
     private final JDesktopPane desktopPane = new JDesktopPane();
-    
-    public MainApplicationFrame() {
-        //Make the big window be indented 50 pixels from each edge
-        //of the screen.
-        int inset = 50;        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setBounds(inset, inset,
-            screenSize.width  - inset*2,
-            screenSize.height - inset*2);
+    private final ConfigManager configManager = new ConfigManager();
+    private final WindowStateManager windowStateManager = new WindowStateManager(configManager);
+    private final LocalizationManager localization = LocalizationManager.getInstance();
 
+    private final RobotModel robotModel;
+    private final RobotController robotController;
+
+    private LogWindow logWindow;
+    private GameWindow gameWindow;
+    private RobotCoordinatesWindow coordWindow;
+    private MenuBarFactory menuBarFactory;
+
+    public MainApplicationFrame(RobotModel model, RobotController controller) {
+        this.robotModel = model;
+        this.robotController = controller;
+
+        configManager.load();
+        windowStateManager.loadMainWindowState(this);
         setContentPane(desktopPane);
-        
-        
-        LogWindow logWindow = createLogWindow();
-        addWindow(logWindow);
 
-        GameWindow gameWindow = new GameWindow();
-        gameWindow.setSize(400,  400);
-        addWindow(gameWindow);
+        createWindows();
+        setupMenuBar();
 
-        setJMenuBar(generateMenuBar());
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        windowStateManager.loadInternalWindowState(logWindow, LOG_WINDOW_NAME);
+        windowStateManager.loadInternalWindowState(gameWindow, GAME_WINDOW_NAME);
+        windowStateManager.loadInternalWindowState(coordWindow, COORD_WINDOW_NAME);
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                exitApplication();
+            }
+        });
+
+        localization.addListener(this::refreshLanguage);
     }
-    
-    protected LogWindow createLogWindow()
-    {
-        LogWindow logWindow = new LogWindow(Logger.getDefaultLogSource());
-        logWindow.setLocation(10,10);
+
+    private void createWindows() {
+        logWindow = new LogWindow(Logger.getDefaultLogSource());
+        logWindow.setLocation(10, 10);
         logWindow.setSize(300, 800);
         setMinimumSize(logWindow.getSize());
         logWindow.pack();
-        Logger.debug("Протокол работает");
-        return logWindow;
+
+        gameWindow = new GameWindow(robotModel, robotController);
+        gameWindow.setSize(400, 400);
+
+        coordWindow = new RobotCoordinatesWindow(robotModel);
+        coordWindow.setSize(250, 100);
+        coordWindow.setLocation(10, 400);
+
+        addWindow(LOG_WINDOW_NAME, logWindow);
+        addWindow(GAME_WINDOW_NAME, gameWindow);
+        addWindow(COORD_WINDOW_NAME, coordWindow);
     }
-    
-    protected void addWindow(JInternalFrame frame)
-    {
+
+    private void addWindow(String windowName, JInternalFrame frame) {
+        windowStateManager.setupWindowBehavior(frame, windowName);
         desktopPane.add(frame);
-        frame.setVisible(true);
     }
-    
-//    protected JMenuBar createMenuBar() {
-//        JMenuBar menuBar = new JMenuBar();
-// 
-//        //Set up the lone menu.
-//        JMenu menu = new JMenu("Document");
-//        menu.setMnemonic(KeyEvent.VK_D);
-//        menuBar.add(menu);
-// 
-//        //Set up the first menu item.
-//        JMenuItem menuItem = new JMenuItem("New");
-//        menuItem.setMnemonic(KeyEvent.VK_N);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_N, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("new");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        //Set up the second menu item.
-//        menuItem = new JMenuItem("Quit");
-//        menuItem.setMnemonic(KeyEvent.VK_Q);
-//        menuItem.setAccelerator(KeyStroke.getKeyStroke(
-//                KeyEvent.VK_Q, ActionEvent.ALT_MASK));
-//        menuItem.setActionCommand("quit");
-////        menuItem.addActionListener(this);
-//        menu.add(menuItem);
-// 
-//        return menuBar;
-//    }
-    
-    private JMenuBar generateMenuBar()
-    {
-        JMenuBar menuBar = new JMenuBar();
-        
-        JMenu lookAndFeelMenu = new JMenu("Режим отображения");
-        lookAndFeelMenu.setMnemonic(KeyEvent.VK_V);
-        lookAndFeelMenu.getAccessibleContext().setAccessibleDescription(
-                "Управление режимом отображения приложения");
-        
-        {
-            JMenuItem systemLookAndFeel = new JMenuItem("Системная схема", KeyEvent.VK_S);
-            systemLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(systemLookAndFeel);
-        }
 
-        {
-            JMenuItem crossplatformLookAndFeel = new JMenuItem("Универсальная схема", KeyEvent.VK_S);
-            crossplatformLookAndFeel.addActionListener((event) -> {
-                setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-                this.invalidate();
-            });
-            lookAndFeelMenu.add(crossplatformLookAndFeel);
-        }
-
-        JMenu testMenu = new JMenu("Тесты");
-        testMenu.setMnemonic(KeyEvent.VK_T);
-        testMenu.getAccessibleContext().setAccessibleDescription(
-                "Тестовые команды");
-        
-        {
-            JMenuItem addLogMessageItem = new JMenuItem("Сообщение в лог", KeyEvent.VK_S);
-            addLogMessageItem.addActionListener((event) -> {
-                Logger.debug("Новая строка");
-            });
-            testMenu.add(addLogMessageItem);
-        }
-
-        menuBar.add(lookAndFeelMenu);
-        menuBar.add(testMenu);
-        return menuBar;
+    private void setupMenuBar() {
+        menuBarFactory = new MenuBarFactory(this);
+        setJMenuBar(menuBarFactory.createMenuBar());
     }
-    
-    private void setLookAndFeel(String className)
-    {
-        try
-        {
+
+    private void refreshLanguage() {
+        logWindow.setTitle(localization.getString("window.log.title"));
+        gameWindow.setTitle(localization.getString("window.game.title"));
+        coordWindow.setTitle(localization.getString("window.coord.title"));
+        setJMenuBar(menuBarFactory.createMenuBar());
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+
+    public void exitApplication() {
+        if (robotController != null) robotController.stopTimer();
+
+        windowStateManager.saveMainWindowState(this);
+        windowStateManager.saveInternalWindowState(logWindow, LOG_WINDOW_NAME);
+        windowStateManager.saveInternalWindowState(gameWindow, GAME_WINDOW_NAME);
+        windowStateManager.saveInternalWindowState(coordWindow, COORD_WINDOW_NAME);
+        configManager.save();
+
+        UIManager.put("OptionPane.yesButtonText", localization.getString("option.yes"));
+        UIManager.put("OptionPane.noButtonText", localization.getString("option.no"));
+
+        int result = JOptionPane.showConfirmDialog(
+                this,
+                localization.getString("exit.confirm.message"),
+                localization.getString("exit.confirm.title"),
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+        if (result == JOptionPane.YES_OPTION) {
+            dispose();
+        }
+    }
+
+    public void setLookAndFeel(String className) {
+        try {
             UIManager.setLookAndFeel(className);
             SwingUtilities.updateComponentTreeUI(this);
-        }
-        catch (ClassNotFoundException | InstantiationException
-            | IllegalAccessException | UnsupportedLookAndFeelException e)
-        {
-            // just ignore
+        } catch (Exception e) { Logger.error("Fail in setLookAndFeel"); }
+    }
+
+    public void showWindowByName(String windowName) {
+        JInternalFrame target = null;
+        if (LOG_WINDOW_NAME.equals(windowName)) target = logWindow;
+        else if (GAME_WINDOW_NAME.equals(windowName)) target = gameWindow;
+        else if (COORD_WINDOW_NAME.equals(windowName)) target = coordWindow;
+        if (target != null) {
+            target.setVisible(true);
+            try {
+                if (target.isIcon()) target.setIcon(false);
+            } catch (java.beans.PropertyVetoException e) { Logger.debug("PropertyVetoException");}
+            target.toFront();
         }
     }
 }
